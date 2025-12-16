@@ -1,0 +1,111 @@
+<!-- LIEN D'ÉVITEMENT (SKIP LINK) -->
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<!-- HEADER - EN-TÊTE DU SITE -->
+<header class="base-header position-relative" role="banner">
+  <div class="container-fluid">
+    <div class="row header-top g-3">
+
+      <!-- BLOC LOGO -->
+      <div class="col-12 col-lg-5 order-0">
+        <div class="header_logo">
+          <a href="/" class="my-logo d-block">
+            <img src="images/logo.png" alt="Book Your Travel" class="my-logo-img">
+          </a>
+        </div>
+      </div>
+
+      <!-- BOUTON DYSLEXIE -->
+      <div class="col-12 col-lg-1 order-1 d-flex align-items-center justify-content-center">
+        <button id="toggle-dyslexie" class="btn btn-outline-secondary btn-sm"
+          aria-label="Activer la police adaptée aux personnes dyslexiques" 
+          aria-pressed="false"
+          title="Police pour dyslexie">
+          <i class="bi bi-universal-access"></i>
+          <span class="btn-text d-none d-lg-inline ms-1">Dyslexie</span>
+        </button>
+      </div>
+
+      <!-- BLOC CONTACT 24/7 -->
+      <div class="col-12 col-lg-3 order-2">
+        <div class="header_contact">
+          <div class="bloc-contact">
+            <div class="bloc-contact-ico">
+              <i class="bi bi-telephone"></i>
+            </div>
+            <div class="text-contact">
+              <div class="bloc-contact-label">24/7 Support number</div>
+              <div class="bloc-contact-number">1-555-555-555</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOC RECHERCHE -->
+      <div class="col-12 col-lg-3 order-3">
+        <div class="header_search">
+          <div class="bloc-search" role="search" aria-label="Recherche rapide">
+            <form class="position-relative">
+              <input type="search" class="form-control bloc-search-input" 
+                placeholder="Rechercher" aria-label="Rechercher sur le site">
+              <i class="bi bi-search bloc-search-ico"></i>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RUBAN LATÉRAL (Mon compte, Langue, Monnaie) -->
+    <div class="ribbon">
+      <nav class="d-flex gap-2 flex-column align-items-stretch">
+        
+        <!-- Mon Compte -->
+        <div class="dropdown">
+          <a class="btn btn-outline-dark w-100 pb-2 ribbon-btn" href="#" role="button">
+            MON COMPTE
+          </a>
+        </div>
+
+        <!-- Langue -->
+        <div class="dropdown">
+          <button class="btn btn-outline-dark w-100 pb-2 ribbon-btn" type="button">
+            PAYS
+          </button>
+        </div>
+
+        <!-- Monnaie -->
+        <div class="dropdown">
+          <button class="btn btn-outline-dark w-100 pb-2 ribbon-btn" type="button">
+            MONNAIE
+          </button>
+        </div>
+
+      </nav>
+    </div>
+
+  </div>
+</header>
+
+<!-- NAVIGATION PRINCIPALE -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-brown" role="navigation">
+  <span class="navbar-brand d-lg-none">Menu</span>
+  <button class="navbar-toggler" type="button" (click)="toggleMenu()">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" [class.show]="menuOpen" id="menuPrincipal">
+    <ul class="navbar-nav mx-auto">
+      <li class="nav-item">
+        <a class="nav-link active" href="/">Accueil</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/hotels">Hôtels</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/contact">Contact</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+

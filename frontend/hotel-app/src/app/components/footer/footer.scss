@@ -1,0 +1,181 @@
+/* ==========================================================
+   FOOTER (index.html, room.html, booking.html, contact.html)
+   ----------------------------------------------------------
+   Styles spécifiques au footer de base
+   ========================================================== */
+
+footer.container-fluid {
+  padding: 0 5%;
+  background-color: var(--blanc);
+  font-size: 13px;
+  color: var(--gris-moyen);
+  text-align: center;
+  font-weight: 700;
+  max-width: 98%; /* Limite la largeur du footer */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* === Sections du footer === */
+
+.footer_contact,
+.footer_support,
+.footer_follow,
+.footer_newsletter {
+  text-align: left;
+}
+
+footer.container-fluid h2 {
+  font-size: 20px;
+  color: var(--gris-moyen);
+}
+
+footer.container-fluid p,
+.footer li,
+.footer a {
+  font-weight: 400;
+  color: var(--gris-moyen);
+}
+
+footer.container-fluid ul li {
+  line-height: 1.2;
+}
+
+.footer_support a {
+  color: var(--gris-moyen);
+}
+
+/* Puces turquoise pour le support */
+footer.container-fluid .footer_support ul li::before {
+  content: "•";
+  color: var(--turquoise);
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  font-size: 1.5em;
+  padding: 0 0 0 0;
+  position: relative;
+  top: 3px;
+}
+
+/* === Réseaux sociaux === */
+
+.footer_follow ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.footer_follow li {
+  display: inline-block;
+}
+
+.footer_follow a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: var(--marron);
+  color: var(--blanc);
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.footer_follow a:hover {
+  background-color: #d1c6bc;
+  transform: scale(1.1);
+  color: var(--turquoise);
+  border-color: var(--marron);
+}
+
+.footer_follow i {
+  position: relative;
+  top: -2px;
+}
+
+/* === Newsletter === */
+
+.footer.container-fluid em {
+  color: var(--turquoise);
+  font-weight: bold;
+}
+
+.footer_newsletter input::placeholder {
+  color: var(--gris-moyen);
+}
+
+.btn-dark {
+  background-color: var(--marron);
+  border-color: var(--marron);
+}
+
+.btn-dark:hover {
+  background-color: #d1c6bc;
+  transform: scale(1.1);
+  color: var(--turquoise);
+  border-color: var(--marron);
+}
+
+/* === Footer bas de page (Copyright & Liens légaux) === */
+
+footer .bottom a {
+  color: var(--gris-moyen);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-weight: 300;
+}
+
+footer .bottom a:hover {
+  color: var(--turquoise);
+}
+
+/* Séparateur vertical entre les liens */
+footer .bottom nav li:not(:first-child) {
+  border-left: 1px solid #e5e5e5;
+}
+
+footer .bottom nav li {
+  padding: 0 0 0 12px;
+}
+
+.bottom {
+  font-size: 13px;
+}
+
+.copy {
+  text-align: center;
+}
+
+/* ==========================================================
+   TABLETTES ET MOBILES (largeur ≤ 991px)
+   ========================================================== */
+
+@media (max-width: 991px) {
+    footer.container-fluid {
+    margin-left: -15px;
+  }
+}
+
+/* ==========================================================
+   PETITS MOBILES (largeur ≤ 390px)
+   ========================================================== */
+
+@media (max-width: 390px) {
+    footer .bottom a {
+    text-decoration: underline;
+  }
+
+  /* Retrait des séparateurs verticaux entre les liens légaux */
+  footer .bottom nav li {
+    padding: 0;
+    border: none !important;
+  }
+}

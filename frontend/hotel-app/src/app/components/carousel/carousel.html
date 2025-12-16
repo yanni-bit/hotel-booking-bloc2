@@ -1,0 +1,124 @@
+<!-- CARROUSEL D'IMAGES avec Formulaire de recherche -->
+<div class="hotel-carousel">
+
+  <!-- Slides -->
+  <div class="slides-container">
+    <div class="hotel-slide" *ngFor="let slide of slides; let i = index" 
+         [class.active]="currentSlide === i">
+      <img [src]="slide.image" [alt]="slide.alt">
+    </div>
+  </div>
+
+  <!-- Boutons de navigation -->
+  <a class="prev" (click)="previousSlide()">&#10094;</a>
+  <a class="next" (click)="nextSlide()">&#10095;</a>
+
+  <!-- Indicateurs (dots) -->
+  <div class="dots">
+    <span class="dot" *ngFor="let slide of slides; let i = index" 
+          [class.active]="currentSlide === i"
+          (click)="goToSlide(i)"></span>
+  </div>
+
+  <!-- FORMULAIRE DE RECHERCHE (OVERLAY) -->
+  <div class="search-overlay-container">
+    <div class="search-overlay-content">
+      <div class="row g-0">
+
+        <!-- COLONNE 1 : QUOI? -->
+        <div class="col-12 col-lg-3 d-flex flex-column">
+          <h5 class="search-field-box-title"><em>01</em> Quoi?</h5>
+          <div class="search-field-box">
+            <div class="row-buttons">
+              <div class="search-col-button">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type" id="hotel" checked>
+                  <label class="form-check-label" for="hotel">Hotel</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type" id="vol">
+                  <label class="form-check-label" for="vol">Vol</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type" id="vol-hotel">
+                  <label class="form-check-label" for="vol-hotel">Vol & Hotel</label>
+                </div>
+              </div>
+              <div class="search-col-button">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type" id="studio">
+                  <label class="form-check-label" for="studio">Studio</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type" id="croisiere">
+                  <label class="form-check-label" for="croisiere">Croisière</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type" id="voiture">
+                  <label class="form-check-label" for="voiture">Location voiture</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLONNE 2 : OÙ? -->
+        <div class="col-12 col-lg-3 d-flex flex-column">
+          <h5 class="search-field-box-title"><em>02</em> Où?</h5>
+          <div class="search-field-box">
+            <label for="destination"><h5>Votre destination</h5></label>
+            <input type="text" class="form-control" placeholder="Ville, région..." id="destination">
+          </div>
+        </div>
+
+        <!-- COLONNE 3 : QUAND? -->
+        <div class="col-12 col-lg-3 d-flex flex-column">
+          <h5 class="search-field-box-title"><em>03</em> Quand?</h5>
+          <div class="search-field-box">
+            <div class="search-col-date d-flex flex-row">
+              <div class="mb-3">
+                <label for="checkin"><h5>Check-in</h5></label>
+                <input type="date" class="form-control" id="checkin">
+              </div>
+              <div class="mb-3">
+                <label for="checkout"><h5>Check-out</h5></label>
+                <input type="date" class="form-control" id="checkout">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLONNE 4 : QUI? -->
+        <div class="col-12 col-lg-3 d-flex flex-column">
+          <h5 class="search-field-box-title"><em>04</em> Qui?</h5>
+          <div class="search-field-box">
+            <div class="search-col-who d-flex flex-row">
+              <div class="mb-3">
+                <label for="rooms"><h5>Chambres</h5></label>
+                <input type="number" class="form-control" id="rooms" min="1" value="1">
+              </div>
+              <div class="mb-3">
+                <label for="adults"><h5>Adultes</h5></label>
+                <input type="number" class="form-control" id="adults" min="1" value="2">
+              </div>
+              <div class="mb-3">
+                <label for="children"><h5>Enfants</h5></label>
+                <input type="number" class="form-control" id="children" min="0" value="0">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BOUTON RECHERCHER -->
+      <div class="row mt-3 mx-0 searchProcess">
+        <div class="col-12 mb-0 text-center">
+          <button type="button" class="btn px-3 pt-2 pb-1 btn-custom w-20">Rechercher</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

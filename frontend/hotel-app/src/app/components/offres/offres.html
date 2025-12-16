@@ -1,0 +1,84 @@
+<!-- SECTION NOS DERNIÈRES OFFRES -->
+<section class="offres-section py-5">
+  <div class="container ligneSeparation">
+    
+    <!-- En-tête de section -->
+    <div class="text-center mb-5">
+      <h2 class="section-title">Nos Dernières Offres</h2>
+      <p class="section-subtitle">Profitez de nos meilleures promotions du moment</p>
+    </div>
+
+    <!-- Grille des offres -->
+    <div class="row g-4">
+      
+      <!-- Offre 1 - PROMO -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="offre-card">
+          <div class="offre-card-image">
+            <img [src]="offres[0].image" [alt]="offres[0].title">
+            <span class="offre-badge" [style.background-color]="offres[0].badgeColor">
+              {{ offres[0].badge }}
+            </span>
+          </div>
+          <div class="offre-card-body">
+            <h3 class="offre-card-title">{{ offres[0].title }}</h3>
+            <p class="offre-card-text">{{ offres[0].description }}</p>
+            <a href="#" class="btn-offre">Réserver</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offre 2 - HOT DEAL -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="offre-card">
+          <div class="offre-card-image">
+            <img [src]="offres[1].image" [alt]="offres[1].title">
+            <span class="offre-badge" [style.background-color]="offres[1].badgeColor">
+              {{ offres[1].badge }}
+            </span>
+          </div>
+          <div class="offre-card-body">
+            <h3 class="offre-card-title">{{ offres[1].title }}</h3>
+            <p class="offre-card-text">{{ offres[1].description }}</p>
+            <a href="#" class="btn-offre">Réserver</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offre 3 - NEW -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="offre-card">
+          <div class="offre-card-image">
+            <img [src]="offres[2].image" [alt]="offres[2].title">
+            <span class="offre-badge" [style.background-color]="offres[2].badgeColor">
+              {{ offres[2].badge }}
+            </span>
+          </div>
+          <div class="offre-card-body">
+            <h3 class="offre-card-title">{{ offres[2].title }}</h3>
+            <p class="offre-card-text">{{ offres[2].description }}</p>
+            <a href="#" class="btn-offre">Réserver</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offre 4 - LAST MINUTE -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="offre-card">
+          <div class="offre-card-image">
+            <img [src]="offres[3].image" [alt]="offres[3].title">
+            <span class="offre-badge" [style.background-color]="offres[3].badgeColor">
+              {{ offres[3].badge }}
+            </span>
+          </div>
+          <div class="offre-card-body">
+            <h3 class="offre-card-title">{{ offres[3].title }}</h3>
+            <p class="offre-card-text">{{ offres[3].description }}</p>
+            <a href="#" class="btn-offre">Réserver</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

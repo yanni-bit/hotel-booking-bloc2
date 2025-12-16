@@ -1,0 +1,339 @@
+// Variables
+$turquoise: #5fc8c2;
+$turquoise-hover: #3db3aa;
+$gris-fonce: #333333;
+$blanc: #ffffff;
+
+
+// CARROUSEL PRINCIPAL
+.hotel-carousel {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+  background: #000;
+}
+
+.slides-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hotel-slide {
+  display: none;
+  width: 100%;
+  height: 100%;
+  
+  &.active {
+    display: block;
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// BOUTONS DE NAVIGATION
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $blanc;
+  background: rgba(0, 0, 0, 0.5);
+  font-size: 2rem;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s ease;
+  z-index: 10;
+  text-decoration: none;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+.prev {
+  left: 20px;
+}
+
+.next {
+  right: 20px;
+}
+
+// INDICATEURS (DOTS)
+.dots {
+  position: absolute;
+  bottom: 10px;  // ← Plus bas que le formulaire
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  
+  &.active {
+    background: $blanc;
+  }
+}
+
+// FORMULAIRE DE RECHERCHE (OVERLAY)
+.search-overlay-container {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1170px;
+  z-index: 10;
+  padding: 0 15px;
+}
+
+.search-overlay-content {
+  background-color: var(--blanc);
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Force les colonnes à avoir la même hauteur (Flexbox) */
+.search-overlay-content .row {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Chaque colonne est un conteneur vertical */
+.search-overlay-content .row > div {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Bordure gauche pour séparer les colonnes visuellement */
+.search-overlay-content .row > div:not(:first-child) .search-field-box {
+  border-left: 1px solid #ebebeb;
+}
+
+/* Titre des champs (01, 02, 03, 04) */
+.search-field-box-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gris-fonce);
+  padding-left: 9px;
+  text-align: left;
+  
+  em {
+    color: var(--turquoise);
+  }
+
+  h5 {
+    padding-top: 10px;
+    font-weight: 600;
+    color: var(--gris-fonce);
+  }
+}
+
+.search-field-box {
+  background-color: transparent;
+  padding: 0 10px 0 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  min-height: 100px;
+  font-weight: 400;
+}
+
+/* Champs de formulaire (Input/Select) */
+.search-field-box .form-control {
+  width: 100%;
+  height: 35px;
+  border-radius: 18px;
+  border: 1px solid var(--gris-moyen);
+  margin-top: 5px;
+  padding: 10px 15px;
+  font-size: 13px;
+  color: var(--gris-moyen);
+  background-color: #fff;
+}
+
+/* === Colonnes de boutons radio === */
+
+.row-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.search-col-button {
+  width: 50%;
+  text-align: start;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--gris-moyen);
+}
+
+/* === Bouton de validation de la recherche === */
+
+.searchProcess {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.btn-custom {
+  border-radius: 20px 20px 0 0;
+  border: 1px solid var(--turquoise);
+  background-color: var(--turquoise);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blanc);
+  text-transform: uppercase;
+}
+
+
+.search-col-date,
+.search-col-who {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  text-align: start;
+  
+  .mb-3 {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* ==========================================================
+   TABLETTES ET MOBILES (largeur ≤ 991px)
+   ----------------------------------------------------------
+   Ciblé:Carrousel/Formulaire de recherche
+   ========================================================== */
+
+@media (max-width: 991px) {
+
+    /* === BLOC DE RECHERCHE PRINCIPAL (index.html) === */
+
+  /* Le bloc de recherche passe en position relative (dans le flux) */
+  .search-overlay-container {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 15px;
+    top: auto;
+    background-color: var(--marron-clair);
+  }
+
+  .search-overlay-content {
+    padding: 15px;
+  }
+
+  .search-overlay-content .row>div {
+    margin-bottom: 15px;
+  }
+
+  .search-field-box h5 {
+    font-size: 13px;
+  }
+
+  .search-field-box .form-control {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  /* Retire la bordure gauche des colonnes empilées */
+  .search-overlay-content .row>div:not(:first-child) .search-field-box {
+    border-left: none;
+  }
+
+  /* === CARROUSEL INDEX (index.html) === */
+
+  /* Permet au bloc de recherche (qui passe en position relative)
+     d'être visible en dessous du carrousel */
+  .hotel-carousel {
+    max-height: none;
+    overflow: visible;
+    height: auto;  // ← Laisse le carrousel s'adapter !
+    min-height: 400px;  // ← Hauteur minimum pour l'image
+  }
+}
+
+
+
+/* ==========================================================
+   7. PETITS MOBILES (largeur ≤ 390px)
+   ----------------------------------------------------------
+   Ciblé: Header (changement de layout du Ruban), Formulaire recherche principal,
+          room.html (bascule calendrier -> inputs), Destinations
+   ========================================================== */
+
+@media (max-width: 390px) {
+
+  /* === CARROUSEL INDEX (index.html) === */
+
+  .dot {
+    height: 8px;
+    width: 8px;
+  }
+
+  /* === FORMULAIRE DE RECHERCHE PRINCIPAL (index.html) === */
+
+  /* Empilement vertical des champs date et personnes */
+  .search-col-date,
+  .search-col-who {
+    display: flex;
+    flex-direction: column !important;
+    gap: 10px;
+    width: 100%;
+    text-align: start;
+  }
+
+  .search-col-date .mb-3,
+  .search-col-who .mb-3 {
+    margin-bottom: 5px !important;
+    margin-top: 0px;
+  }
+
+  .search-field-box .form-control {
+    margin-top: 0px;
+  }
+
+  .searchProcess {
+    position: relative;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .search-overlay-content {
+    padding-bottom: 0px;
+  }
+
+  .search-overlay-content .row>div {
+    margin-bottom: 5px;
+  }
+
+}

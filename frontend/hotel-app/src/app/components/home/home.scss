@@ -1,0 +1,177 @@
+// Variables
+$turquoise: #5fc8c2;
+$turquoise-hover: #3db3aa;
+$gris-fonce: #333333;
+$gris-clair: #f7f7f7;
+$blanc: #ffffff;
+
+.hotels-section {
+  padding: 3rem 0;
+  background-color: $gris-clair;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+
+  h1 {
+    font-size: 2.5rem;
+    color: $gris-fonce;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+    color: $turquoise;
+  }
+}
+
+.hotels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.hotel-card {
+  background: $blanc;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.hotel-image {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+
+  .hotel-stars {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #ffd700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+}
+
+.hotel-info {
+  padding: 1.5rem;
+
+  h3 {
+    font-size: 1.4rem;
+    color: $gris-fonce;
+    margin-bottom: 0.5rem;
+  }
+
+  .hotel-location {
+    color: $turquoise;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+
+    i {
+      margin-right: 0.3rem;
+    }
+  }
+
+  .hotel-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eeeeee;
+  }
+
+  .hotel-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .rating-badge {
+      background: $turquoise;
+      color: $blanc;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    .rating-text {
+      font-size: 0.9rem;
+      color: $gris-fonce;
+    }
+  }
+
+  .hotel-price {
+    text-align: right;
+
+    .price-label {
+      display: block;
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    .price-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: $turquoise;
+    }
+
+    .price-night {
+      font-size: 0.9rem;
+      color: #999;
+    }
+  }
+
+  .btn-reserve {
+    width: 100%;
+    padding: 0.8rem;
+    background: $turquoise;
+    color: $blanc;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: $turquoise-hover;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .hotels-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header h1 {
+    font-size: 2rem;
+  }
+}

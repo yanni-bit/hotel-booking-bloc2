@@ -1,0 +1,52 @@
+/* ==========================================================
+   SECTION CRITÈRES DE SÉLECTION (index.html)
+   ---------------------------------------------------------- */
+
+.criteres-section {
+  background-color: var(--marron-clair);
+  padding-bottom: 40px;
+  padding-top: 40px;
+}
+
+.criteres-section .container .row {
+  align-items: stretch;
+}
+
+/* === Cards d'information (.info-card) - Partagé avec contact.html mais stylé différemment === */
+
+/* Remarque : la classe .info-card est aussi dans contact.html, mais le style dans index est plus spécifique */
+.criteres-section .info-card { 
+  height: 100%;
+  /* Dégradé de fond pour les cartes de critères */
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(242, 242, 242, 1) 100%);
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.criteres-section .info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+.info-card-body {
+  padding: 25px 20px;
+  text-align: left;
+}
+
+.info-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--turquoise);
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.info-card-text {
+  color: var(--gris-fonce);
+  font-size: 14px;
+  line-height: 1.6;
+  font-family: var(--font-secondaire);
+}
+

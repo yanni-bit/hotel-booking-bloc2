@@ -1,1 +1,3166 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================
+   BASE.CSS - Hôtel Booking (Bloc 1)
+   ----------------------------------------------------------
+   Contient :
+   1. Variables globales (couleurs, typographies, espacements)
+   2. Police dyslexie (OpenDyslexic - Critère WCAG Cr 1.c.2)
+   3. Reset CSS (Eric Meyer)
+   4. Styles généraux (body, titres, textes, liens)
+   5. Utilitaires CSS (flexbox, overflow, alignements)
+   ========================================================== */
+
+
+/* ==========================================================
+   1. VARIABLES GLOBALES
+   ---------------------------------------------------------- */
+
+:root {
+  /* === Couleurs principales === */
+  --turquoise: #5fc8c2;
+  --turquoise-hover: #3db3aa;
+  --turquoise-light: rgba(95, 200, 194, 0.1);
+  --turquoise-dark: rgba(95, 200, 194, 0.85);
+  --turquoise-clair: #C9FAFF;
+  --turquoise-badge: #90cfd6;
+  
+  /* === Couleurs neutres === */
+  --gris-clair: #f7f7f7;
+  --gris-moyen: #858585;
+  --gris-fonce: #333333;
+  --blanc: #ffffff;
+  --noir: #000000;
+  
+  /* === Couleurs secondaires === */
+  --marron: #d6c8c0;
+  --marron-clair: #E9E6E0;
+  --marron-fonce: #AB9A8F;
+  
+  /* === Couleurs d'interaction === */
+  --link-hover: #00000066;
+  
+  /* === Couleurs d'état === */
+  --vert-validation: #3cb878;
+  --rouge-erreur: #e74c3c;
+  --jaune-attention: #f1c40f;
+
+  /* === Typographie === */
+  --font-principale: "Open Sans", Arial, sans-serif;
+  --font-secondaire: "Montserrat", sans-serif;
+  --font-dyslexique: 'OpenDyslexic', Arial, sans-serif;
+
+  /* === Espacements === */
+  --espace-xs: 4px;
+  --espace-sm: 8px;
+  --espace-md: 16px;
+  --espace-lg: 32px;
+  --espace-xl: 64px;
+
+  /* === Largeurs globales === */
+  --conteneur-max: 1200px;
+}
+
+
+/* ==========================================================
+   2. POLICE DYSLEXIE - OpenDyslexic (Critère WCAG Cr 1.c.2)
+   ----------------------------------------------------------
+   Police adaptée pour personnes dyslexiques
+   Activable via bouton dans le header
+   ========================================================== */
+
+/* Import de la police OpenDyslexic depuis CDN */
+// @import url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/opendyslexic-regular.css');
+
+/* 
+ * Mode dyslexie : applique la police OpenDyslexic sur tout le body
+ * Activé via JavaScript quand l'utilisateur clique sur le bouton dyslexie
+ * La préférence est sauvegardée en localStorage
+ */
+body.dyslexie-mode,
+body.dyslexie-mode * {
+  font-family: var(--font-dyslexique) !important;
+}
+
+/* 
+ * Classe alternative pour application ciblée
+ * Utilisable sur des éléments spécifiques si nécessaire
+ */
+.font-dyslexie {
+  font-family: var(--font-dyslexique) !important;
+}
+
+
+/* ==========================================================
+   3. RESET CSS (Eric Meyer)
+   ---------------------------------------------------------- */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 - Reset pour anciens navigateurs */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote::before, blockquote::after,
+q::before, q::after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+/* ==========================================================
+   4. STYLES GÉNÉRAUX
+   ---------------------------------------------------------- */
+
+   /* BASE TYPOGRAPHIQUE */
+html {
+    font-size: 16px; /* Base héritée partout */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-principale);
+  line-height: 1.6;
+  color: var(--gris-fonce);
+  background-color: var(--blanc);
+}
+
+a {
+  color: var(--turquoise);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--turquoise-hover);
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+.bi {
+  font-family: "bootstrap-icons" !important;
+}
+
+
+/* ==========================================================
+   5. UTILITAIRES CSS - Flexbox, Alignement & Overflow
+   ---------------------------------------------------------- */
+
+/* === Alignements flexbox === */
+
+/* Centre horizontal et vertical */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Espace entre deux éléments */
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Aligne en bas */
+.flex-bottom {
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Aligne à gauche */
+.flex-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* Aligne à droite */
+.flex-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Direction verticale (colonne) */
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Overflow et gestion du texte === */
+
+/* Empêche les débordements horizontaux */
+.overflow-protection {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Coupe le texte long avec "..." */
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Empêche le retour à la ligne */
+.no-wrap {
+  white-space: nowrap;
+}
+
+/* === Espacements rapides === */
+
+/* Centre horizontalement */
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Centre verticalement */
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* === Centrage complet === */
+.flex-center-full {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
+
+/* === Largeur pleine === */
+.full-width {
+  width: 100%;
+  max-width: none;
+}
+
+/* === Hauteur pleine === */
+.full-height {
+  height: 100%;
+  min-height: 100vh;
+}
+
+/* === Utilitaires texte === */
+
+/* Texte justifié */
+.text-justify {
+    text-align: justify;
+}
+
+/* Rétablir le gras après le reset css et éviter les conflits */
+b, strong {
+    font-weight: bold !important;
+}
+
+.couleur-titre {
+  color: var(--gris-moyen);
+}
+
+.couleur-soustitre {
+  color: var(--turquoise);
+}
+
+.h-titre {
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* ========================================
+   STYLES PRINCIPAUX (style.css)
+   ======================================== */
+
+   /* ==========================================================
+   SECTIONS GLOBALES - Titres réutilisables
+   ========================================================== */
+
+.section-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gris-fonce);
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  color: var(--gris-moyen);
+  margin-bottom: 0;
+}
+
+
+
+/* ==========================================================
+   CONTENU PRINCIPAL GÉNÉRIQUE
+   ---------------------------------------------------------- */
+
+.main {
+  padding: 20px;
+}
+
+
+/* ==========================================================
+   CALENDRIER FLATPICKR - Styles de base (global)
+   ----------------------------------------------------------
+   Ces styles sont utilisés sur room.html et peuvent impacter
+   d'autres pages utilisant Flatpickr (non présent ici).
+   ========================================================== */
+
+/* Conteneur principal du calendrier */
+.flatpickr-calendar {
+  width: 100% !important;
+  max-width: 450px !important;
+  margin: 0 auto !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+}
+
+/* En-tête du calendrier (mois/année) */
+.flatpickr-months {
+  padding: 10px 0 20px !important;
+}
+
+.flatpickr-current-month {
+  font-size: 1.3em !important;
+  padding: 10px 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: normal !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  font-size: 1.2em !important;
+  padding: 5px 10px !important;
+  line-height: normal !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.flatpickr-current-month .numInputWrapper {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.numInputWrapper {
+  font-size: 1.2em !important;
+}
+
+/* Flèches de navigation */
+.flatpickr-prev-month,
+.flatpickr-next-month {
+  padding: 10px !important;
+}
+
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Jours de la semaine */
+.flatpickr-weekdays {
+  margin-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.flatpickr-weekday {
+  font-size: 1em !important;
+  font-weight: 600 !important;
+  padding: 8px 0 !important;
+}
+
+/* Grille des jours */
+.flatpickr-days {
+  width: 100% !important;
+}
+
+.dayContainer {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Cellules des jours */
+.flatpickr-day {
+  height: 45px !important;
+  line-height: 45px !important;
+  max-width: none !important;
+  flex: 1 0 14.28% !important; /* Force 7 colonnes égales */
+  font-size: 1em !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  margin: 2px !important;
+}
+
+/* Jour sélectionné */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  background: var(--turquoise, #5fc8c2) !important;
+  border-color: var(--turquoise, #5fc8c2) !important;
+  font-weight: 600 !important;
+}
+
+/* Jours dans la plage */
+.flatpickr-day.inRange {
+  background: var(--turquoise-light, rgba(95, 200, 194, 0.2)) !important;
+  border-color: transparent !important;
+}
+
+/* Hover sur les jours */
+.flatpickr-day:hover {
+  background: var(--turquoise-light, rgba(95, 200, 194, 0.3)) !important;
+  border-color: var(--turquoise, #5fc8c2) !important;
+}
+
+/* Jour actuel */
+.flatpickr-day.today {
+  border-color: var(--turquoise, #5fc8c2) !important;
+  font-weight: 600 !important;
+}
+
+/* Conteneur du calendrier (pour centrer dans la page) */
+#flatpickr-calendar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
+
+
+/* ==========================================================
+   FORMULAIRE MOBILE ALTERNATIF AU CALENDRIER (room.html)
+   ----------------------------------------------------------
+   S'active sur petits écrans (voir responsive.css)
+   ========================================================== */
+
+/* Par défaut, masquer le formulaire mobile (affiché uniquement ≤ 390px via responsive.css) */
+.mobile-date-form {
+  display: none;
+}
+
+/* Styles pour les champs date mobile */
+.mobile-date-form .form-control[type="date"] {
+  height: 45px;
+  font-size: 1em;
+  border-radius: 8px;
+  border: 2px solid var(--turquoise-light);
+  transition: all 0.3s ease;
+}
+
+.mobile-date-form .form-control[type="date"]:focus {
+  border-color: var(--turquoise);
+  box-shadow: 0 0 0 0.2rem var(--turquoise-light);
+  outline: none;
+}
+
+.mobile-date-form .form-label {
+  color: var(--gris-fonce);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.mobile-date-form .form-label i {
+  color: var(--turquoise);
+}
+
+
+/* ==========================================================
+   MODAL GLOBAL (index.html, room.html)
+   ---------------------------------------------------------- */
+
+.modal-custom .modal-content {
+  border-radius: 10px;
+  padding: 20px;
+  border: none;
+}
+
+.modal-custom .modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.modal-custom .modal-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.modal-custom .modal-body {
+  font-size: 1rem;
+  color: #555;
+}
+
+.modal-custom .modal-footer {
+  border-top: none;
+  padding-top: 0;
+}
+
+.btn-close.btn-close-white {
+  opacity: 1 !important;
+}
+
+/* Gérer UNIQUEMENT les flèches du carrousel dans modal (lightbox de room.html) */
+
+.modal-custom .carousel-control-prev,
+.modal-custom .carousel-control-next {
+  top: 50%;                 /* centre vertical */
+  transform: translateY(-50%);
+  width: 40px;              /* optionnel */
+  height: 40px;             /* optionnel */
+}
+
+/* Flèche gauche */
+.modal-custom .carousel-control-prev {
+  left: 15px;               /* décalage depuis le bord */
+}
+
+/* Flèche droite */
+.modal-custom .carousel-control-next {
+  right: 15px;              /* décalage depuis le bord */
+}
+
+
+/* ==========================================================
+   PAGE ROOM - Styles spécifiques (room.html)
+   ---------------------------------------------------------- */
+
+.room-page {
+  background-color: var(--marron-clair);
+}
+
+.room-details,
+#roomDetailsContent {
+  background-color: var(--marron-clair);
+}
+
+/* === Surcharges Flatpickr pour Room.html === */
+/* S'assurer que le calendrier Flatpickr s'intègre bien au design de la page room */
+
+.flatpickr-calendar.inline {
+  background-color: var(--gris-clair);
+}
+
+.time-selectors-row {
+  background-color: var(--gris-clair);
+}
+
+.flatpickr-calendar {
+  box-shadow: none !important;
+  border: solid 1px var(--marron);
+}
+
+.flatpickr-day.today {
+  border-color: var(--turquoise-hover) !important;
+}
+
+.flatpickr-day.today:hover {
+  background-color: var(--turquoise-hover) !important;
+  color: #fff !important;
+}
+
+.flatpickr-day:hover {
+  background-color: rgba(95, 200, 194, 0.4) !important;
+}
+
+.flatpickr-day.startRange,
+.flatpickr-day.endRange.endRange {
+  background-color: var(--turquoise) !important;
+  border-color: var(--turquoise) !important;
+}
+
+.flatpickr-day.inRange {
+  background-color: var(--turquoise-clair);
+  border-color: var(--turquoise-clair);
+}
+
+/* Lignes d'information (récapitulatif dynamique) */
+.info-line {
+  border-left: none !important;
+  background-color: rgba(95, 200, 194, 0.4) !important;
+}
+
+#nightsCount {
+  background-color: rgba(95, 200, 194, 0.4) !important;
+}
+
+/* Bouton de confirmation (Réservation) */
+#confirmBtn:not(:disabled) {
+  background-color: var(--turquoise) !important;
+  border-color: var(--turquoise) !important;
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+
+/* === Menu latéral avec onglets (Sidebar) === */
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1px;
+}
+
+/* Liens du menu */
+.sidebar-nav a.nav-link {
+  background: var(--marron);
+  color: #555;
+  padding: 15px;
+  border-radius: 4px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  transition: all 0.15s ease-in-out;
+}
+
+.sidebar-nav a.nav-link i {
+  font-size: 18px;
+}
+
+.sidebar-nav a.nav-link:hover {
+  opacity: 0.9;
+}
+
+/* Onglet actif */
+.sidebar-nav a.nav-link.active {
+  background-color: var(--turquoise);
+  border-radius: 4px 0 0 4px;
+  position: relative;
+  color: #fff; /* Couleur du texte actif (ajouté pour clarté, non spécifié dans style.css original) */
+}
+
+/* Flèche de l'onglet actif (triangle décoratif) */
+.sidebar-nav a.nav-link.active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -32px;
+  width: 0;
+  height: 100%;
+  border-style: solid;
+  border-width: 29px 0px 29px 32px;
+  border-color: transparent transparent transparent var(--turquoise);
+  z-index: 5;
+}
+
+/* Contenu des onglets */
+#roomDetailsContent .tab-pane {
+  padding: 20px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+/* Z-index pour superposition correcte (dans la structure du template) */
+.room-page .row > .col-md-3 {
+  position: relative;
+  z-index: 10;
+}
+
+.room-page .row > .col-md-9 {
+  position: relative;
+  z-index: 1;
+}
+
+/* Bordure marron (utilitaire local) */
+.border-marron {
+  border-color: var(--marron) !important;
+}
+
+/* === Lignes d'information avec icône (dans section calendrier) === */
+
+.info-line {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: var(--gris-clair);
+  border-left: 3px solid var(--turquoise);
+  border-radius: 5px;
+  font-size: 14px;
+  color: var(--gris-fonce);
+}
+
+.info-line i {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.info-line span {
+  font-weight: 500;
+}
+
+
+/* ==========================================================
+   FICHE HOTEL ROOM - En-tête (room.html - sidebar)
+   ---------------------------------------------------------- */
+
+/* VARIABLES DE LARGEUR - PERMET DE MODIFIER LES LARGEUR DE DEUX SOUS-COLONNES */
+:root {
+  --col-name-width: 70%;  /* Largeur colonne NOM HOTEL */
+  --col-star-width: 30%;  /* Largeur colonne NBE ETOILE */
+}
+
+/* Application des largeurs personnalisées */
+
+.col-name-hotel{
+  flex: 0 0 var(--col-name-width);
+  max-width: var(--col-name-width);
+}
+
+.col-star-hotel{
+  flex: 0 0 var(--col-star-width);
+  max-width: var(--col-star-width);
+  white-space: nowrap;
+  display: inline-flex;
+}
+
+/* Taille des étoiles */
+
+.stars-header i {
+    font-size: 0.7rem;
+}
+
+/* Tag */
+.hotel-tag {
+  color: var(--blanc);
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: solid 1px var(--marron);
+  border-radius: 50px 7px 7px 50px;
+  padding: 5px;
+  background-color: var(--marron);
+  box-shadow: 2px 0 3px rgba(0,0,0,0.3);
+}
+
+.point {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: currentColor;
+  border-radius: 50%;
+  box-shadow: inset 2px 0 2px rgba(0,0,0,0.3);
+}
+
+
+
+/* ==========================================================
+   HOTEL POPULAIRE / OFFRE DU JOUR (room.html - sidebar)
+   ---------------------------------------------------------- */
+
+/* Nom de l'hotel et étoiles */
+.name-populaire, .name-offredujour {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 0;
+  line-height: 1.3;
+  margin-bottom: -0.20rem;
+  color: var(--marron-fonce);
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.stars i {
+  font-size: 0.7rem;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+/* Prix et note */
+.info-hotel-populaire {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--gris-moyen);
+}
+
+.pouce i {
+  font-size: 0.7rem;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.pouce {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.8rem;
+  color: #bdbdbd;
+}
+
+.pouce-note {
+  color: var(--gris-moyen);
+}
+
+.info-prix {
+  margin-top: 2px;
+}
+
+
+/* ==========================================================
+   CARROUSEL ROOM - Galerie d'images (room.html)
+   ---------------------------------------------------------- */
+
+/* Images principales du carrousel */
+.carousel-image {
+  height: 683px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.carousel {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* === Miniatures === */
+
+.carousel-thumbnail {
+  height: 80px;
+  object-fit: cover;
+  transition: all 0.3s ease;
+  border: 1px solid transparent; /* Redéfini plus bas dans .thumbnails-scroll pour bordure plus épaisse */
+  padding: 0;
+}
+
+.carousel-thumbnail:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.carousel-thumbnail.active {
+  border-color: var(--turquoise);
+  opacity: 1;
+}
+
+/* Contrôles du carrousel (flèches) */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 50px;
+  opacity: 0.7;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  opacity: 1;
+}
+
+/* Indicateurs (points sous le carrousel) */
+.carousel-indicators [data-bs-target] {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-indicators .active {
+  background-color: var(--turquoise);
+}
+
+/* === Miniatures scrollables === */
+
+.thumbnails-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.thumbnails-wrapper {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.thumbnails-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 5px 0;
+  
+  /* Cache la scrollbar (Webkit) */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.thumbnails-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.thumbnails-scroll .carousel-thumbnail { /* Répétition de la classe pour la spécificité */
+  flex-shrink: 0;
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 3px solid transparent; /* Bordure cliquable de 3px */
+}
+
+/* Boutons de navigation des miniatures */
+.thumbnail-nav {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.thumbnail-nav:hover {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  color: white;
+}
+
+.thumbnail-nav i {
+  font-size: 20px;
+}
+
+
+/* ==========================================================
+   CARD OFFRE DE CHAMBRE (room.html - onglet Disponibilité)
+   ---------------------------------------------------------- */
+
+/* VARIABLES DE LARGEUR - Permet de modifier les largeurs de deux sous-colonnes dans la card */
+:root {
+  --col-title-width: 50%;  /* Largeur colonne TITRE */
+  --col-price-width: 50%;  /* Largeur colonne PRIX */
+}
+
+/* Application des largeurs personnalisées */
+.col-title-info {
+  flex: 0 0 var(--col-title-width);
+  max-width: var(--col-title-width);
+}
+
+.col-price-info {
+  flex: 0 0 var(--col-price-width);
+  max-width: var(--col-price-width);
+}
+
+
+/* Card principale */
+.room-offer-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0 !important;
+  transition: all 0.3s ease;
+}
+
+.room-offer-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Mini carrousel de la card offre */
+.offer-carousel-image {
+  height: 280px;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+#roomOfferCarousel .carousel-control-prev,
+#roomOfferCarousel .carousel-control-next {
+  width: 40px;
+  opacity: 0.8;
+}
+
+#roomOfferCarousel .carousel-control-prev:hover,
+#roomOfferCarousel .carousel-control-next:hover {
+  opacity: 1;
+}
+
+.room-title, .text-prix {
+  color: var(--turquoise-hover);
+}
+
+/* Badges de la card */
+.room-offer-card .badge {
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+  font-weight: 600;
+  color: var(--blanc);
+  background-color: var(--turquoise-badge);
+}
+
+.expo {
+  font-size: 0.7em;
+}
+
+/* Bouton BOOK NOW */
+.btn-book-now {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  color: white;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.btn-book-now:hover {
+  background-color: var(--turquoise-hover);
+  border-color: var(--turquoise-hover);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(95, 200, 194, 0.3);
+}
+
+/* Smooth scroll & animation vers le calendrier */
+html {
+  scroll-behavior: smooth;
+}
+
+#calendar-section:target {
+  animation: highlight-calendar 1s ease;
+}
+
+@keyframes highlight-calendar {
+  0%, 100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(95, 200, 194, 0.1);
+  }
+}
+
+
+/* ==========================================================
+   ÉQUIPEMENTS (room.html - onglet Équipements)
+   ---------------------------------------------------------- */
+.amenities-section {
+  padding: 0;
+}
+
+.amenities-section h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.amenity-item {
+  font-size: 0.95em;
+}
+
+.fumeurs-info {
+  margin-top: 20px;
+  font-size: 0.95em;
+}
+
+/* ==========================================================
+   ONGLET AVIS CLIENTS (room.html)
+   ---------------------------------------------------------- */
+
+.reviews-section {
+  padding: 0;
+}
+
+.review-item {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  display: flex;
+  gap: 20px;
+}
+
+.review-header {
+  display: flex;
+  gap: 15px;
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.review-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #ccc;
+  flex-shrink: 0;
+}
+
+.review-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.review-author {
+  font-weight: 600;
+  color: #333;
+  font-size: 1em;
+}
+
+.review-details {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.review-date {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.review-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.review-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.95em;
+  line-height: 1.6;
+  color: #6c757d;
+}
+
+.icon-positive,
+.icon-negative {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  flex-shrink: 0;
+  font-size: 1.1em;
+}
+
+.icon-positive {
+  background-color: #4CAF50;
+}
+
+.icon-negative {
+  background-color: #f44336;
+}
+
+
+/* ==========================================================
+   LOCALISATION (room.html - onglet Localisation)
+   ---------------------------------------------------------- */
+.localisation-section {
+  padding: 0;
+}
+
+.localisation-section h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.localisation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.localisation-item {
+  font-size: 0.95em;
+}
+
+
+/* ==========================================================
+   BOOKING.CSS - Page de réservation (booking.html)
+   ---------------------------------------------------------- */
+
+/* ==========================================================
+   LAYOUT GÉNÉRAL (booking.html)
+   ========================================================== */
+
+.booking-main {
+  background-color: var(--marron-clair);
+}
+
+/* Fil d'Ariane */
+.breadcrumb {
+  background-color: transparent;
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "›";
+  color: var(--gris-moyen);
+}
+
+.breadcrumb-item a {
+  color: var(--turquoise);
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  color: var(--turquoise-hover);
+}
+
+/* ==========================================================
+   EN-TÊTE DE LA PAGE (booking.html)
+   ========================================================== */
+
+.booking-header {
+  background: var(--blanc);
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.booking-header h1 {
+  font-size: 2rem;
+  color: var(--gris-fonce);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.booking-header p {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+/* ==========================================================
+   FORMULAIRE DE RÉSERVATION (booking.html)
+   ========================================================== */
+
+.booking-form {
+  background: var(--blanc);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Section du formulaire (séparateur) */
+.form-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* En-tête de section (numéro + titre) */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-number {
+  width: 40px;
+  height: 40px;
+  background: var(--turquoise);
+  color: var(--blanc);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  color: var(--gris-fonce);
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Champs de formulaire (Input/Select/Textarea) */
+.form-label {
+  font-weight: 500;
+  color: var(--gris-fonce);
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.2s;
+  color: var(--gris-moyen);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--turquoise);
+  box-shadow: 0 0 0 3px var(--turquoise-light);
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ==========================================================
+   SECTION NOMBRE DE VOYAGEURS (booking.html - section 1)
+   ========================================================== */
+
+.guests-section {
+  background: var(--gris-clair);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  margin-top: 0.5rem;
+}
+
+.guests-section h6 {
+  color: var(--gris-fonce);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.guests-section h6 i {
+  color: var(--turquoise);
+  margin-right: 0.5rem;
+}
+
+.guests-section .form-label {
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: var(--gris-fonce);
+}
+
+.guests-section .input-group {
+  width: 100%;
+  max-width: 250px;
+}
+
+/* Boutons +/- */
+.guests-section .btn-outline-secondary {
+  border-color: var(--turquoise);
+  color: var(--turquoise);
+  transition: all 0.2s;
+  padding: 0.5rem 1rem;
+}
+
+.guests-section .btn-outline-secondary:hover:not(:disabled) {
+  background-color: var(--turquoise);
+  color: var(--blanc);
+  border-color: var(--turquoise);
+}
+
+.guests-section .btn-outline-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  color: #999;
+}
+
+/* Champ numérique */
+.guests-section .form-control {
+  border-color: var(--turquoise);
+  font-weight: 600;
+  color: var(--gris-fonce);
+  font-size: 1.1rem;
+  background-color: var(--blanc);
+}
+
+/* Alertes */
+.guests-section .alert {
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+}
+
+.guests-section .alert-info {
+  background-color: #bfe9e7;
+  border: 1px solid #b1dad7;
+  color: var(--gris-fonce);
+}
+
+.guests-section .alert-danger {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+/* Total voyageurs */
+.guests-section #totalGuests {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+
+/* ==========================================================
+   SERVICES ADDITIONNELS (booking.html - section 2)
+   ========================================================== */
+
+.services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.service-item {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.2s;
+}
+
+.service-item:hover {
+  border-color: var(--turquoise-light);
+  background-color: var(--turquoise-light);
+}
+
+.service-item .form-check {
+  margin: 0;
+}
+
+.service-item .form-check-input {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.service-item .form-check-input:checked {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+}
+
+.service-item .form-check-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  margin: 0;
+}
+
+.service-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.service-info i {
+  font-size: 1.8rem;
+  color: var(--turquoise);
+}
+
+.service-info strong {
+  display: block;
+  color: var(--gris-fonce);
+  font-size: 1.1rem;
+}
+
+.service-info small {
+  color: var(--gris-moyen) !important;
+}
+
+.service-price {
+  font-weight: 700;
+  color: var(--turquoise);
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+/* ==========================================================
+   INFORMATIONS DE PAIEMENT (booking.html - section 4)
+   ========================================================== */
+
+.payment-info-box {
+  background: var(--turquoise-light);
+  border-left: 4px solid var(--turquoise);
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.payment-info-box i {
+  font-size: 2rem;
+  color: var(--turquoise);
+}
+
+.payment-info-box p {
+  margin: 0;
+  color: var(--gris-fonce);
+}
+
+/* ==========================================================
+   CONDITIONS DE RÉSERVATION (booking.html - section 5)
+   ========================================================== */
+
+.conditions-box {
+  background: var(--gris-clair);
+  padding: 1.5rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.conditions-box h6 {
+  color: var(--gris-fonce);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.conditions-box p {
+  margin-bottom: 0.5rem;
+  color: var(--gris-fonce);
+}
+
+.conditions-box ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style: disc;
+}
+
+.conditions-box li {
+  color: var(--gris-fonce);
+  margin-bottom: 0.25rem;
+}
+
+.form-check {
+  padding-left: 0;
+}
+
+.form-check-input {
+  margin-right: 0.5rem;
+}
+
+.form-check-label a {
+  color: var(--turquoise);
+  text-decoration: underline;
+}
+
+.form-check-label a:hover {
+  color: var(--turquoise-hover);
+}
+
+/* ==========================================================
+   RÉCAPITULATIF (SIDEBAR) (booking.html)
+   ========================================================== */
+
+.booking-summary {
+  background: var(--blanc);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  top: 2rem; /* Permet le sticky sur desktop */
+}
+
+.booking-summary h3 {
+  font-size: 1.5rem;
+  color: var(--gris-fonce);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--turquoise);
+  padding-bottom: 0.75rem;
+}
+
+/* ==========================================================
+   RÉSUMÉ NOM DE L'HÔTEL
+   ========================================================== */
+
+.summary-hotel-name {
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-hotel-name small {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+  color: var(--gris-moyen);
+}
+
+.summary-hotel-name h6 {
+  font-size: 1rem;
+  color: var(--gris-fonce);
+  margin: 0;
+  font-weight: 600;
+}
+
+.summary-hotel-name i {
+  color: var(--turquoise);
+  margin-right: 0.25rem;
+}
+
+/* ==========================================================
+   RÉSUMÉ CHAMBRE
+   ========================================================== */
+
+.summary-room {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-room-details {
+  display: flex;
+  gap: 1rem;
+}
+
+.summary-room-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.summary-room-info h5 {
+  font-size: 1.1rem;
+  color: var(--gris-fonce);
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.summary-room-info p {
+  font-size: 0.9rem;
+}
+
+/* ==========================================================
+   RÉSUMÉ DATES DU SÉJOUR
+   ========================================================== */
+
+.summary-dates {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-date-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summary-date-item small {
+  font-size: 0.85rem;
+}
+
+.summary-date-item strong {
+  color: var(--gris-fonce);
+  font-size: 1rem;
+}
+
+.summary-separator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.summary-separator i {
+  color: var(--turquoise);
+  font-size: 1.2rem;
+}
+
+.summary-separator .badge {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  background-color: #bfe9e7;
+  border: 1px solid #b1dad7;
+}
+
+/* ==========================================================
+   RÉSUMÉ PRIX
+   ========================================================== */
+
+.summary-pricing {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-pricing h6 {
+  font-size: 1rem;
+  color: var(--gris-fonce);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.price-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  color: var(--gris-fonce);
+}
+
+.price-line.service-line {
+  font-size: 0.9rem;
+  color: var(--gris-moyen);
+  padding: 0.35rem 0;
+}
+
+.price-line.price-total {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--turquoise);
+  font-size: 1.3rem;
+  color: var(--turquoise);
+}
+
+/* ==========================================================
+   RÉSUMÉ AVANTAGES
+   ========================================================== */
+
+.summary-benefits {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.benefit-item i {
+  font-size: 1.2rem;
+  color: var(--turquoise); /* Ajouté pour les icônes de coche */
+}
+
+.benefit-item span {
+  color: var(--gris-fonce);
+  font-size: 0.95rem;
+}
+
+/* ==========================================================
+   RÉSUMÉ CONTACT
+   ========================================================== */
+
+.summary-contact h6 {
+  font-size: 1rem;
+  color: var(--gris-fonce);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.summary-contact p {
+  color: var(--gris-moyen);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.summary-contact i {
+  color: var(--turquoise);
+}
+
+/* ==========================================================
+   BOUTON DE SOUMISSION (booking.html)
+   ========================================================== */
+
+.btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  color: var(--blanc);
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--turquoise-hover);
+  border-color: var(--turquoise-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(95, 200, 194, 0.3);
+}
+
+
+/* ==========================================================
+   CONTACT.CSS - Page de contact (contact.html)
+   ---------------------------------------------------------- */
+
+/* ==========================================================
+   LAYOUT GÉNÉRAL (contact.html)
+   ========================================================== */
+
+.contact-main {
+  padding: 2rem 0 4rem;
+  background-color: var(--marron-clair);
+  min-height: calc(100vh - 200px); /* Assure une hauteur minimale */
+}
+
+/* ==========================================================
+   EN-TÊTE DE LA PAGE (contact.html)
+   ========================================================== */
+
+.contact-header h1 {
+  font-size: 2.5rem;
+  color: var(--gris-fonce);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.contact-header .lead {
+  font-size: 1.2rem;
+  color: var(--gris-moyen);
+}
+
+/* ==========================================================
+   CARTE GOOGLE MAPS (contact.html)
+   ========================================================== */
+
+.map-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.map-container iframe {
+  display: block;
+  width: 100%;
+  height: 630px;
+}
+
+.map-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  pointer-events: none; /* Permet de cliquer sur la map sous l'overlay */
+}
+
+.map-info-box {
+  background: var(--blanc);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 300px;
+}
+
+.map-info-box h5 {
+  color: var(--turquoise);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.map-info-box h5 i {
+  margin-right: 0.5rem;
+}
+
+.map-info-box p {
+  color: var(--gris-fonce);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ==========================================================
+   CARTES D'INFORMATIONS (contact.html)
+   ----------------------------------------------------------
+   Ces styles écrasent ou complètent les styles de .info-card
+   utilisés dans index.html pour la section "Critères".
+   ========================================================== */
+
+.contact-info-cards {
+  margin-top: 2rem;
+}
+
+/* Style de base des cartes (sera utilisé par les nouvelles structures) */
+.contact-info-cards .info-card-phone-new,
+.contact-info-cards .info-card-email-new {
+  background: var(--blanc);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.contact-info-cards .info-card-phone-new:hover,
+.contact-info-cards .info-card-email-new:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(95, 200, 194, 0.2);
+}
+
+/* Conteneurs de la nouvelle structure */
+.info-content-phone,
+.info-content-email {
+  width: 100%;
+}
+
+/* Ligne d'en-tête (Icône + Titre) */
+.phone-header-line,
+.email-header-line {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem; /* Espace avant le sous-titre/lien */
+  justify-content: flex-start;
+}
+
+.phone-header-line h6,
+.email-header-line h6 {
+  /* Assure l'alignement vertical et annule la marge h6 par défaut pour la flexbox */
+  margin-bottom: 0 !important;
+  line-height: 1;
+}
+
+/* Icone (cercle) */
+.info-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--turquoise-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin: 0; 
+}
+
+.info-icon i {
+  font-size: 1.5rem;
+  color: var(--turquoise);
+}
+
+.info-content h6,
+.info-content-phone h6,
+.info-content-email h6 {
+  color: var(--gris-fonce);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.info-content p,
+.info-content-phone p,
+.info-content-email p {
+  color: var(--gris-moyen);
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  /* Aligner le texte d'information à gauche (par défaut), surtout après le align-right du header */
+  text-align: left;
+}
+
+.info-content a,
+.info-content-phone a,
+.info-content-email a {
+  color: var(--turquoise);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+  /* Aligner le lien à gauche (par défaut) */
+  text-align: left;
+  display: block; /* S'assurer que le lien prend la largeur pour que text-align fonctionne */
+}
+
+.info-content a:hover,
+.info-content-phone a:hover,
+.info-content-email a:hover {
+  color: var(--turquoise-hover);
+  text-decoration: underline;
+}
+
+/* ==========================================================
+   FORMULAIRE DE CONTACT (contact.html)
+   ========================================================== */
+
+.contact-form-wrapper {
+  background: var(--blanc);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 2rem;
+}
+
+.contact-form-wrapper h3 {
+  color: var(--gris-fonce);
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.contact-form .form-label {
+  font-weight: 500;
+  color: var(--gris-fonce);
+  margin-bottom: 0.5rem;
+}
+
+.contact-form .form-control,
+.contact-form .form-select {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.contact-form .form-control:focus,
+.contact-form .form-select:focus {
+  border-color: var(--turquoise);
+  box-shadow: 0 0 0 3px var(--turquoise-light);
+}
+
+.contact-form textarea.form-control {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.contact-form .btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  color: var(--blanc);
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.contact-form .btn-primary:hover {
+  background-color: var(--turquoise-hover);
+  border-color: var(--turquoise-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(95, 200, 194, 0.3);
+}
+
+.contact-form .alert-success {
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+}
+
+
+
+/* ==========================================================
+   MODAL DE CONFIRMATION (contact.html)
+   ----------------------------------------------------------
+   ========================================================== */
+
+.confirmation-details .info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--gris-clair);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.confirmation-details .info-row i {
+  font-size: 1.5rem;
+  margin-top: 0.25rem;
+  color: var(--turquoise); /* Ajouté pour les icônes de coche */
+}
+
+.confirmation-details .info-row div {
+  flex: 1;
+}
+
+.confirmation-details .info-row small {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.confirmation-details .info-row p {
+  font-size: 1rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.modal-header.bg-success {
+  background-color: #28a745 !important;
+}
+
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  border-radius: 12px 12px 0 0;
+  padding: 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #e0e0e0;
+  padding: 1rem 1.5rem;
+}
+
+.modal-footer .btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  padding: 0.5rem 2rem;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: var(--turquoise-hover);
+  border-color: var(--turquoise-hover);
+}
+
+/* ========================================
+   ACCESSIBILITE (accessibilite.css)
+   ======================================== */
+
+/* ============================================
+   ACCESSIBILITE.CSS
+   Feuille de style pour l'accessibilité WCAG 2.1 AA
+   ============================================ */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 10000;
+  font-weight: bold;
+  border-radius: 0 0 4px 0;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+button:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.25);
+}
+
+a:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 0;
+  border-color: #005fcc;
+  box-shadow: 0 0 0 3px rgba(0, 95, 204, 0.25);
+}
+
+.invalid-feedback {
+  display: none;
+  font-size: 0.875rem;
+  color: #dc3545;
+  margin-top: 0.25rem;
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.form-control.is-invalid ~ .invalid-feedback {
+  display: block;
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.form-control.is-valid {
+  border-color: #198754;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  *:focus-visible,
+  *:hover {
+    transition-duration: 0.15s !important;
+  }
+}
+
+button,
+.btn,
+a.btn,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  min-height: 44px;
+}
+
+
+/* ============================================
+   BOUTON DYSLEXIE - Critère WCAG Cr 1.c.2
+   Style pour le bouton d'activation de la police dyslexie
+   ============================================ */
+
+/* 
+ * Bouton toggle pour activer/désactiver la police dyslexie
+ * Positionné dans le header de chaque page
+ */
+#toggle-dyslexie {
+  transition: all 0.3s ease;
+  border-color: var(--turquoise, #5fc8c2);
+  color: var(--turquoise, #5fc8c2);
+  background-color: transparent;
+}
+
+/* État hover : arrière-plan léger */
+#toggle-dyslexie:hover {
+  background-color: var(--turquoise-light, rgba(95, 200, 194, 0.1));
+  border-color: var(--turquoise-hover, #3db3aa);
+  color: var(--turquoise-hover, #3db3aa);
+}
+
+/* État actif : police dyslexie activée */
+#toggle-dyslexie.active {
+  background-color: var(--turquoise, #5fc8c2);
+  border-color: var(--turquoise, #5fc8c2);
+  color: var(--blanc, #ffffff);
+}
+
+/* Icône du bouton légèrement plus grande */
+#toggle-dyslexie i {
+  font-size: 1.1rem;
+}
+
+/* Focus visible pour navigation clavier */
+#toggle-dyslexie:focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 95, 204, 0.25);
+}
+
+/* Responsive : ajustement sur mobile */
+@media (max-width: 767px) {
+  #toggle-dyslexie {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Texte masqué sur petits écrans, icône seule visible */
+  #toggle-dyslexie .btn-text {
+    display: none;
+  }
+}
+
+/* Sur tablettes et desktop, afficher le texte */
+@media (min-width: 768px) {
+  #toggle-dyslexie .btn-text {
+    display: inline;
+    margin-left: 0.25rem;
+  }
+}
+
+/* ========================================
+   RESPONSIVE (responsive.css)
+   ======================================== */
+
+   /* ==========================================================
+   RESPONSIVE.CSS - Adaptations mobiles et tablettes
+   Projet : Hôtel Booking (Bloc 1)
+   ----------------------------------------------------------
+   TABLE DES MATIÈRES
+   
+   Structure des Média-Requêtes :
+   
+   1. DESKTOP XL (≥ 1200px) ...................... ligne 100
+      - Room: Modals, Sidebar
+   
+   2. DESKTOP/GRANDES TABLETTES (≥ 992px) ........ ligne 127
+      - Room: Calendrier Flatpickr
+   
+   3. TABLETTES/MOBILES (≤ 991px) ................ ligne 154
+      - Header global, Carrousel, Recherche
+      - Destinations, Footer
+   
+   4. TABLETTES MOYENNES (768px - 991px) ......... ligne 306
+      - Room: Calendrier, Avis clients
+   
+   5. PETITES TABLETTES/GRANDS MOBILES (576px - 767px) ... ligne 348
+      - Room: Sidebar, Calendrier, Avis
+   
+   6. MOBILES MOYENS (391px - 575px) ............. ligne 427
+      - Room: Sidebar, Calendrier, Avis
+      - Header: Bloc recherche réduit
+   
+   7. PETITS MOBILES (≤ 390px) ................... ligne 519
+      - Interface mobile : Formulaire au lieu calendrier
+      - Header : Réorganisation ruban
+      - Carrousel, Recherche, Destinations
+      - Footer, Avis clients, Flatpickr compact
+   
+   8. TRÈS PETITS MOBILES (< 360px) .............. ligne 770
+      - Room: En-tête sidebar, Avis
+      - Flatpickr : Version ultra-compacte
+   
+   9. CARROUSEL ROOM (≤ 768px) ................... ligne 828
+      - Galerie d'images responsive
+   
+   10. AMÉLIORATIONS TACTILES (touch devices) .... ligne 856
+       - Zones tactiles 44px minimum (WCAG AAA)
+   
+   11. RESPONSIVE PAGES SPÉCIFIQUES .............. ligne 878
+       
+       A. PAGE BOOKING (booking.html)
+          - ≤ 991px : Récapitulatif non sticky ... ligne 878
+          - ≤ 767px : Formulaire, Services ....... ligne 886
+          - ≤ 575px : Pads réduits ............... ligne 926
+       
+       B. PAGE CONTACT (contact.html)
+          - ≤ 991px : Formulaire non sticky ...... ligne 950
+          - ≤ 767px : Map, Cartes info ........... ligne 965
+          - ≤ 575px : Pads réduits ............... ligne 1000
+       
+       C. EDGE CASE (≤ 280px)
+          - Email long → "Contact" ............... ligne 1015
+       
+       D. MODAL CONFIRMATION (≤ 576px)
+          - Détails verticaux .................... ligne 1033
+   
+   ══════════════════════════════════════════════════════════
+   
+   TOTAL : 1042 lignes
+   MEDIA QUERIES : 18 breakpoints
+   !IMPORTANT : 104 occurrences (plugins/Bootstrap override)
+   COMMENTAIRES : 71 annotations
+   
+   ========================================================== */
+
+
+/* ==========================================================
+   RÈGLES GÉNÉRALES - Masquage par défaut
+   (Appliqué à tous les appareils)
+   ---------------------------------------------------------- */
+
+/* [room.html] Le formulaire mobile est masqué par défaut (affiché uniquement ≤ 390px) */
+.mobile-date-form {
+  display: none;
+}
+
+
+/* ==========================================================
+   RÈGLES GÉNÉRALES - Masquage par défaut
+   (Appliqué à tous les appareils)
+   ---------------------------------------------------------- */
+
+/* [room.html] Le formulaire mobile est masqué par défaut (affiché uniquement ≤ 390px) */
+.mobile-date-form {
+  display: none;
+}
+
+/* ==========================================================
+   RÈGLES GÉNÉRALES - Masquage par défaut
+   (Appliqué à tous les appareils)
+   ---------------------------------------------------------- */
+
+/* [room.html] Le formulaire mobile est masqué par défaut (affiché uniquement ≤ 390px) */
+.mobile-date-form {
+  display: none;
+}
+
+
+/* ==========================================================
+   1. DESKTOP XL (largeur ≥ 1200px)
+   ----------------------------------------------------------
+   Ciblé: room.html (Modals, Sidebar)
+   ========================================================== */
+
+@media (min-width: 1200px) {
+
+  /* [room.html] Décalage des étoiles de hotel-header pour éviter les sauts de ligne */
+  .col-star-hotel {
+    gap: 2px;
+    flex: 0;
+  }
+
+  /* [room.html] Correction flèche et bouton fermeture du modal lightbox */
+  .modal-custom .btn-close {
+    position: absolute;
+    top: 15px;
+    right: 115px;
+  }
+
+  /* [room.html] Flèche droite du modal lightbox */
+  .modal-custom .carousel-control-next {
+    right: 90px;
+  }
+}
+
+/* ==========================================================
+   2. DESKTOP ET GRANDES TABLETTES (largeur ≥ 992px)
+   ----------------------------------------------------------
+   Ciblé: room.html (Calendrier Flatpickr)
+   ========================================================== */
+
+@media (min-width: 992px) {
+
+  /* === [room.html] CALENDRIER FLATPICKR === */
+
+  .flatpickr-calendar {
+    max-width: 500px !important;
+    padding: 25px !important;
+  }
+
+  .flatpickr-current-month {
+    font-size: 1.5em !important;
+  }
+
+  .flatpickr-day {
+    height: 50px !important;
+    line-height: 50px !important;
+    font-size: 1.1em !important;
+  }
+}
+
+
+/* ==========================================================
+   3. TABLETTES ET MOBILES (largeur ≤ 991px)
+   ----------------------------------------------------------
+   Ciblé: Header, Carrousel/Formulaire de recherche, Contenu principal
+   ========================================================== */
+
+@media (max-width: 991px) {
+
+ 
+
+  /* [room.html] Décalage des étoiles de hotel-header */
+  .col-star-hotel {
+    display: inline;
+    gap: 2px;
+  }
+
+  /* [room.html] Padding bas de la section détails */
+  .room-details {
+    padding-bottom: 20px;
+  }
+}
+
+
+/* ==========================================================
+   4. TABLETTES MOYENNES (largeur 768px - 991px)
+   ----------------------------------------------------------
+   Ciblé: room.html (Calendrier, Avis clients)
+   ========================================================== */
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+  /* Centrage du container */
+  .container {
+    max-width: 95%;
+  }
+
+  /* === [room.html] CALENDRIER FLATPICKR === */
+
+  .flatpickr-calendar {
+    max-width: 450px !important;
+    padding: 20px !important;
+  }
+
+  .flatpickr-current-month {
+    font-size: 1.3em !important;
+  }
+
+  .flatpickr-day {
+    height: 48px !important;
+    line-height: 48px !important;
+    font-size: 1.05em !important;
+  }
+
+  /* [room.html] ONGLET AVIS CLIENTS - Empilement vertical */
+  .review-item {
+    flex-direction: column;
+  }
+
+  .review-header {
+    min-width: auto;
+  }
+
+}
+
+
+/* ==========================================================
+   5. PETITES TABLETTES ET GRANDS MOBILES (576px - 767px)
+   ----------------------------------------------------------
+   Ciblé: room.html (Sidebar, Calendrier)
+   ========================================================== */
+
+@media (min-width: 576px) and (max-width: 767px) {
+
+  /* === [room.html] SLIDEBAR GAUCHE (Onglets) === */
+
+  .sidebar {
+    margin-bottom: 0 !important;
+  }
+
+  /* Retirer le triangle décoratif sur le côté pour les écrans étroits */
+  .sidebar-nav a.nav-link.active::after {
+    display: none;
+  }
+
+  .sidebar-nav a.nav-link.active {
+    border-radius: 4px;
+  }
+
+  .container>.row>.col-lg-9>.row>.col-md-3.pe-0 {
+    padding-right: 15px !important;
+  }
+
+  /* === [room.html] CALENDRIER FLATPICKR === */
+
+  .flatpickr-calendar {
+    max-width: 100% !important;
+    padding: 18px !important;
+  }
+
+  .flatpickr-months {
+    padding: 12px 0 22px !important;
+  }
+
+  .flatpickr-current-month {
+    font-size: 1.2em !important;
+    padding: 10px 0 !important;
+  }
+
+  .flatpickr-current-month .flatpickr-monthDropdown-months {
+    padding: 8px 10px !important;
+  }
+
+  .flatpickr-weekdays {
+    margin-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .flatpickr-weekday {
+    font-size: 1em !important;
+    padding: 8px 0 !important;
+  }
+
+  .flatpickr-day {
+    height: 44px !important;
+    line-height: 44px !important;
+    font-size: 1em !important;
+  }
+
+  /* [room.html] ONGLET AVIS CLIENTS - Empilement vertical */
+  .review-item {
+    flex-direction: column;
+  }
+
+  .review-header {
+    min-width: auto;
+  }
+
+  .container {
+    max-width: 95%;
+  }
+
+}
+
+
+/* ==========================================================
+   6. MOBILES MOYENS (391px - 575px)
+   ----------------------------------------------------------
+   Ciblé: room.html (Sidebar, Calendrier, Avis clients), Header
+   ========================================================== */
+
+@media (min-width: 391px) and (max-width: 575px) {
+
+  /* === [room.html] SLIDEBAR GAUCHE (Onglets) === */
+
+  .sidebar {
+    margin-bottom: 0 !important;
+  }
+
+  .sidebar-nav a.nav-link.active::after {
+    display: none;
+  }
+
+  .sidebar-nav a.nav-link.active {
+    border-radius: 4px;
+  }
+
+  .container>.row>.col-lg-9>.row>.col-md-3.pe-0 {
+    padding-right: 15px !important;
+  }
+
+  /* === [room.html] CALENDRIER FLATPICKR === */
+
+  .flatpickr-calendar {
+    max-width: 100% !important;
+    padding: 15px !important;
+  }
+
+  .flatpickr-months {
+    padding: 10px 0 18px !important;
+  }
+
+  .flatpickr-current-month {
+    font-size: 1.1em !important;
+    padding: 8px 0 !important;
+  }
+
+  .flatpickr-current-month .flatpickr-monthDropdown-months {
+    font-size: 1.1em !important;
+    padding: 6px 8px !important;
+  }
+
+  .flatpickr-weekdays {
+    margin-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .flatpickr-weekday {
+    font-size: 0.9em !important;
+    padding: 6px 0 !important;
+  }
+
+  .flatpickr-day {
+    height: 40px !important;
+    line-height: 40px !important;
+    font-size: 0.95em !important;
+    margin: 1px !important;
+  }
+
+  .flatpickr-prev-month svg,
+  .flatpickr-next-month svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  #flatpickr-calendar-container {
+    padding: 15px;
+  }
+
+  /* [room.html] ONGLET AVIS CLIENTS - Empilement vertical */
+  .review-item {
+    flex-direction: column;
+  }
+
+  .review-header {
+    min-width: auto;
+  }
+
+  /* [Header] BLOC RECHERCHE HEADER - Réduction de la largeur */
+  .bloc-search {
+    width: 63%;
+  }
+
+}
+
+
+/* ==========================================================
+   7. PETITS MOBILES (largeur ≤ 390px)
+   ----------------------------------------------------------
+   Ciblé: Header (changement de layout du Ruban), Formulaire recherche principal,
+          room.html (bascule calendrier -> inputs), Destinations
+   ========================================================== */
+
+@media (max-width: 390px) {
+
+  /* === [room.html] SLIDEBAR GAUCHE (Onglets) === */
+  .sidebar {
+    margin-bottom: 0 !important;
+  }
+
+  .sidebar-nav a.nav-link.active::after {
+    display: none;
+  }
+
+  .sidebar-nav a.nav-link.active {
+    border-radius: 4px;
+  }
+
+  .container>.row>.col-lg-9>.row>.col-md-3.pe-0 {
+    padding-right: 15px !important;
+  }
+
+  /* === [room.html] INTERFACE MOBILE : FORMULAIRE AU LIEU DU CALENDRIER === */
+
+  /* Masquer le calendrier Flatpickr */
+  #calendar-desktop {
+    display: none !important;
+  }
+
+  /* Afficher le formulaire mobile (défini dans base.css/style.css) */
+  .mobile-date-form {
+    display: block !important;
+  }
+
+  
+
+  
+
+  
+  
+  /* [room.html] ONGLET AVIS CLIENTS - Empilement vertical */
+  .review-item {
+    flex-direction: column;
+  }
+
+  .review-header {
+    min-width: auto;
+  }
+
+  /* Styles Flatpickr (pour cohérence, même si masqué) */
+  .flatpickr-calendar {
+    max-width: 100% !important;
+    max-height: 370px !important;
+    padding: 8px !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .flatpickr-months {
+    padding: 5px 0 8px !important;
+  }
+
+  .flatpickr-current-month {
+    font-size: 0.9em !important;
+    padding: 4px 0 !important;
+  }
+
+  .flatpickr-current-month .flatpickr-monthDropdown-months {
+    font-size: 0.9em !important;
+    padding: 3px 6px !important;
+  }
+
+  .numInputWrapper {
+    font-size: 0.9em !important;
+  }
+
+  .flatpickr-weekdays {
+    margin-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+
+  .flatpickr-weekday {
+    font-size: 0.75em !important;
+    padding: 3px 0 !important;
+  }
+
+  .flatpickr-day {
+    height: 30px !important;
+    line-height: 30px !important;
+    font-size: 0.8em !important;
+    margin: 0.5px !important;
+    border-radius: 5px !important;
+  }
+
+  .flatpickr-prev-month,
+  .flatpickr-next-month {
+    padding: 6px !important;
+  }
+
+  .flatpickr-prev-month svg,
+  .flatpickr-next-month svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  #flatpickr-calendar-container {
+    padding: 10px;
+  }
+}
+
+
+/* ==========================================================
+   8. TRÈS PETITS MOBILES (largeur < 360px)
+   ----------------------------------------------------------
+   Ciblé: room.html (En-tête Sidebar), Flatpickr, Avis clients
+   ========================================================== */
+
+@media (max-width: 359px) {
+
+  /* [room.html] Décalage des étoiles de hotel-header pour éviter les chevauchements */
+  .col-star-hotel {
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  /* [room.html] ONGLET AVIS CLIENTS - Empilement vertical */
+  .review-item {
+    flex-direction: column;
+  }
+
+  .review-header {
+    min-width: auto;
+  }
+
+  /* Styles Flatpickr (plus compact) */
+  .flatpickr-calendar {
+    max-height: 340px !important;
+    padding: 6px !important;
+    overflow: hidden !important;
+  }
+
+  .flatpickr-months {
+    padding: 4px 0 6px !important;
+  }
+
+  .flatpickr-current-month {
+    font-size: 0.85em !important;
+    padding: 3px 0 !important;
+  }
+
+  .flatpickr-weekdays {
+    margin-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .flatpickr-weekday {
+    font-size: 0.7em !important;
+    padding: 2px 0 !important;
+  }
+
+  .flatpickr-day {
+    height: 28px !important;
+    line-height: 28px !important;
+    font-size: 0.75em !important;
+    margin: 0.5px !important;
+  }
+}
+
+
+/* ==========================================================
+   9. RESPONSIVE CARROUSEL ROOM (largeur ≤ 768px)
+   ----------------------------------------------------------
+   Ciblé: room.html (Galerie d'images)
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+  .carousel-image {
+    height: 300px;
+  }
+
+  .carousel-thumbnail {
+    width: 80px;
+    height: 60px;
+  }
+
+  .thumbnail-nav {
+    width: 35px;
+    height: 35px;
+  }
+
+  .thumbnail-nav i {
+    font-size: 16px;
+  }
+}
+
+
+/* ==========================================================
+   10. AMÉLIORATIONS TACTILES (touch devices)
+   ----------------------------------------------------------
+   Ciblé: Flatpickr (Zones de clic)
+   ========================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+
+  /* [room.html] Augmente la zone tactile pour les jours du calendrier */
+  .flatpickr-day {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  /* Augmente la zone tactile pour les flèches de navigation du calendrier */
+  .flatpickr-prev-month,
+  .flatpickr-next-month {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* ==========================================================
+   11. RESPONSIVE PAGES SPÉCIFIQUES
+   ---------------------------------------------------------- */
+
+/* === PAGE BOOKING (booking.html) === */
+
+@media (max-width: 991px) {
+  /* [booking.html] Le récapitulatif (sidebar) n'est plus sticky et revient dans le flux normal */
+  .booking-summary {
+    position: static !important;
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  /* [booking.html] En-tête de page */
+  .booking-header {
+    padding: 1.5rem;
+  }
+
+  .booking-header h1 {
+    font-size: 1.5rem;
+  }
+
+  /* [booking.html] Formulaire */
+  .booking-form {
+    padding: 1.5rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.25rem;
+  }
+
+  /* [booking.html] Services additionnels - Empilement vertical */
+  .service-item .form-check-label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .service-price {
+    align-self: flex-start;
+  }
+
+  /* [booking.html] Section invités - pleine largeur */
+  .guests-section .input-group {
+    max-width: 100%;
+  }
+
+  .guests-section h6 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 575px) {
+  /* [booking.html] Pads réduits */
+  .booking-header {
+    padding: 1rem;
+  }
+
+  .booking-form {
+    padding: 1rem;
+  }
+
+  /* [booking.html] Numéro de section réduit */
+  .section-number {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+
+  .booking-summary {
+    padding: 1rem;
+  }
+}
+
+/* === PAGE CONTACT (contact.html) === */
+
+@media (max-width: 991px) {
+  /* [contact.html] Le formulaire (sidebar sticky) revient dans le flux normal */
+  .contact-form-wrapper {
+    position: static;
+    margin-top: 2rem;
+  }
+
+  /* [contact.html] L'overlay d'information de la map passe en statique */
+  .map-overlay {
+    position: static;
+    padding: 1rem;
+    background: var(--gris-clair);
+  }
+}
+
+@media (max-width: 767px) {
+  /* [contact.html] Taille du titre réduite */
+  .contact-header h1 {
+    font-size: 2rem;
+  }
+
+  .contact-header .lead {
+    font-size: 1rem;
+  }
+
+  /* [contact.html] Hauteur de la map réduite */
+  .map-container iframe {
+    height: 300px;
+  }
+
+  /* [contact.html] Cartes d'information - Empilement vertical */
+  .info-card {
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .info-icon {
+    margin: 0;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+
+  /* [contact.html] Formulaire et pads */
+  .contact-form-wrapper {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 575px) {
+  /* [contact.html] Pads et taille du titre réduits */
+  .contact-main {
+    padding: 1rem 0 2rem;
+  }
+
+  .contact-form-wrapper h3 {
+    font-size: 1.25rem;
+  }
+
+  .map-container iframe {
+    height: 250px;
+  }
+}
+
+@media (max-width: 280px) {
+  /* 1. Masquer l'adresse e-mail longue originale */
+    .js-replace-email {
+        color: transparent !important; /* Rend le texte invisible */
+        font-size: 0; /* Assure que le texte ne prend pas de hauteur */
+        white-space: nowrap; /* Empêche le débordement horizontal de l'élément vide */
+        display: inline-block; /* Nécessaire pour les dimensions et le pseudo-élément */
+    }
+
+    /* 2. Insérer le mot "Contact" via un pseudo-élément */
+    .js-replace-email::after {
+        content: "Contact"; /* Le nouveau texte COURT */
+        color: var(--turquoise); /* Rétablit la couleur d'origine */
+        font-size: 0.9rem; /* Rétablit la taille de police */
+    }
+}
+
+/* === MODAL DE CONFIRMATION (booking.html) === */
+@media (max-width: 576px) {
+  /* [booking.html] Détails de la confirmation - Empilement vertical */
+  .confirmation-details .info-row {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .confirmation-details .info-row i {
+    margin: 0 auto;
+  }
+}
