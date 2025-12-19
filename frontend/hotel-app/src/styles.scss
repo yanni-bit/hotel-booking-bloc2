@@ -1086,34 +1086,7 @@ html {
 }
 
 
-/* ==========================================================
-   ÉQUIPEMENTS (room.html - onglet Équipements)
-   ---------------------------------------------------------- */
-.amenities-section {
-  padding: 0;
-}
 
-.amenities-section h3 {
-  margin: 0 0 10px 0;
-  font-size: 1.1em;
-  font-weight: 600;
-}
-
-.amenities-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.amenity-item {
-  font-size: 0.95em;
-}
-
-.fumeurs-info {
-  margin-top: 20px;
-  font-size: 0.95em;
-}
 
 /* ==========================================================
    ONGLET AVIS CLIENTS (room.html)

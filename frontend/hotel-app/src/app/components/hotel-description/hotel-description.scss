@@ -1,0 +1,33 @@
+.hotel-description {
+  
+  h2 {
+    color: var(--gris-moyen);
+    font-weight: 600;
+  }
+
+  .hotel-title {
+    color: var(--turquoise);
+    font-weight: 600;
+  }
+
+  .turquoise {
+    color: var(--turquoise);
+    
+  }
+
+  .sous-titre {
+    color: var(--gris-moyen);
+  }
+  
+  .description-text {
+    text-align: justify;
+    
+    p {
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .bg-light {
+    background-color: var(--gris-clair) !important;
+  }
+}

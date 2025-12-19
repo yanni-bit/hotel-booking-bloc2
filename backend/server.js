@@ -42,7 +42,7 @@ async function router(req, res) {
     // ========================================
     // ROUTES HÔTELS
     // ========================================
-    if (req.pathname.startsWith('/api/hotels')) {
+    if (req.pathname.startsWith('/api/hotels') || req.pathname === '/api/destinations') {
       await hotelRoutes(req, res);
       return;
     }

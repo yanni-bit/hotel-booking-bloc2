@@ -1,0 +1,78 @@
+.hotel-offers {
+  
+  h2, .varnombre{
+    color: var(--gris-moyen);
+    font-weight: 600;
+  }
+  
+  .chambres-list {
+    
+    .chambre-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+      }
+      
+      .chambre-image {
+        width: 100%;
+        height: 100%;
+        min-height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      
+      &:hover .chambre-image {
+        transform: scale(1.05);
+      }
+      
+      .card-body {
+        
+        h3 {
+          color: var(--turquoise);
+          font-weight: 600;
+        }
+        
+        .badge {
+          font-size: 0.85rem;
+          padding: 0.4rem 0.8rem;
+        }
+        
+        .btn-primary {
+          background-color: var(--turquoise);
+          border-color: var(--turquoise);
+          font-weight: 500;
+          transition: all 0.2s ease;
+          
+          &:hover:not(:disabled) {
+            background-color: var(--turquoise-hover);
+            border-color: var(--turquoise-hover);
+            transform: translateY(-1px);
+          }
+          
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+
+  .prix {
+    color: var(--turquoise);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .chambres-list {
+    .chambre-card {
+      .chambre-image {
+        min-height: 200px;
+      }
+    }
+  }
+}

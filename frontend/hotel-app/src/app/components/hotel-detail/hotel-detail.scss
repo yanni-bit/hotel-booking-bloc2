@@ -1,0 +1,28 @@
+.hotel-detail-page {
+  min-height: 60vh;
+  background-color: var(--marron-clair);
+}
+
+.breadcrumb {
+  background-color: transparent;
+  padding: 0.5rem 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "›";
+  color: var(--gris-moyen);
+}
+
+.breadcrumb-item a {
+  color: var(--turquoise);
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  color: var(--turquoise-hover);
+  text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+  color: var(--gris-fonce);
+}

@@ -1,0 +1,105 @@
+NOM HOTEL | VILLE
+================================================================================
+
+Grand Amsterdam  Inn | Amsterdam
+Le Amsterdam Beach Inn | Amsterdam
+Luxury Amsterdam  Suites | Amsterdam
+Palace Amsterdam  Palace | Amsterdam
+Resort Amsterdam  Inn | Amsterdam
+Royal Amsterdam  Suites | Amsterdam
+The Amsterdam  Suites | Amsterdam
+The Amsterdam Beach Resort | Amsterdam
+Grand Bali  Palace | Bali
+Hotel Bali Beach Palace | Bali
+Hotel Bali Plaza Lodge | Bali
+Le Bali Boutique Hotel | Bali
+Luxury Bali  Suites | Bali
+Luxury Bali Plaza Resort | Bali
+The Bali  Hotel | Bali
+The Bali  Suites | Bali
+Grand Cancun  Hotel | Cancun
+Hotel Cancun  Suites | Cancun
+Luxury Cancun  Lodge | Cancun
+Luxury Cancun  Lodge | Cancun
+Luxury Cancun Boutique Hotel | Cancun
+Palace Cancun Plaza Inn | Cancun
+Resort Cancun  Palace | Cancun
+Resort Cancun Spa Resort | Cancun
+The Cancun  Lodge | Cancun
+Grand Dubai  Resort | Dubai
+Hotel Dubai  Suites | Dubai
+Le Dubai Plaza Palace | Dubai
+Luxury Dubai  Palace | Dubai
+Palace Dubai City Hotel | Dubai
+Palace Dubai Garden Inn | Dubai
+Resort Dubai  Resort | Dubai
+Resort Dubai Boutique Palace | Dubai
+Royal Dubai Beach Lodge | Dubai
+Grand Male  Lodge | Maldives
+Hotel Male Plaza Palace | Maldives
+Luxury Male  Palace | Maldives
+Palace Male Boutique Palace | Maldives
+Resort Male Garden Hotel | Maldives
+Royal Male  Hotel | Maldives
+Royal Male  Palace | Maldives
+The Male  Hotel | Maldives
+Grand New York Spa Suites | New York
+Le New York Boutique Hotel | New York
+Luxury New York Plaza Hotel | New York
+Palace New York  Resort | New York
+Resort New York  Inn | New York
+Resort New York Plaza Inn | New York
+Royal New York Plaza Inn | New York
+The New York  Inn | New York
+The New York Boutique Lodge | New York
+Grand Hôtel Paris | Paris
+Grand Paris Beach Inn | Paris
+Grand Paris Garden Suites | Paris
+Le Paris  Hotel | Paris
+Le Paris Beach Resort | Paris
+Le Paris City Palace | Paris
+Luxury Paris  Hotel | Paris
+Palace Paris City Suites | Paris
+Resort Paris Boutique Inn | Paris
+Royal Paris Plaza Palace | Paris
+Grand Prague  Hotel | Prague
+Grand Prague  Lodge | Prague
+Hotel Prague Garden Lodge | Prague
+Le Prague Plaza Hotel | Prague
+Luxury Prague Beach Lodge | Prague
+Luxury Prague Boutique Palace | Prague
+Royal Prague  Resort | Prague
+The Prague Boutique Hotel | Prague
+Hotel St Petersburg  Hotel | St Petersburg
+Hotel St Petersburg  Lodge | St Petersburg
+Hotel St Petersburg  Palace | St Petersburg
+Le St Petersburg Boutique Hotel | St Petersburg
+Le St Petersburg Garden Lodge | St Petersburg
+Luxury St Petersburg  Palace | St Petersburg
+Resort St Petersburg Plaza Lodge | St Petersburg
+The St Petersburg City Palace | St Petersburg
+Grand Tahiti  Palace | Tahiti
+Grand Tahiti Garden Suites | Tahiti
+Grand Tahiti Plaza Suites | Tahiti
+Hotel Tahiti  Hotel | Tahiti
+Hotel Tahiti Spa Hotel | Tahiti
+Palace Tahiti Plaza Palace | Tahiti
+Resort Tahiti  Inn | Tahiti
+Royal Tahiti  Inn | Tahiti
+Hotel Tokyo  Hotel | Tokyo
+Le Tokyo  Suites | Tokyo
+Luxury Tokyo  Hotel | Tokyo
+Palace Tokyo City Resort | Tokyo
+Resort Tokyo City Suites | Tokyo
+Royal Tokyo Beach Palace | Tokyo
+Royal Tokyo Garden Resort | Tokyo
+Royal Tokyo Spa Suites | Tokyo
+The Tokyo Beach Suites | Tokyo
+Grand Zanzibar Beach Resort | Zanzibar
+Hotel Zanzibar  Palace | Zanzibar
+Hotel Zanzibar Boutique Hotel | Zanzibar
+Hotel Zanzibar Boutique Lodge | Zanzibar
+Hotel Zanzibar Spa Lodge | Zanzibar
+Le Zanzibar  Inn | Zanzibar
+Resort Zanzibar  Lodge | Zanzibar
+Resort Zanzibar Boutique Hotel | Zanzibar

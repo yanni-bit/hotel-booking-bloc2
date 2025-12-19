@@ -1,0 +1,80 @@
+.hotel-reviews {
+  
+  h2 {
+    color: var(--gris-moyen);
+    font-weight: 600;
+  }
+
+  .text-turquoise {
+    color: var(--turquoise);
+  }
+
+  .text-grismoyen {
+    color: var(--gris-moyen);
+  }
+
+  .bg-turquoise {
+    background-color: var(--turquoise);
+  }
+  
+  .reviews-content {
+    
+    // Statistiques
+    .reviews-stats {
+      
+      .h4 {
+        line-height: 1;
+      }
+    }
+    
+    // Liste des avis
+    .reviews-list {
+      
+      .review-card {
+        transition: all 0.2s ease;
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .review-note {
+          font-size: 1rem;
+          font-weight: 600;
+          padding: 0.5rem 0.75rem;
+        }
+        
+        h5 {
+          color: var(--turquoise);
+          font-style: italic;
+        }
+        
+        p {
+          line-height: 1.8;
+          text-align: justify;
+        }
+        
+        .review-meta {
+          background-color: var(--gris-clair);
+          margin: -1rem -1rem 0 -1rem;
+          padding: 1rem;
+          border-radius: 0 0 0.375rem 0.375rem;
+        }
+      }
+    }
+  }
+  
+  .alert-light {
+    background-color: var(--gris-clair);
+    border: none;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .reviews-stats {
+    .display-3 {
+      font-size: 2.5rem !important;
+    }
+  }
+}

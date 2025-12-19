@@ -8,8 +8,8 @@
       <!-- Titre de section -->
       <div class="row">
         <div class="col-12 text-center mb-4">
-          <h2 class="section-title" data-i18n="home.exploreTitle">Meilleures Destinations Autour du Monde</h2>
-          <p class="section-subtitle" data-i18n="home.exploreSubtitle">Découvrez les destinations de voyage les plus
+          <h2 class="section-title">Meilleures Destinations Autour du Monde</h2>
+          <p class="section-subtitle">Découvrez les destinations de voyage les plus
             populaires</p>
         </div>
       </div>
@@ -29,15 +29,14 @@
                   <p class="destination-country">{{ destinations[0].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[0].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[0].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[0].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -53,15 +52,14 @@
                   <p class="destination-country">{{ destinations[1].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[1].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[1].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[1].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -77,15 +75,14 @@
                   <p class="destination-country">{{ destinations[2].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[2].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[2].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[2].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -101,15 +98,14 @@
                   <p class="destination-country">{{ destinations[3].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[3].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[3].prix }}</span>
                   </div>
                   </div>
                 </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[3].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -126,15 +122,14 @@
                   <p class="destination-country">{{ destinations[4].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[4].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[4].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[4].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -150,15 +145,14 @@
                   <p class="destination-country">{{ destinations[5].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[5].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[5].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[5].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -174,15 +168,14 @@
                   <p class="destination-country">{{ destinations[6].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[6].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[6].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[6].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -198,15 +191,14 @@
                   <p class="destination-country">{{ destinations[7].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[7].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[7].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[7].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -222,15 +214,14 @@
                   <p class="destination-country">{{ destinations[8].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[8].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[8].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[8].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -246,15 +237,14 @@
                   <p class="destination-country">{{ destinations[9].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[9].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[9].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[9].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -270,15 +260,14 @@
                   <p class="destination-country">{{ destinations[10].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[10].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[10].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[10].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>
@@ -294,15 +283,14 @@
                   <p class="destination-country">{{ destinations[11].pays }}</p>
                   <div class="destination-stats">
                     <span><i class="bi bi-building"></i> {{ destinations[11].nombrehotels }} <span>Hotels</span></span>
-                    <span><i class="bi bi-airplane"></i> <span data-i18n="home.startingFrom">À partir de</span>
+                    <span><i class="bi bi-airplane"></i> <span>À partir de</span>
                       {{ destinations[11].prix }}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="destination-card-footer">
-              <a href="#" class="btn-destination" data-i18n="home.viewHotelsButton">Voir les Hôtels <i
-                  class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/hotels', destinations[11].title]" class="btn-destination">Voir les Hôtels <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
         </div>

@@ -1,20 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { DestinationService } from '../../services/destination';
+
+interface Destination {
+  id: number;
+  title: string;
+  pays: string;
+  nombrehotels: string;
+  prix: string;
+  image: string;
+  badge: string;
+  badgeColor: string;
+}
 
 @Component({
   selector: 'app-destinations',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './destinations.html',
   styleUrl: './destinations.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Destinations {
+export class Destinations implements OnInit {
 
-  destinations = [
+  destinations: Destination[] = [
     {
       id: 1,
       title: 'Paris',
       pays: 'France',
-      nombrehotels: '10',
+      nombrehotels: '0',
       prix: '190€',
       image: 'images/paris.jpg',
       badge: 'PROMO',
@@ -24,7 +38,7 @@ export class Destinations {
       id: 2,
       title: 'Amsterdam',
       pays: 'Netherlands',
-      nombrehotels: '8',
+      nombrehotels: '0',
       prix: '180€',
       image: 'images/amsterdam.jpg',
       badge: '',
@@ -33,8 +47,8 @@ export class Destinations {
     {
       id: 3,
       title: 'St Petersburg',
-      pays: 'Russie',
-      nombrehotels: '8',
+      pays: 'Russia',
+      nombrehotels: '0',
       prix: '180€',
       image: 'images/saint-petersburg.jpg',
       badge: '',
@@ -43,8 +57,8 @@ export class Destinations {
     {
       id: 4,
       title: 'Prague',
-      pays: 'République Tchèque',
-      nombrehotels: '8',
+      pays: 'Czech Republic',
+      nombrehotels: '0',
       prix: '190€',
       image: 'images/prague.jpg',
       badge: '',
@@ -53,8 +67,8 @@ export class Destinations {
     {
       id: 5,
       title: 'Tahiti',
-      pays: 'Polynésie',
-      nombrehotels: '8',
+      pays: 'French Polynesia',
+      nombrehotels: '0',
       prix: '1190€',
       image: 'images/offre-4.jpg',
       badge: 'NOUVEAU',
@@ -63,8 +77,8 @@ export class Destinations {
     {
       id: 6,
       title: 'Zanzibar',
-      pays: 'Océan Indien',
-      nombrehotels: '8',
+      pays: 'Tanzania',
+      nombrehotels: '0',
       prix: '1180€',
       image: 'images/zanzibar.webp',
       badge: '',
@@ -73,8 +87,8 @@ export class Destinations {
     {
       id: 7,
       title: 'Maldives',
-      pays: 'Océan Indien',
-      nombrehotels: '8',
+      pays: 'Maldives',
+      nombrehotels: '0',
       prix: '2320€',
       image: 'images/maldives.jpg',
       badge: '',
@@ -83,8 +97,8 @@ export class Destinations {
     {
       id: 8,
       title: 'Cancun',
-      pays: 'Mexique',
-      nombrehotels: '9',
+      pays: 'Mexico',
+      nombrehotels: '0',
       prix: '1590€',
       image: 'images/cancun.jpg',
       badge: '',
@@ -93,8 +107,8 @@ export class Destinations {
     {
       id: 9,
       title: 'Dubai',
-      pays: 'Émirats Arabes Unis',
-      nombrehotels: '9',
+      pays: 'United Arab Emirates',
+      nombrehotels: '0',
       prix: '310€',
       image: 'images/dubai.jpg',
       badge: '',
@@ -103,8 +117,8 @@ export class Destinations {
     {
       id: 10,
       title: 'Bali',
-      pays: 'Indonesie',
-      nombrehotels: '8',
+      pays: 'Indonesia',
+      nombrehotels: '0',
       prix: '1680€',
       image: 'images/bali.jpg',
       badge: '',
@@ -113,8 +127,8 @@ export class Destinations {
     {
       id: 11,
       title: 'New York',
-      pays: 'États-Unis',
-      nombrehotels: '9',
+      pays: 'United States',
+      nombrehotels: '0',
       prix: '760€',
       image: 'images/new-york.webp',
       badge: '',
@@ -123,12 +137,58 @@ export class Destinations {
     {
       id: 12,
       title: 'Tokyo',
-      pays: 'Japon',
-      nombrehotels: '9',
+      pays: 'Japan',
+      nombrehotels: '0',
       prix: '980€',
       image: 'images/tokyo.jpg',
       badge: '',
       badgeColor: ''
     }
-  ]
+  ];
+
+  constructor(
+    private destinationService: DestinationService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.loadDestinationsCount();
+  }
+
+  loadDestinationsCount() {
+    this.destinationService.getDestinationsCount().subscribe({
+      next: (response) => {
+        console.log('📊 Données destinations API:', response);
+        
+        if (response.success && response.data) {
+          // Créer un NOUVEAU tableau (immutabilité)
+          this.destinations = this.destinations.map(dest => {
+            // Trouver la destination correspondante dans l'API
+            const apiDest = response.data.find((api: any) => {
+              // Correspondance normale
+              return api.ville_hotel === dest.title;
+            });
+            
+            // Si trouvé, retourner un NOUVEL objet avec le nombre mis à jour
+            if (apiDest) {
+              console.log(`✅ ${dest.title}: ${apiDest.nombre_hotels} hôtels`);
+              return {
+                ...dest,
+                nombrehotels: apiDest.nombre_hotels.toString()
+              };
+            }
+            
+            // Sinon retourner l'objet inchangé
+            return dest;
+          });
+          
+          // Forcer Angular à détecter le changement
+          this.cdr.markForCheck();
+        }
+      },
+      error: (err) => {
+        console.error('❌ Erreur lors du chargement des destinations:', err);
+      }
+    });
+  }
 }

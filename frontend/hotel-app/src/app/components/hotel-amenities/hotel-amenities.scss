@@ -1,0 +1,57 @@
+.hotel-amenities {
+  
+  h2 {
+    color: var(--gris-moyen);
+    font-weight: 600;
+  }
+  
+  .amenities-content {
+    
+    .amenities-section {
+      
+      h3 {
+        color: var(--turquoise);
+        font-weight: 600;
+      }
+      
+      .amenity-item {
+        color: var(--gris-moyen);
+        background-color: white;
+        padding: 1rem;
+        border-radius: 0.375rem;
+        border: 1px solid #e0e0e0;
+        transition: all 0.2s ease;
+        
+        i {
+          color: var(--turquoise);
+          font-size: 1.25rem;
+          vertical-align: middle;
+        }
+        
+        span {
+          color: var(--gris-moyen);
+          font-weight: 500;
+          vertical-align: middle;
+        }
+        
+        &:hover {
+          background-color: var(--turquoise-light);
+          border-color: var(--turquoise);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+  
+  .alert-info {
+    background-color: var(--turquoise-light);
+    border-color: var(--turquoise);
+    color: var(--gris-moyen);
+  }
+  
+  .alert-light {
+    background-color: var(--gris-clair);
+    border: none;
+  }
+}

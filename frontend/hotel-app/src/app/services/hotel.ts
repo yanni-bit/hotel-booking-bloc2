@@ -6,18 +6,27 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class HotelService {
-  
+
   private apiUrl = 'http://localhost:3000/api';
-  
+
   constructor(private http: HttpClient) { }
-  
+
   // Récupérer tous les hôtels
   getAllHotels(): Observable<any> {
     return this.http.get(`${this.apiUrl}/hotels`);
   }
-  
-  // Récupérer un hôtel par ID
-  getHotelById(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/hotels/${id}`);
+
+  /**
+ * Récupère un hôtel avec tous ses détails
+ */
+  getHotelDetails(hotelId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/hotels/${hotelId}`);
+  }
+
+  /**
+   * Récupère les hôtels populaires d'une ville
+   */
+  getPopularHotels(city: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/hotels/popular/${city}`);
   }
 }
