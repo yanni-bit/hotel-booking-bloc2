@@ -1,0 +1,104 @@
+.profil-page {
+  min-height: 80vh;
+  background-color: var(--marron-clair);
+}
+
+.text-turquoise {
+  color: var(--turquoise) !important;
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.form-control {
+  border-color: #ddd;
+
+  &:focus {
+    border-color: var(--turquoise);
+    box-shadow: 0 0 0 0.2rem rgba(95, 200, 194, 0.25);
+  }
+
+  &:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+
+  &:hover:not(:disabled) {
+    background-color: var(--turquoise-hover);
+    border-color: var(--turquoise-hover);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-outline-primary {
+  color: var(--turquoise);
+  border-color: var(--turquoise);
+
+  &:hover {
+    background-color: var(--turquoise);
+    border-color: var(--turquoise);
+    color: white;
+  }
+}
+
+.btn-secondary {
+  &:hover:not(:disabled) {
+    background-color: #5a6268;
+    border-color: #545b62;
+  }
+}
+
+.card {
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+// Groupe input + bouton œil
+.password-input-group {
+  position: relative;
+
+  .form-control {
+    padding-right: 45px; // Espace pour le bouton
+  }
+
+  .btn-toggle-password {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    padding: 0.375rem 0.75rem;
+    cursor: pointer;
+    color: #6c757d;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--turquoise);
+    }
+
+    &:focus {
+      outline: none;
+      color: var(--turquoise);
+    }
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}

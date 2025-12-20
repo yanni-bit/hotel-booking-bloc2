@@ -1,0 +1,249 @@
+<main class="admin-hotel-form-page py-5">
+  <div class="container">
+    
+    <!-- En-tête -->
+    <div class="mb-4">
+      <a [routerLink]="['/admin/hotels']" class="text-muted me-3">
+        <i class="bi bi-arrow-left"></i> Retour à la liste
+      </a>
+      <h1 class="h3 text-turquoise d-inline-block mb-0">
+        <i class="bi bi-building me-2"></i>
+        {{ isEditMode ? 'Modifier l\'hôtel' : 'Ajouter un hôtel' }}
+      </h1>
+    </div>
+    
+    <!-- Formulaire -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        
+        <form (ngSubmit)="onSubmit()">
+          
+          <!-- SECTION INFORMATIONS GÉNÉRALES -->
+          <h5 class="mb-3 text-turquoise">Informations générales</h5>
+          
+          <div class="row mb-3">
+            <!-- Nom -->
+            <div class="col-md-8">
+              <label class="form-label fw-bold">Nom de l'hôtel *</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                [(ngModel)]="hotel.nom_hotel"
+                name="nom_hotel"
+                placeholder="Hôtel Paradise"
+                required
+              >
+            </div>
+            
+            <!-- Étoiles -->
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Nombre d'étoiles *</label>
+              <select 
+                class="form-select" 
+                [(ngModel)]="hotel.nbre_etoile_hotel"
+                name="nbre_etoile_hotel"
+              >
+                <option [value]="1">1 étoile</option>
+                <option [value]="2">2 étoiles</option>
+                <option [value]="3">3 étoiles</option>
+                <option [value]="4">4 étoiles</option>
+                <option [value]="5">5 étoiles</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Description -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Description</label>
+            <textarea 
+              class="form-control" 
+              rows="4"
+              [(ngModel)]="hotel.description_hotel"
+              name="description_hotel"
+              placeholder="Description de l'hôtel..."
+            ></textarea>
+          </div>
+          
+          <hr class="my-4">
+          
+          <!-- SECTION ADRESSE -->
+          <h5 class="mb-3 text-turquoise">Adresse</h5>
+          
+          <div class="row mb-3">
+            <!-- Rue -->
+            <div class="col-md-12">
+              <label class="form-label fw-bold">Rue *</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                [(ngModel)]="hotel.rue_hotel"
+                name="rue_hotel"
+                placeholder="123 Avenue des Champs-Élysées"
+                required
+              >
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <!-- Code postal -->
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Code postal *</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                [(ngModel)]="hotel.code_postal_hotel"
+                name="code_postal_hotel"
+                placeholder="75008"
+                required
+              >
+            </div>
+            
+            <!-- Ville -->
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Ville *</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                [(ngModel)]="hotel.ville_hotel"
+                name="ville_hotel"
+                placeholder="Paris"
+                required
+              >
+            </div>
+            
+            <!-- Pays -->
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Pays *</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                [(ngModel)]="hotel.pays_hotel"
+                name="pays_hotel"
+                placeholder="France"
+                required
+              >
+            </div>
+          </div>
+          
+          <hr class="my-4">
+          
+          <!-- SECTION CONTACT -->
+          <h5 class="mb-3 text-turquoise">Contact</h5>
+          
+          <div class="row mb-3">
+            <!-- Téléphone -->
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Téléphone</label>
+              <input 
+                type="tel" 
+                class="form-control" 
+                [(ngModel)]="hotel.tel_hotel"
+                name="tel_hotel"
+                placeholder="+33 1 23 45 67 89"
+              >
+            </div>
+            
+            <!-- Email -->
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Email</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                [(ngModel)]="hotel.email_hotel"
+                name="email_hotel"
+                placeholder="contact@hotel.com"
+              >
+            </div>
+            
+            <!-- Site web -->
+            <div class="col-md-4">
+              <label class="form-label fw-bold">Site web</label>
+              <input 
+                type="url" 
+                class="form-control" 
+                [(ngModel)]="hotel.site_web_hotel"
+                name="site_web_hotel"
+                placeholder="https://hotel.com"
+              >
+            </div>
+          </div>
+          
+          <hr class="my-4">
+          
+          <!-- SECTION IMAGE & LOCALISATION -->
+          <h5 class="mb-3 text-turquoise">Image & Localisation</h5>
+          
+          <div class="row mb-3">
+            <!-- URL Image -->
+            <div class="col-md-12">
+              <label class="form-label fw-bold">URL de l'image</label>
+              <input 
+                type="url" 
+                class="form-control" 
+                [(ngModel)]="hotel.img_hotel"
+                name="img_hotel"
+                placeholder="https://example.com/hotel.jpg ou images/hotel.jpg"
+              >
+              <small class="text-muted">
+                Entrez l'URL complète ou le chemin relatif (ex: images/hotel.jpg)
+              </small>
+            </div>
+          </div>
+          
+          <div class="row mb-4">
+            <!-- Latitude -->
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Latitude</label>
+              <input 
+                type="number" 
+                step="0.000001"
+                class="form-control" 
+                [(ngModel)]="hotel.latitude"
+                name="latitude"
+                placeholder="48.856614"
+              >
+            </div>
+            
+            <!-- Longitude -->
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Longitude</label>
+              <input 
+                type="number" 
+                step="0.000001"
+                class="form-control" 
+                [(ngModel)]="hotel.longitude"
+                name="longitude"
+                placeholder="2.352222"
+              >
+            </div>
+          </div>
+          
+          <!-- Boutons -->
+          <div class="d-flex gap-2">
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="submitting"
+            >
+              <span *ngIf="!submitting">
+                <i class="bi bi-check-circle me-2"></i>
+                {{ isEditMode ? 'Enregistrer les modifications' : 'Créer l\'hôtel' }}
+              </span>
+              <span *ngIf="submitting">
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Enregistrement...
+              </span>
+            </button>
+            
+            <a [routerLink]="['/admin/hotels']" class="btn btn-secondary">
+              <i class="bi bi-x-circle me-2"></i>Annuler
+            </a>
+          </div>
+          
+        </form>
+        
+      </div>
+    </div>
+    
+  </div>
+</main>

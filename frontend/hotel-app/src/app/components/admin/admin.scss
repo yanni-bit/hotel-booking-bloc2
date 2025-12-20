@@ -1,0 +1,47 @@
+.admin-page {
+  min-height: 80vh;
+  background-color: var(--marron-clair);
+}
+
+.text-turquoise {
+  color: var(--turquoise) !important;
+}
+
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .stat-icon {
+    font-size: 3rem;
+  }
+}
+
+.action-card {
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+  }
+}
+
+.btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  
+  &:hover {
+    background-color: var(--turquoise-hover);
+    border-color: var(--turquoise-hover);
+  }
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}

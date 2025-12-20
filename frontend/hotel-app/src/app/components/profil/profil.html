@@ -1,0 +1,196 @@
+<main class="profil-page py-5">
+  <div class="container">
+
+    <h1 class="h3 mb-4 text-turquoise">
+      <i class="bi bi-person-circle me-2"></i>Mon Profil
+    </h1>
+
+    <div class="row">
+      <div class="col-lg-8">
+
+        <!-- CARD INFORMATIONS -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2 class="h5 mb-0">Informations personnelles</h2>
+              <button class="btn btn-sm btn-outline-primary" (click)="toggleEditMode()" *ngIf="!editMode">
+                <i class="bi bi-pencil me-1"></i>Modifier
+              </button>
+            </div>
+
+            <!-- MODE LECTURE -->
+            <div *ngIf="!editMode">
+              <div class="row mb-3">
+                <div class="col-md-3">
+                  <strong>Prénom :</strong>
+                </div>
+                <div class="col-md-9">
+                  {{ authService.currentUser()?.prenom }}
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-3">
+                  <strong>Nom :</strong>
+                </div>
+                <div class="col-md-9">
+                  {{ authService.currentUser()?.nom }}
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-3">
+                  <strong>Email :</strong>
+                </div>
+                <div class="col-md-9">
+                  {{ authService.currentUser()?.email }}
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-3">
+                  <strong>Téléphone :</strong>
+                </div>
+                <div class="col-md-9">
+                  {{ profileForm.telephone || 'Non renseigné' }}
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-3">
+                  <strong>Rôle :</strong>
+                </div>
+                <div class="col-md-9">
+                  <span class="badge bg-primary">{{ authService.currentUser()?.role }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- MODE ÉDITION -->
+            <form *ngIf="editMode" (ngSubmit)="saveProfile()">
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">Prénom *</label>
+                  <input type="text" class="form-control" [(ngModel)]="profileForm.prenom" name="prenom" required>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">Nom *</label>
+                  <input type="text" class="form-control" [(ngModel)]="profileForm.nom" name="nom" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Email</label>
+                <input type="email" class="form-control" [value]="authService.currentUser()?.email" disabled>
+                <small class="text-muted">L'email ne peut pas être modifié</small>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label fw-bold">Téléphone</label>
+                <input type="tel" class="form-control" [(ngModel)]="profileForm.telephone" name="telephone"
+                  placeholder="+33 6 12 34 56 78">
+              </div>
+
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary" [disabled]="submitting">
+                  <span *ngIf="!submitting">
+                    <i class="bi bi-check-circle me-2"></i>Enregistrer
+                  </span>
+                  <span *ngIf="submitting">
+                    <span class="spinner-border spinner-border-sm me-2"></span>Enregistrement...
+                  </span>
+                </button>
+
+                <button type="button" class="btn btn-secondary" (click)="toggleEditMode()" [disabled]="submitting">
+                  <i class="bi bi-x-circle me-2"></i>Annuler
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+        <!-- CARD MOT DE PASSE -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2 class="h5 mb-0">Mot de passe</h2>
+              <button class="btn btn-sm btn-outline-primary" (click)="togglePasswordForm()" *ngIf="!showPasswordForm">
+                <i class="bi bi-key me-1"></i>Changer
+              </button>
+            </div>
+
+            <div *ngIf="!showPasswordForm">
+              <p class="text-muted mb-0">
+                <i class="bi bi-lock me-2"></i>Votre mot de passe est sécurisé
+              </p>
+            </div>
+
+            <!-- FORMULAIRE CHANGEMENT MOT DE PASSE -->
+            <form *ngIf="showPasswordForm" (ngSubmit)="changePassword()">
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Ancien mot de passe *</label>
+                <div class="password-input-group">
+                  <input [type]="showOldPassword ? 'text' : 'password'" class="form-control"
+                    [(ngModel)]="passwordForm.oldPassword" name="oldPassword" required autocomplete="current-password">
+                  <button type="button" class="btn-toggle-password" (click)="toggleOldPassword()">
+                    <i [class]="showOldPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Nouveau mot de passe *</label>
+                <div class="password-input-group">
+                  <input [type]="showNewPassword ? 'text' : 'password'" class="form-control"
+                    [(ngModel)]="passwordForm.newPassword" name="newPassword" required autocomplete="new-password">
+                  <button type="button" class="btn-toggle-password" (click)="toggleNewPassword()">
+                    <i [class]="showNewPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                  </button>
+                </div>
+                <small class="text-muted">Minimum 6 caractères</small>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label fw-bold">Confirmer le nouveau mot de passe *</label>
+                <div class="password-input-group">
+                  <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control"
+                    [(ngModel)]="passwordForm.confirmPassword" name="confirmPassword" required
+                    autocomplete="new-password">
+                  <button type="button" class="btn-toggle-password" (click)="toggleConfirmPassword()">
+                    <i [class]="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary" [disabled]="submitting">
+                  <span *ngIf="!submitting">
+                    <i class="bi bi-check-circle me-2"></i>Changer le mot de passe
+                  </span>
+                  <span *ngIf="submitting">
+                    <span class="spinner-border spinner-border-sm me-2"></span>Modification...
+                  </span>
+                </button>
+
+                <button type="button" class="btn btn-secondary" (click)="togglePasswordForm()" [disabled]="submitting">
+                  <i class="bi bi-x-circle me-2"></i>Annuler
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>

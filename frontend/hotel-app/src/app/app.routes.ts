@@ -10,6 +10,15 @@ import { HotelLocation } from './components/hotel-location/hotel-location';
 import { RoomDetail } from './components/room-detail/room-detail';
 import { Booking } from './components/booking/booking';
 import { Login } from './components/login/login';
+import { Register } from './components/register/register';
+import { Profil } from './components/profil/profil';
+import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
+import { MesReservations } from './components/mes-reservations/mes-reservations';
+import { Admin } from './components/admin/admin';
+import { AdminHotels } from './components/admin-hotels/admin-hotels';
+import { AdminHotelForm } from './components/admin-hotel-form/admin-hotel-form';
+import { AdminReservations } from './components/admin-reservations/admin-reservations';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -29,5 +38,46 @@ export const routes: Routes = [
   { path: 'hotels/:ville/:hotelId/rooms/:chambreId', component: RoomDetail },
   { path: 'booking/:offreId', component: Booking },
   { path: 'login', component: Login },
+  { path: 'register', component: Register },
+
+  // ROUTES PROTÉGÉES (nécessitent une connexion)
+  {
+    path: 'profil',
+    component: Profil,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'reservations',
+    component: MesReservations,
+    canActivate: [authGuard]
+  },
+
+  // ROUTES PROTÉGÉES - Admin uniquement
+  {
+    path: 'admin',
+    component: Admin,
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'admin/hotels',
+    component: AdminHotels,
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/hotels/create', 
+    component: AdminHotelForm,
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/hotels/edit/:id', 
+    component: AdminHotelForm,
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/reservations', 
+    component: AdminReservations,
+    canActivate: [adminGuard]
+  },
+
   { path: '**', redirectTo: '' }
 ];

@@ -166,6 +166,76 @@ class User {
       callback(null, results[0] || null);
     });
   }
+
+  /**
+ * Met à jour les informations d'un utilisateur
+ */
+static updateProfile(userId, userData, callback) {
+  const query = `
+    UPDATE UTILISATEUR 
+    SET prenom_user = ?, 
+        nom_user = ?, 
+        tel_user = ?
+    WHERE id_user = ?
+  `;
+  
+  const values = [
+    userData.prenom,
+    userData.nom,
+    userData.telephone || null,
+    userId
+  ];
+  
+  db.query(query, values, (err, result) => {
+    if (err) {
+      return callback(err, null);
+    }
+    callback(null, result);
+  });
+}
+
+/**
+ * Change le mot de passe d'un utilisateur
+ */
+static async changePassword(userId, oldPassword, newPassword, callback) {
+  try {
+    // D'abord récupérer l'utilisateur pour vérifier l'ancien mot de passe
+    const getUserQuery = 'SELECT mot_de_passe FROM UTILISATEUR WHERE id_user = ?';
+    
+    db.query(getUserQuery, [userId], async (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      
+      if (!results || results.length === 0) {
+        return callback(new Error('Utilisateur non trouvé'), null);
+      }
+      
+      // Vérifier l'ancien mot de passe
+      const isValid = await bcrypt.compare(oldPassword, results[0].mot_de_passe);
+      
+      if (!isValid) {
+        return callback(new Error('Ancien mot de passe incorrect'), null);
+      }
+      
+      // Hasher le nouveau mot de passe
+      const saltRounds = 10;
+      const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
+      
+      // Mettre à jour
+      const updateQuery = 'UPDATE UTILISATEUR SET mot_de_passe = ? WHERE id_user = ?';
+      
+      db.query(updateQuery, [newPasswordHash, userId], (err, result) => {
+        if (err) {
+          return callback(err, null);
+        }
+        callback(null, result);
+      });
+    });
+  } catch (error) {
+    callback(error, null);
+  }
+}
 }
 
 module.exports = User;

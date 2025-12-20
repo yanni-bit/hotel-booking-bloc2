@@ -254,6 +254,172 @@ function authRoutes(req, res) {
   }
 
   // ========================================
+  // PUT /api/auth/profile - Modifier le profil
+  // ========================================
+  if (pathname === '/api/auth/profile' && method === 'PUT') {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({
+        success: false,
+        message: 'Token manquant'
+      }));
+      return;
+    }
+    
+    const token = authHeader.split(' ')[1];
+    const decoded = User.verifyToken(token);
+    
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({
+        success: false,
+        message: 'Token invalide'
+      }));
+      return;
+    }
+    
+    let body = '';
+    
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    
+    req.on('end', () => {
+      try {
+        const userData = JSON.parse(body);
+        
+        User.updateProfile(decoded.id_user, userData, (err, result) => {
+          if (err) {
+            console.error('Erreur mise à jour profil:', err);
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+              success: false,
+              message: 'Erreur lors de la mise à jour'
+            }));
+            return;
+          }
+          
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({
+            success: true,
+            message: 'Profil mis à jour avec succès'
+          }));
+        });
+      } catch (error) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({
+          success: false,
+          message: 'Données invalides'
+        }));
+      }
+    });
+    return;
+  }
+
+  // ========================================
+  // PUT /api/auth/password - Changer le mot de passe
+  // ========================================
+  if (pathname === '/api/auth/password' && method === 'PUT') {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({
+        success: false,
+        message: 'Token manquant'
+      }));
+      return;
+    }
+    
+    const token = authHeader.split(' ')[1];
+    const decoded = User.verifyToken(token);
+    
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({
+        success: false,
+        message: 'Token invalide'
+      }));
+      return;
+    }
+    
+    let body = '';
+    
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    
+    req.on('end', () => {
+      try {
+        const { oldPassword, newPassword } = JSON.parse(body);
+        
+        if (!oldPassword || !newPassword) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({
+            success: false,
+            message: 'Ancien et nouveau mot de passe requis'
+          }));
+          return;
+        }
+        
+        if (newPassword.length < 6) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({
+            success: false,
+            message: 'Le nouveau mot de passe doit contenir au moins 6 caractères'
+          }));
+          return;
+        }
+        
+        User.changePassword(decoded.id_user, oldPassword, newPassword, (err, result) => {
+          if (err) {
+            console.error('Erreur changement mot de passe:', err);
+            
+            if (err.message === 'Ancien mot de passe incorrect') {
+              res.statusCode = 400;
+            } else {
+              res.statusCode = 500;
+            }
+            
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+              success: false,
+              message: err.message || 'Erreur lors du changement de mot de passe'
+            }));
+            return;
+          }
+          
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({
+            success: true,
+            message: 'Mot de passe modifié avec succès'
+          }));
+        });
+      } catch (error) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({
+          success: false,
+          message: 'Données invalides'
+        }));
+      }
+    });
+    return;
+  }
+
+  // ========================================
   // Route non trouvée
   // ========================================
   res.statusCode = 404;

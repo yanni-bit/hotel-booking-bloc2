@@ -1,0 +1,118 @@
+<main class="admin-page py-5">
+  <div class="container">
+    
+    <!-- En-tête -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="h3 text-turquoise mb-0">
+        <i class="bi bi-shield-check me-2"></i>Administration
+      </h1>
+      <div>
+        <span class="badge bg-danger">ADMIN</span>
+        <span class="ms-2">{{ authService.currentUser()?.prenom }} {{ authService.currentUser()?.nom }}</span>
+      </div>
+    </div>
+    
+    <!-- Statistiques -->
+    <div class="row mb-5" *ngIf="!loading">
+      
+      <!-- Hôtels -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card border-0 shadow-sm stat-card">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-building stat-icon text-primary"></i>
+            <h3 class="h2 mb-0 mt-3">{{ stats.hotels }}</h3>
+            <p class="text-muted mb-0">Hôtels</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Réservations -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card border-0 shadow-sm stat-card">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-calendar-check stat-icon text-success"></i>
+            <h3 class="h2 mb-0 mt-3">{{ stats.reservations }}</h3>
+            <p class="text-muted mb-0">Réservations</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Utilisateurs -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card border-0 shadow-sm stat-card">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-people stat-icon text-warning"></i>
+            <h3 class="h2 mb-0 mt-3">{{ stats.users }}</h3>
+            <p class="text-muted mb-0">Utilisateurs</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Services -->
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card border-0 shadow-sm stat-card">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-plus-circle stat-icon text-info"></i>
+            <h3 class="h2 mb-0 mt-3">{{ stats.services }}</h3>
+            <p class="text-muted mb-0">Services</p>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Menu d'actions -->
+    <div class="row">
+      
+      <!-- Gestion Hôtels -->
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm action-card">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-building-fill text-primary me-3" style="font-size: 2rem;"></i>
+              <h3 class="h5 mb-0">Gestion des Hôtels</h3>
+            </div>
+            <p class="text-muted mb-3">Créer, modifier ou supprimer des hôtels</p>
+            <a [routerLink]="['/admin/hotels']" class="btn btn-primary w-100">
+              <i class="bi bi-arrow-right me-2"></i>Gérer les hôtels
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Gestion Réservations -->
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm action-card">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-calendar-check-fill text-success me-3" style="font-size: 2rem;"></i>
+              <h3 class="h5 mb-0">Réservations</h3>
+            </div>
+            <p class="text-muted mb-3">Consulter et gérer toutes les réservations</p>
+            <a [routerLink]="['/admin/reservations']" class="btn btn-success w-100">
+              <i class="bi bi-arrow-right me-2"></i>Voir les réservations
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Gestion Utilisateurs -->
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm action-card">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-people-fill text-warning me-3" style="font-size: 2rem;"></i>
+              <h3 class="h5 mb-0">Utilisateurs</h3>
+            </div>
+            <p class="text-muted mb-3">Gérer les comptes utilisateurs</p>
+            <a [routerLink]="['/admin/users']" class="btn btn-warning w-100">
+              <i class="bi bi-arrow-right me-2"></i>Gérer les utilisateurs
+            </a>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+</main>

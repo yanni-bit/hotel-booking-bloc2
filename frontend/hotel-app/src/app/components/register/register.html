@@ -1,0 +1,151 @@
+<main class="register-page py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        
+        <div class="text-center mb-4">
+          <h1 class="h3 text-turquoise">
+            <i class="bi bi-person-plus-fill me-2"></i>Créer un compte
+          </h1>
+          <p class="text-muted">Inscrivez-vous pour réserver vos séjours</p>
+        </div>
+        
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            
+            <!-- Message de succès -->
+            <div *ngIf="successMessage" class="alert alert-success" role="alert">
+              <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+            </div>
+            
+            <!-- Message d'erreur -->
+            <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+              <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+            </div>
+            
+            <!-- Formulaire -->
+            <form (ngSubmit)="onSubmit()" *ngIf="!successMessage">
+              
+              <!-- Prénom & Nom -->
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <label class="form-label fw-bold">Prénom *</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    [(ngModel)]="prenom"
+                    name="prenom"
+                    placeholder="Votre prénom"
+                    required
+                  >
+                </div>
+                
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">Nom *</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    [(ngModel)]="nom"
+                    name="nom"
+                    placeholder="Votre nom"
+                    required
+                  >
+                </div>
+              </div>
+              
+              <!-- Email -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">Email *</label>
+                <input 
+                  type="email" 
+                  class="form-control" 
+                  [(ngModel)]="email"
+                  name="email"
+                  placeholder="votre@email.com"
+                  required
+                  autocomplete="email"
+                >
+              </div>
+              
+              <!-- Téléphone -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">Téléphone (optionnel)</label>
+                <input 
+                  type="tel" 
+                  class="form-control" 
+                  [(ngModel)]="telephone"
+                  name="telephone"
+                  placeholder="+33 6 12 34 56 78"
+                  autocomplete="tel"
+                >
+              </div>
+              
+              <!-- Mot de passe -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">Mot de passe *</label>
+                <input 
+                  type="password" 
+                  class="form-control" 
+                  [(ngModel)]="password"
+                  name="password"
+                  placeholder="Minimum 6 caractères"
+                  required
+                  autocomplete="new-password"
+                >
+                <small class="text-muted">Minimum 6 caractères</small>
+              </div>
+              
+              <!-- Confirmation mot de passe -->
+              <div class="mb-4">
+                <label class="form-label fw-bold">Confirmer le mot de passe *</label>
+                <input 
+                  type="password" 
+                  class="form-control" 
+                  [(ngModel)]="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="Retapez votre mot de passe"
+                  required
+                  autocomplete="new-password"
+                >
+              </div>
+              
+              <!-- Bouton inscription -->
+              <button 
+                type="submit" 
+                class="btn btn-primary btn-lg w-100 mb-3"
+                [disabled]="loading"
+              >
+                <span *ngIf="!loading">
+                  <i class="bi bi-person-plus me-2"></i>Créer mon compte
+                </span>
+                <span *ngIf="loading">
+                  <span class="spinner-border spinner-border-sm me-2"></span>Création...
+                </span>
+              </button>
+              
+              <!-- Lien connexion -->
+              <div class="text-center">
+                <p class="mb-0 text-muted">
+                  Vous avez déjà un compte ?
+                  <a [routerLink]="['/login']" class="text-turquoise fw-bold ms-1">
+                    Se connecter
+                  </a>
+                </p>
+              </div>
+              
+            </form>
+            
+          </div>
+        </div>
+        
+        <!-- Retour accueil -->
+        <div class="text-center mt-3">
+          <a [routerLink]="['/']" class="text-muted">
+            <i class="bi bi-arrow-left me-1"></i>Retour à l'accueil
+          </a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</main>

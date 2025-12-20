@@ -1,0 +1,42 @@
+.reservations-page {
+  min-height: 60vh;
+  background-color: var(--marron-clair);
+}
+
+.text-turquoise {
+  color: var(--turquoise) !important;
+}
+
+.spinner-border.text-turquoise {
+  color: var(--turquoise) !important;
+}
+
+.reservation-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  img {
+    max-height: 200px;
+    object-fit: cover;
+  }
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  
+  &:hover {
+    background-color: var(--turquoise-hover);
+    border-color: var(--turquoise-hover);
+  }
+}

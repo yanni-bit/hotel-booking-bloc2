@@ -1,0 +1,176 @@
+<main class="admin-reservations-page py-5">
+    <div class="container-fluid">
+
+        <!-- En-tête -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <a [routerLink]="['/admin']" class="text-muted me-3">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+                <h1 class="h3 text-turquoise d-inline-block mb-0">
+                    <i class="bi bi-calendar-check me-2"></i>Gestion des Réservations
+                </h1>
+            </div>
+            <div>
+                <span class="badge bg-primary">{{ filteredReservations.length }} réservation(s)</span>
+            </div>
+        </div>
+
+        <!-- FILTRES -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-3">
+                <div class="row g-3">
+
+                    <!-- Filtre par statut -->
+                    <div class="col-md-3">
+                        <label class="form-label small fw-bold">Filtrer par statut</label>
+                        <select class="form-select form-select-sm" [(ngModel)]="filterStatus"
+                            (change)="onFilterChange()">
+                            <option value="all">Tous les statuts</option>
+                            <option [value]="statut.id" *ngFor="let statut of statuts">
+                                {{ statut.nom }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Recherche -->
+                    <div class="col-md-6">
+                        <label class="form-label small fw-bold">Recherche</label>
+                        <input type="text" class="form-control form-control-sm" [(ngModel)]="searchTerm"
+                            (input)="onFilterChange()"
+                            placeholder="Rechercher par hôtel, client, email, n° confirmation...">
+                    </div>
+
+                    <!-- Bouton rafraîchir -->
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn btn-sm btn-outline-primary w-100" (click)="loadReservations()">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Rafraîchir
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- LOADING -->
+        <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-turquoise" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-3">Chargement des réservations...</p>
+        </div>
+
+        <!-- ERROR -->
+        <div *ngIf="error && !loading" class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+        </div>
+
+        <!-- TABLEAU -->
+        <div *ngIf="!loading && !error" class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="80">N°</th>
+                                <th>Client</th>
+                                <th>Hôtel</th>
+                                <th>Dates</th>
+                                <th width="80" class="text-center">Nuits</th>
+                                <th width="100" class="text-end">Prix</th>
+                                <th width="200">Statut</th>
+                                <th width="150">N° Confirmation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let reservation of filteredReservations">
+
+                                <!-- ID -->
+                                <td class="align-middle">
+                                    <small class="text-muted">#{{ reservation.id_reservation }}</small>
+                                </td>
+
+                                <!-- Client -->
+                                <td class="align-middle">
+                                    <div>
+                                        <strong>{{ reservation.prenom_user || reservation.client_prenom }} {{
+                                            reservation.nom_user || reservation.client_nom }}</strong>
+                                    </div>
+                                    <small class="text-muted">{{ reservation.email_user || reservation.client_email
+                                        }}</small><br>
+                                    <small class="text-muted">{{ reservation.tel_user || reservation.client_telephone
+                                        }}</small>
+                                </td>
+
+                                <!-- Hôtel -->
+                                <td class="align-middle">
+                                    <div><strong>{{ reservation.nom_hotel }}</strong></div>
+                                    <small class="text-muted">{{ reservation.ville_hotel }}, {{ reservation.pays_hotel
+                                        }}</small><br>
+                                    <small class="text-muted">{{ reservation.type_room }} - {{ reservation.nom_offre
+                                        }}</small>
+                                </td>
+
+                                <!-- Dates -->
+                                <td class="align-middle">
+                                    <div>
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        <small>{{ formatDate(reservation.check_in) }}</small>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        <small>{{ formatDate(reservation.check_out) }}</small>
+                                    </div>
+                                    <small class="text-muted">
+                                        {{ reservation.nbre_adults }} adulte(s)
+                                        <span *ngIf="reservation.nbre_children > 0">, {{ reservation.nbre_children }}
+                                            enfant(s)</span>
+                                    </small>
+                                </td>
+
+                                <!-- Nuits -->
+                                <td class="align-middle text-center">
+                                    <span class="badge bg-secondary">{{ reservation.nbre_nuits }}</span>
+                                </td>
+
+                                <!-- Prix -->
+                                <td class="align-middle text-end">
+                                    <strong class="text-turquoise">{{ reservation.total_price }}€</strong>
+                                </td>
+
+                                <!-- Statut - SELECT au lieu de dropdown -->
+                                <td class="align-middle">
+                                    <select class="form-select form-select-sm" [value]="reservation.id_statut"
+                                        (change)="changeStatus(reservation, $event)"
+                                        [ngClass]="getStatusBadgeClass(reservation.couleur_statut)">
+                                        <option *ngFor="let statut of statuts" [value]="statut.id">
+                                            {{ statut.nom }}
+                                        </option>
+                                    </select>
+                                </td>
+
+                                <!-- N° Confirmation + Date -->
+                                <td class="align-middle">
+                                    <div><strong>{{ reservation.num_confirmation }}</strong></div>
+                                    <small class="text-muted">Réservé le {{ formatDate(reservation.date_reservation)
+                                        }}</small>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Message si aucune réservation -->
+                    <div *ngIf="filteredReservations.length === 0" class="text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 3rem; color: var(--turquoise);"></i>
+                        <p class="text-muted mt-3">Aucune réservation trouvée</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</main>

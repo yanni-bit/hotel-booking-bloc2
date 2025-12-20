@@ -31,4 +31,32 @@ export class ReservationService {
   getHotelServices(hotelId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/hotels/${hotelId}/services`);
   }
+
+  /**
+   * Récupère les réservations d'un utilisateur
+   */
+  getUserReservations(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservations/user/${userId}`);
+  }
+
+  /**
+ * Annule une réservation
+ */
+  cancelReservation(reservationId: number, userId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/reservations/${reservationId}/cancel`, { userId });
+  }
+
+  /**
+ * Récupère TOUTES les réservations (admin)
+ */
+getAllReservations(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/reservations/all`);
+}
+
+/**
+ * Change le statut d'une réservation (admin)
+ */
+updateReservationStatus(reservationId: number, newStatusId: number): Observable<any> {
+  return this.http.put(`${this.apiUrl}/reservations/${reservationId}/status`, { newStatusId });
+}
 }

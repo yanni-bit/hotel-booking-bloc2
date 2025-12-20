@@ -1,0 +1,49 @@
+.admin-hotel-form-page {
+  min-height: 80vh;
+  background-color: var(--marron-clair);
+}
+
+.text-turquoise {
+  color: var(--turquoise) !important;
+}
+
+.form-label {
+  color: var(--gris-fonce);
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+  border-color: #ddd;
+  
+  &:focus {
+    border-color: var(--turquoise);
+    box-shadow: 0 0 0 0.2rem rgba(95, 200, 194, 0.25);
+  }
+}
+
+.btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  
+  &:hover:not(:disabled) {
+    background-color: var(--turquoise-hover);
+    border-color: var(--turquoise-hover);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  &:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+  }
+}
+
+hr {
+  opacity: 0.1;
+}
