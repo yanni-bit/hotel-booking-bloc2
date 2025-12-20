@@ -158,7 +158,8 @@ $blanc: #ffffff;
 }
 
 .ribbon ul li {
-  padding: 6px 0;
+  padding: 5px;
+  border-bottom: 1px solid #00000033;
 }
 
 .ribbon ul li a {
@@ -188,19 +189,66 @@ $blanc: #ffffff;
 }
 
 /* Dropdown du ruban */
-.ribbon .dropdown:hover .dropdown-menu {
-  display: block;
+.ribbon .dropdown {
+  position: relative;
 }
 
-.ribbon .dropdown-item:hover {
-  background-color: var(--turquoise);
-  color: var(--link-hover);
+.ribbon .dropdown:hover .dropdown-menu {
+  display: block;
 }
 
 .ribbon .dropdown-menu {
   padding: 0;
   margin: 0;
+  margin-top: -2px !important; /* Colle le menu au bouton - AUCUN ESPACE */
   background-color: var(--turquoise);
+  min-width: 200px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  
+  /* Menu aligné à gauche */
+  position: absolute !important;
+  left: -60px !important;
+  right: auto !important;
+  transform: none !important;
+}
+
+.ribbon .dropdown-item {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: $blanc;
+  transition: all 0.2s ease;
+  
+  i {
+    color: var(--gris-fonce) !important;
+  }
+  
+  &:hover {
+    background-color: var(--turquoise-hover);
+    color: var(--link-hover);
+    
+    i {
+      color: var(--link-hover);
+    }
+  }
+  
+  &.text-danger {
+    color: $blanc;
+    font-weight: 600;
+    
+    &:hover {
+      background-color: #c82333;
+      color: $blanc;
+    }
+    
+    i {
+      color: $blanc;
+    }
+  }
+}
+
+.ribbon .dropdown-divider {
+  margin: 0.5rem 0;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Triangle décoratif sous le ruban (Pseudo-éléments ::before et ::after) */
@@ -421,5 +469,73 @@ $blanc: #ffffff;
     min-width: 36px;
     min-height: 36px;
     font-size: 16px;
+  }
+}
+
+
+/* ==========================================================
+   DROPDOWN MENU DU RUBAN - AUTHENTIFICATION
+   ---------------------------------------------------------- */
+
+.ribbon {
+  .dropdown-menu {
+    min-width: 200px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    margin-top: 8px;
+    
+    .dropdown-item {
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      color: $gris-fonce;
+      transition: all 0.2s ease;
+      
+      i {
+        color: $turquoise;
+      }
+      
+      &:hover {
+        background-color: rgba($turquoise, 0.1);
+        color: $turquoise;
+        
+        i {
+          color: $turquoise-hover;
+        }
+      }
+      
+      &.text-danger {
+        color: #dc3545;
+        
+        &:hover {
+          background-color: #ffe6e6;
+          color: #c82333;
+        }
+        
+        i {
+          color: #dc3545;
+        }
+      }
+    }
+    
+    .dropdown-divider {
+      margin: 0.5rem 0;
+    }
+  }
+  
+  // Override du dropdown toggle pour le ruban
+  .dropdown-toggle::after {
+    margin-left: 0.5rem;
+  }
+}
+
+// Responsive - Dropdown sur mobile
+@media (max-width: 390px) {
+  .ribbon {
+    .dropdown-menu {
+      position: static !important;
+      width: 100%;
+      margin-top: 5px;
+      transform: none !important;
+    }
   }
 }

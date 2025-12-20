@@ -5,10 +5,10 @@
   
   <!-- LOADING -->
   <div *ngIf="loading" class="text-center py-5">
-    <div class="spinner-border text-primary" role="status">
+    <div class="spinner-border text-turquoise" role="status">
       <span class="visually-hidden">Chargement...</span>
     </div>
-    <p class="mt-3 text-muted">Chargement des informations...</p>
+    <p class="mt-3 text-gris-moyen">Chargement des informations...</p>
   </div>
   
   <!-- CONTENU -->
@@ -24,19 +24,19 @@
       <!-- ADRESSE & LOCALISATION -->
       <div class="col-md-6 mb-4">
         <div class="info-card p-4 bg-white border rounded shadow-sm h-100">
-          <h3 class="h5 mb-3 text-primary">
+          <h3 class="h5 mb-3 text-turquoise">
             <i class="bi bi-house-door me-2"></i>Adresse
           </h3>
           
-          <div class="mb-3">
+          <div class="mb-3 text-gris-moyen">
             <p class="mb-1"><strong>{{ hotel.nom_hotel }}</strong></p>
-            <p class="text-muted mb-1" *ngIf="hotel.adresse_hotel">
+            <p class="text-gris-moyen mb-1" *ngIf="hotel.adresse_hotel">
               <i class="bi bi-pin-map me-2"></i>{{ hotel.adresse_hotel }}
             </p>
-            <p class="text-muted mb-1">
+            <p class="text-gris-moyen mb-1">
               <i class="bi bi-geo-alt me-2"></i>{{ hotel.ville_hotel }}, {{ hotel.pays_hotel }}
             </p>
-            <p class="text-muted mb-0" *ngIf="hotel.code_postal_hotel">
+            <p class="text-gris-moyen mb-0" *ngIf="hotel.code_postal_hotel">
               <i class="bi bi-mailbox me-2"></i>{{ hotel.code_postal_hotel }}
             </p>
           </div>
@@ -44,12 +44,12 @@
           <hr>
           
           <div>
-            <p class="small text-muted mb-2">
+            <p class="small text-gris-moyen mb-2">
               <i class="bi bi-airplane me-2"></i>
               <strong>Aéroport le plus proche :</strong><br>
               <span class="ms-4">Information non disponible</span>
             </p>
-            <p class="small text-muted mb-0">
+            <p class="small text-gris-moyen mb-0">
               <i class="bi bi-taxi-front me-2"></i>
               <strong>Navette aéroport :</strong><br>
               <span class="ms-4">Veuillez contacter l'hôtel</span>
@@ -61,45 +61,45 @@
       <!-- CONTACT -->
       <div class="col-md-6 mb-4">
         <div class="info-card p-4 bg-white border rounded shadow-sm h-100">
-          <h3 class="h5 mb-3 text-primary">
+          <h3 class="h5 mb-3 text-turquoise">
             <i class="bi bi-telephone me-2"></i>Informations de contact
           </h3>
           
           <div class="contact-item mb-3">
             <div class="d-flex align-items-start">
-              <i class="bi bi-envelope-fill text-primary me-3 fs-5"></i>
+              <i class="bi bi-envelope-fill text-turquoise me-3 fs-5"></i>
               <div>
-                <strong class="d-block mb-1">Email</strong>
-                <a *ngIf="hotel.email_hotel" [href]="'mailto:' + hotel.email_hotel" class="text-muted">
+                <strong class="d-block mb-1 text-gris-moyen">Email</strong>
+                <a *ngIf="hotel.email_hotel" [href]="'mailto:' + hotel.email_hotel" class="text-gris-moyen">
                   {{ hotel.email_hotel }}
                 </a>
-                <span *ngIf="!hotel.email_hotel" class="text-muted">Non renseigné</span>
+                <span *ngIf="!hotel.email_hotel" class="text-gris-moyen">Non renseigné</span>
               </div>
             </div>
           </div>
           
           <div class="contact-item mb-3">
             <div class="d-flex align-items-start">
-              <i class="bi bi-telephone-fill text-primary me-3 fs-5"></i>
+              <i class="bi bi-telephone-fill text-turquoise me-3 fs-5"></i>
               <div>
-                <strong class="d-block mb-1">Téléphone</strong>
-                <a *ngIf="hotel.telephone_hotel" [href]="'tel:' + hotel.telephone_hotel" class="text-muted">
+                <strong class="d-block mb-1 text-gris-moyen">Téléphone</strong>
+                <a *ngIf="hotel.telephone_hotel" [href]="'tel:' + hotel.telephone_hotel" class="text-gris-moyen">
                   {{ hotel.telephone_hotel }}
                 </a>
-                <span *ngIf="!hotel.telephone_hotel" class="text-muted">Non renseigné</span>
+                <span *ngIf="!hotel.telephone_hotel" class="text-gris-moyen">Non renseigné</span>
               </div>
             </div>
           </div>
           
           <div class="contact-item mb-3">
             <div class="d-flex align-items-start">
-              <i class="bi bi-globe text-primary me-3 fs-5"></i>
+              <i class="bi bi-globe text-turquoise me-3 fs-5"></i>
               <div>
-                <strong class="d-block mb-1">Site web</strong>
-                <a *ngIf="hotel.site_web_hotel" [href]="hotel.site_web_hotel" target="_blank" class="text-muted">
+                <strong class="d-block mb-1 text-gris-moyen">Site web</strong>
+                <a *ngIf="hotel.site_web_hotel" [href]="hotel.site_web_hotel" target="_blank" class="text-gris-moyen">
                   Visiter le site <i class="bi bi-box-arrow-up-right ms-1"></i>
                 </a>
-                <span *ngIf="!hotel.site_web_hotel" class="text-muted">Non renseigné</span>
+                <span *ngIf="!hotel.site_web_hotel" class="text-gris-moyen">Non renseigné</span>
               </div>
             </div>
           </div>
@@ -120,32 +120,32 @@
     
     <!-- INFORMATIONS PRATIQUES -->
     <div class="practical-info p-4 bg-white border rounded shadow-sm">
-      <h3 class="h5 mb-3 text-primary">
+      <h3 class="h5 mb-3 text-turquoise">
         <i class="bi bi-info-circle me-2"></i>Informations pratiques
       </h3>
       
       <div class="row">
         <div class="col-md-4 mb-3">
           <div class="info-box p-3 bg-light rounded">
-            <i class="bi bi-clock text-primary fs-4 mb-2 d-block"></i>
-            <strong class="d-block mb-1">Check-in</strong>
-            <small class="text-muted">À partir de 15h00</small>
+            <i class="bi bi-clock text-turquoise fs-4 mb-2 d-block"></i>
+            <strong class="d-block mb-1 text-gris-moyen">Check-in</strong>
+            <small class="text-gris-moyen">À partir de 15h00</small>
           </div>
         </div>
         
         <div class="col-md-4 mb-3">
           <div class="info-box p-3 bg-light rounded">
-            <i class="bi bi-clock-history text-primary fs-4 mb-2 d-block"></i>
-            <strong class="d-block mb-1">Check-out</strong>
-            <small class="text-muted">Jusqu'à 12h00</small>
+            <i class="bi bi-clock-history text-turquoise fs-4 mb-2 d-block"></i>
+            <strong class="d-block mb-1 text-gris-moyen">Check-out</strong>
+            <small class="text-gris-moyen">Jusqu'à 12h00</small>
           </div>
         </div>
         
         <div class="col-md-4 mb-3">
           <div class="info-box p-3 bg-light rounded">
-            <i class="bi bi-credit-card text-primary fs-4 mb-2 d-block"></i>
-            <strong class="d-block mb-1">Paiement</strong>
-            <small class="text-muted">CB, Espèces, Virement</small>
+            <i class="bi bi-credit-card text-turquoise fs-4 mb-2 d-block"></i>
+            <strong class="d-block mb-1 text-gris-moyen">Paiement</strong>
+            <small class="text-gris-moyen">CB, Espèces, Virement</small>
           </div>
         </div>
       </div>
@@ -153,7 +153,7 @@
     
     <!-- NOTE -->
     <div class="alert alert-light mt-4">
-      <small class="text-muted">
+      <small class="text-gris-moyen">
         <i class="bi bi-exclamation-circle me-2"></i>
         Pour toute question ou demande spécifique, n'hésitez pas à contacter directement l'établissement.
       </small>

@@ -18,8 +18,7 @@
       <!-- BOUTON DYSLEXIE -->
       <div class="col-12 col-lg-1 order-1 d-flex align-items-center justify-content-center">
         <button id="toggle-dyslexie" class="btn btn-outline-secondary btn-sm"
-          aria-label="Activer la police adaptée aux personnes dyslexiques" 
-          aria-pressed="false"
+          aria-label="Activer la police adaptée aux personnes dyslexiques" aria-pressed="false"
           title="Police pour dyslexie">
           <i class="bi bi-universal-access"></i>
           <span class="btn-text d-none d-lg-inline ms-1">Dyslexie</span>
@@ -46,8 +45,8 @@
         <div class="header_search">
           <div class="bloc-search" role="search" aria-label="Recherche rapide">
             <form class="position-relative">
-              <input type="search" class="form-control bloc-search-input" 
-                placeholder="Rechercher" aria-label="Rechercher sur le site">
+              <input type="search" class="form-control bloc-search-input" placeholder="Rechercher"
+                aria-label="Rechercher sur le site">
               <i class="bi bi-search bloc-search-ico"></i>
             </form>
           </div>
@@ -59,12 +58,45 @@
     <!-- RUBAN LATÉRAL (Mon compte, Langue, Monnaie) -->
     <div class="ribbon">
       <nav class="d-flex gap-2 flex-column align-items-stretch">
-        
+
         <!-- Mon Compte -->
-        <div class="dropdown">
-          <a class="btn btn-outline-dark w-100 pb-2 ribbon-btn" href="#" role="button">
-            MON COMPTE
+        <div class="dropdown" *ngIf="!authService.isAuthenticated()">
+          <a class="btn btn-outline-dark w-100 pb-2 ribbon-btn" [routerLink]="['/login']" role="button">
+            <i class="bi bi-box-arrow-in-right me-1"></i> CONNEXION
           </a>
+        </div>
+
+        <!-- Mon Compte - Connecté -->
+        <div class="dropdown" *ngIf="authService.isAuthenticated()">
+          <button class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" type="button" id="userDropdown"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i>
+            {{ authService.currentUser()?.prenom }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="userDropdown">
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="bi bi-person me-2"></i>Mon profil
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">
+                <i class="bi bi-clock-history me-2"></i>Mes réservations
+              </a>
+            </li>
+            <li *ngIf="authService.isAdmin()">
+              <hr class="dropdown-divider">
+              <a class="dropdown-item" href="#">
+                <i class="bi bi-shield-check me-2"></i>Administration
+              </a>
+            </li>
+            <hr class="dropdown-divider"> <!-- ← Séparateur avant déconnexion (toujours visible) -->
+            <li>
+              <a class="dropdown-item text-danger" (click)="logout()" style="cursor: pointer;">
+                <i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+              </a>
+            </li>
+          </ul>
         </div>
 
         <!-- Langue -->
@@ -108,4 +140,3 @@
     </ul>
   </div>
 </nav>
-

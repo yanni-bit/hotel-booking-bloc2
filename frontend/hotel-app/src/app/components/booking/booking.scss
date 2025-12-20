@@ -1,0 +1,189 @@
+.booking-page {
+  min-height: 60vh;
+  background-color: var(--marron-clair);
+}
+
+.breadcrumb {
+  background-color: transparent;
+  padding: 0.5rem 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "›";
+  color: var(--gris-moyen);
+}
+
+.breadcrumb-item a {
+  color: var(--turquoise);
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  color: var(--turquoise-hover);
+  text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+  color: var(--gris-fonce);
+}
+
+// Texte turquoise
+.text-turquoise {
+  color: var(--turquoise) !important;
+}
+
+// Background turquoise light
+.bg-turquoise-light {
+  background-color: var(--turquoise-light) !important;
+  border: 1px solid var(--turquoise);
+  color: var(--gris-fonce);
+}
+
+// Carte de succès
+.success-card {
+  animation: fadeInScale 0.5s ease-out;
+  
+  i {
+    animation: checkBounce 0.6s ease-out 0.2s;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes checkBounce {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Formulaire
+.form-label {
+  color: var(--gris-fonce);
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+  border-color: #ddd;
+  
+  &:focus {
+    border-color: var(--turquoise);
+    box-shadow: 0 0 0 0.2rem rgba(95, 200, 194, 0.25);
+  }
+}
+
+// Services additionnels
+.service-option {
+  border: 1px solid #ddd;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+  background-color: white;
+  
+  &:hover {
+    border-color: var(--turquoise);
+    background-color: var(--turquoise-light);
+  }
+  
+  .form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.25rem;
+    cursor: pointer;
+    
+    &:checked {
+      background-color: var(--turquoise);
+      border-color: var(--turquoise);
+    }
+    
+    &:focus {
+      border-color: var(--turquoise);
+      box-shadow: 0 0 0 0.2rem rgba(95, 200, 194, 0.25);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0;
+    }
+  }
+  
+  .form-check-label {
+    cursor: pointer;
+    margin-left: 0.5rem;
+  }
+}
+
+// Résumé
+.sticky-top {
+  img {
+    max-height: 200px;
+    object-fit: cover;
+  }
+  
+  .alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+  }
+}
+
+.btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background-color: var(--turquoise-hover);
+    border-color: var(--turquoise-hover);
+    transform: translateY(-1px);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-outline-primary {
+  color: var(--turquoise);
+  border-color: var(--turquoise);
+  
+  &:hover {
+    background-color: var(--turquoise);
+    border-color: var(--turquoise);
+    color: white;
+  }
+}
+
+// Spinner
+.spinner-border.text-turquoise {
+  color: var(--turquoise) !important;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .sticky-top {
+    position: relative !important;
+    top: 0 !important;
+  }
+  
+  .service-option {
+    margin-bottom: 0.5rem;
+  }
+}

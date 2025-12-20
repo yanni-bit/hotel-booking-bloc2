@@ -1,73 +1,76 @@
 .hotel-location {
-  
   h2 {
     color: var(--gris-moyen);
     font-weight: 600;
   }
-  
+
   .location-content {
-    
     // Carte interactive
     .map-container {
       height: 400px;
       position: relative;
-      
+
       .leaflet-map {
         height: 100%;
         width: 100%;
         z-index: 1;
       }
     }
-    
+
     // Cartes d'information
+    .text-turquoise {
+      color: var(--turquoise);
+    }
+
+    .text-gris-moyen {
+      color: var(--gris-moyen);
+    }
+
     .info-card {
-      
       h3 {
         color: var(--turquoise);
         font-weight: 600;
       }
-      
+
       .contact-item {
-        
         a {
-          color: var(--gris-fonce);
+          color: var(--gris-moyen);
           text-decoration: none;
           transition: color 0.2s ease;
-          
+
           &:hover {
             color: var(--turquoise);
           }
         }
       }
-      
+
       .alert-info {
         background-color: var(--turquoise-light);
         border-color: var(--turquoise);
-        color: var(--gris-fonce);
+        color: var(--gris-moyen);
       }
     }
-    
+
     // Informations pratiques
     .practical-info {
-      
       h3 {
         color: var(--turquoise);
         font-weight: 600;
       }
-      
+
       .info-box {
         text-align: center;
         transition: all 0.2s ease;
         background-color: var(--gris-clair);
-        
+
         i {
           transition: transform 0.2s ease;
         }
-        
+
         &:hover {
           background-color: var(--turquoise-light) !important;
           transform: translateY(-2px);
-          
+
           i {
             transform: scale(1.1);
           }
@@ -75,7 +78,7 @@
       }
     }
   }
-  
+
   .alert-light {
     background-color: var(--gris-clair);
     border: none;
@@ -88,7 +91,7 @@
     .map-container {
       height: 300px;
     }
-    
+
     .info-card,
     .practical-info {
       margin-bottom: 1rem;

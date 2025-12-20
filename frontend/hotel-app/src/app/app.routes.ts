@@ -7,6 +7,9 @@ import { HotelOffers } from './components/hotel-offers/hotel-offers';
 import { HotelAmenities } from './components/hotel-amenities/hotel-amenities';
 import { HotelReviews } from './components/hotel-reviews/hotel-reviews';
 import { HotelLocation } from './components/hotel-location/hotel-location';
+import { RoomDetail } from './components/room-detail/room-detail';
+import { Booking } from './components/booking/booking';
+import { Login } from './components/login/login';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -23,5 +26,8 @@ export const routes: Routes = [
       { path: 'location', component: HotelLocation }
     ]
   },
+  { path: 'hotels/:ville/:hotelId/rooms/:chambreId', component: RoomDetail },
+  { path: 'booking/:offreId', component: Booking },
+  { path: 'login', component: Login },
   { path: '**', redirectTo: '' }
 ];

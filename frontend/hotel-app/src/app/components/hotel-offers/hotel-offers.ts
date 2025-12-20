@@ -16,6 +16,7 @@ export class HotelOffers implements OnInit {
   loading: boolean = true;
   error: string = '';
   hotelId: number = 0;
+  ville: string = '';
   
   constructor(
     private route: ActivatedRoute,

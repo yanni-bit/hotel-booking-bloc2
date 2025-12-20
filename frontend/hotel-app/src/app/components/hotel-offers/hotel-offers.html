@@ -2,7 +2,7 @@
   <h2 class="h4 mb-4 border-bottom pb-2 text-secondary">
     <i class="bi bi-tag me-2"></i>Chambres & Offres disponibles
   </h2>
-  
+
   <!-- LOADING -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border" role="status">
@@ -10,50 +10,45 @@
     </div>
     <p class="mt-3 text-muted">Chargement des chambres...</p>
   </div>
-  
+
   <!-- ERROR -->
   <div *ngIf="error && !loading" class="alert alert-danger">
     {{ error }}
   </div>
-  
+
   <!-- AUCUNE CHAMBRE -->
   <div *ngIf="!loading && !error && chambres.length === 0" class="alert alert-info">
     <i class="bi bi-info-circle me-2"></i>Aucune chambre disponible pour cet hôtel.
   </div>
-  
+
   <!-- LISTE DES CHAMBRES -->
   <div *ngIf="!loading && !error && chambres.length > 0" class="chambres-list">
-    
+
     <div *ngFor="let chambre of chambres" class="chambre-card mb-4 bg-white border rounded shadow-sm">
       <div class="row g-0">
-        
+
         <!-- COLONNE IMAGE (4/12) -->
         <div class="col-md-4">
-          <img 
-            [src]="'/images/default-room.jpg'" 
-            [alt]="chambre.type_room"
-            class="chambre-image"
-            loading="lazy"
-          >
+          <img [src]="'/images/default-room.jpg'" [alt]="chambre.type_room" class="chambre-image" loading="lazy">
         </div>
-        
+
         <!-- COLONNE CONTENU (8/12) -->
         <div class="col-md-8">
           <div class="card-body p-4">
-            
+
             <!-- Nom de la chambre -->
             <h3 class="h5 mb-2">{{ chambre.type_room }} - {{ chambre.cat_room }}</h3>
-            
+
             <!-- Type de chambre -->
             <p class="small text-muted mb-3">
               <i class="bi bi-house-door me-1"></i>{{ chambre.type_room || 'Type non spécifié' }}
             </p>
-            
+
             <!-- Description courte -->
             <p class="text-muted mb-3" *ngIf="chambre.description_room">
               {{ chambre.description_room | slice:0:150 }}{{ chambre.description_room.length > 150 ? '...' : '' }}
             </p>
-            
+
             <!-- Caractéristiques -->
             <div class="row mb-3">
               <div class="col-6">
@@ -81,9 +76,9 @@
                 </small>
               </div>
             </div>
-            
+
             <hr>
-            
+
             <!-- Offres et Prix -->
             <div class="d-flex justify-content-between align-items-center">
               <div>
@@ -94,7 +89,7 @@
                   Aucune offre active
                 </span>
               </div>
-              
+
               <div class="text-end">
                 <p class="mb-0" *ngIf="chambre.prix_minimum">
                   <small class="text-muted">À partir de</small><br>
@@ -103,20 +98,19 @@
                 </p>
               </div>
             </div>
-            
+
             <!-- Bouton Voir détails -->
             <div class="mt-3">
-              <button class="btn btn-primary w-100" disabled>
+              <a [routerLink]="['/hotels', ville, hotelId, 'rooms', chambre.id_chambre]" class="btn btn-primary w-100">
                 <i class="bi bi-eye me-2"></i>Voir les offres détaillées
-                <small class="d-block mt-1">(Bientôt disponible)</small>
-              </button>
+              </a>
             </div>
-            
+
           </div>
         </div>
-        
+
       </div>
     </div>
-    
+
   </div>
 </div>

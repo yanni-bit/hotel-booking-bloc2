@@ -17,4 +17,11 @@ export class ChambreService {
   getChambresByHotelId(hotelId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/hotels/${hotelId}/chambres`);
   }
+
+  /**
+ * Récupère une chambre avec toutes ses offres
+ */
+getChambreWithOffers(chambreId: number): Observable<any> {
+  return this.http.get(`${this.apiUrl}/chambres/${chambreId}`);
+}
 }

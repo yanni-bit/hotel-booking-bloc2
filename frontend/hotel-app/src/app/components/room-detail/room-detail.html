@@ -1,0 +1,208 @@
+<!-- LOADING -->
+<div *ngIf="loading" class="text-center py-5">
+  <div class="spinner-border text-turquoise" role="status">
+    <span class="visually-hidden">Chargement...</span>
+  </div>
+  <p class="mt-3">Chargement des détails de la chambre...</p>
+</div>
+
+<!-- ERROR -->
+<div *ngIf="error && !loading" class="alert alert-danger m-4">
+  {{ error }}
+</div>
+
+<!-- CONTENU -->
+<main *ngIf="!loading && !error && chambre" class="pb-5 room-detail-page">
+  <div class="container">
+
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a [routerLink]="['/']">Accueil</a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/hotels', ville]">{{ ville }}</a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/hotels', ville, hotelId, 'offers']">Chambres</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ chambre.type_room }}</li>
+      </ol>
+    </nav>
+
+    <div class="row">
+
+      <!-- CONTENU PRINCIPAL -->
+      <div class="col-lg-9 ">
+
+        <!-- HEADER CHAMBRE -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-4">
+            <h1 class="h3 mb-3 text-turquoise">{{ chambre.type_room }} - {{ chambre.cat_room }}</h1>
+
+            <div class="row mb-3 text-gris-moyen">
+              <div class="col-md-3 col-6 mb-2">
+                <div class="feature-box">
+                  <i class="bi bi-people text-turquoise me-2"></i>
+                  <strong>{{ chambre.nbre_adults_max || 2 }}</strong> adultes
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-2" *ngIf="chambre.nbre_children_max > 0">
+                <div class="feature-box">
+                  <i class="bi bi-person text-turquoise me-2"></i>
+                  <strong>{{ chambre.nbre_children_max }}</strong> enfants
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-2" *ngIf="chambre.surface_m2">
+                <div class="feature-box">
+                  <i class="bi bi-arrows-angle-expand text-turquoise me-2"></i>
+                  <strong>{{ chambre.surface_m2 }}m²</strong>
+                </div>
+              </div>
+              <div class="col-md-3 col-6 mb-2" *ngIf="chambre.nbre_lit">
+                <div class="feature-box">
+                  <i class="bi bi-moon text-turquoise me-2"></i>
+                  <strong>{{ chambre.nbre_lit }}</strong> lit(s)
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="chambre.description_room" class="alert alert-light mb-0">
+              <p class="mb-0 text-gris-moyen">{{ chambre.description_room }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- OFFRES DISPONIBLES -->
+        <h2 class="h4 mb-3 text-turquoise">
+          <i class="bi bi-tag-fill me-2 text-turquoise"></i>Offres disponibles
+          <span class="badge bg-turquoise ms-2">{{ offres.length }}</span>
+        </h2>
+
+        <!-- AUCUNE OFFRE -->
+        <div *ngIf="offres.length === 0" class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Aucune offre disponible pour cette chambre actuellement.
+        </div>
+
+        <!-- LISTE DES OFFRES -->
+        <div *ngIf="offres.length > 0" class="offres-list">
+
+          <div *ngFor="let offre of offres" class="offre-card card border-0 shadow-sm mb-3">
+            <div class="card-body p-4">
+
+              <!-- Header offre -->
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                  <h3 class="h5 mb-2 text-gris-moyen">{{ offre.nom_offre || 'Offre standard' }}</h3>
+                  <p class="text-gris-moyen small mb-0" *ngIf="offre.description_offre">
+                    {{ offre.description_offre }}
+                  </p>
+                </div>
+                <div class="text-end">
+                  <div class="price-tag">
+                    <span class="price">{{ offre.prix_nuit }}</span>
+                    <span class="currency">{{ offre.devise || 'EUR' }}</span>
+                    <small class="d-block text-gris-moyen">/ nuit</small>
+                  </div>
+                </div>
+              </div>
+
+              <hr>
+
+              <!-- Détails de l'offre -->
+              <div class="row mb-3">
+
+                <!-- Pension -->
+                <div class="col-md-4 mb-2">
+                  <div class="offre-feature">
+                    <i class="bi bi-cup-hot text-turquoise me-2"></i>
+                    <strong>Pension :</strong>
+                    <span class="ms-1">
+                      <ng-container [ngSwitch]="offre.pension">
+                        <span *ngSwitchCase="'none'">Sans repas</span>
+                        <span *ngSwitchCase="'breakfast'">Petit-déjeuner</span>
+                        <span *ngSwitchCase="'half_board'">Demi-pension</span>
+                        <span *ngSwitchCase="'full_board'">Pension complète</span>
+                        <span *ngSwitchCase="'all_inclusive'">Tout compris</span>
+                        <span *ngSwitchDefault>{{ offre.pension }}</span>
+                      </ng-container>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Petit-déjeuner -->
+                <div class="col-md-4 mb-2" *ngIf="offre.petit_dejeuner_inclus">
+                  <div class="offre-feature">
+                    <i class="bi bi-check-circle-fill text-turquoise me-2"></i>
+                    <strong>Petit-déjeuner inclus</strong>
+                  </div>
+                </div>
+
+                <!-- Remboursable -->
+                <div class="col-md-4 mb-2">
+                  <div class="offre-feature">
+                    <i [class]="offre.remboursable ? 'bi bi-check-circle-fill text-turquoise' : 'bi bi-x-circle-fill text-turquoise'"
+                      class="me-2"></i>
+                    <strong>{{ offre.remboursable ? 'Remboursable' : 'Non remboursable' }}</strong>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Bouton réserver -->
+              <div class="text-end">
+                <a [routerLink]="['/booking', offre.id_offre]" class="btn btn-primary">
+                  <i class="bi bi-calendar-check me-2"></i>Réserver cette offre
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="col-lg-3">
+
+        <!-- Prix minimum -->
+        <div class="card border-0 shadow-sm p-3 mb-3 sidebar-top text-gris-moyen">
+          <h3 class="h6 mb-3 text-center">À partir de</h3>
+          <div class="text-center mb-3">
+            <span class="display-4 fw-bold text-turquoise">{{ getPrixMinimum() }}</span>
+            <span class="h5 text-gris-moyen">€</span>
+            <small class="d-block text-gris-moyen">par nuit</small>
+          </div>
+
+          <div class="alert alert-info mb-0">
+            <small class="text-gris-moyen">
+              <i class="bi bi-info-circle me-2"></i>
+              Prix pour {{ chambre.nbre_adults_max || 2 }} adulte(s)
+            </small>
+          </div>
+        </div>
+
+        <!-- Infos chambre -->
+        <div class="card border-0 shadow-sm p-3">
+          <h3 class="h6 mb-3">Informations</h3>
+
+          <div class="info-item mb-2" *ngIf="chambre.type_lit">
+            <i class="bi bi-moon text-turquoise me-2"></i>
+            <small>{{ chambre.type_lit }}</small>
+          </div>
+
+          <div class="info-item mb-2" *ngIf="chambre.vue">
+            <i class="bi bi-eye text-turquoise me-2"></i>
+            <small>{{ chambre.vue }}</small>
+          </div>
+
+          <div class="info-item">
+            <i class="bi bi-arrow-left-circle text-turquoise me-2"></i>
+            <a [routerLink]="['/hotels', ville, hotelId, 'offers']" class="small text-decoration-none">
+              Retour aux chambres
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</main>
