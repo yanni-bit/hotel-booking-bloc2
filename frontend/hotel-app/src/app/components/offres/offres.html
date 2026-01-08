@@ -11,9 +11,9 @@
     <!-- Grille des offres -->
     <div class="row g-4">
       
-      <!-- Offre 1 - PROMO -->
+      <!-- Offre 1 - Escapades Hivernales -->
       <div class="col-12 col-md-6 col-lg-3">
-        <div class="offre-card">
+        <div class="offre-card" [routerLink]="['/hotels', offres[0].ville, offres[0].hotelId]">
           <div class="offre-card-image">
             <img [src]="offres[0].image" [alt]="offres[0].title">
             <span class="offre-badge" [style.background-color]="offres[0].badgeColor">
@@ -23,14 +23,14 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[0].title }}</h3>
             <p class="offre-card-text">{{ offres[0].description }}</p>
-            <a href="#" class="btn-offre">Réserver</a>
+            <a [routerLink]="['/hotels', offres[0].ville, offres[0].hotelId]" class="btn-offre">Réserver</a>
           </div>
         </div>
       </div>
 
-      <!-- Offre 2 - HOT DEAL -->
+      <!-- Offre 2 - Réveillon à Paris -->
       <div class="col-12 col-md-6 col-lg-3">
-        <div class="offre-card">
+        <div class="offre-card" [routerLink]="['/hotels', offres[1].ville, offres[1].hotelId]">
           <div class="offre-card-image">
             <img [src]="offres[1].image" [alt]="offres[1].title">
             <span class="offre-badge" [style.background-color]="offres[1].badgeColor">
@@ -40,14 +40,14 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[1].title }}</h3>
             <p class="offre-card-text">{{ offres[1].description }}</p>
-            <a href="#" class="btn-offre">Réserver</a>
+            <a [routerLink]="['/hotels', offres[1].ville, offres[1].hotelId]" class="btn-offre">Réserver</a>
           </div>
         </div>
       </div>
 
-      <!-- Offre 3 - NEW -->
+      <!-- Offre 3 - Nuit de Noces -->
       <div class="col-12 col-md-6 col-lg-3">
-        <div class="offre-card">
+        <div class="offre-card" [routerLink]="['/hotels', offres[2].ville, offres[2].hotelId]">
           <div class="offre-card-image">
             <img [src]="offres[2].image" [alt]="offres[2].title">
             <span class="offre-badge" [style.background-color]="offres[2].badgeColor">
@@ -57,14 +57,14 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[2].title }}</h3>
             <p class="offre-card-text">{{ offres[2].description }}</p>
-            <a href="#" class="btn-offre">Réserver</a>
+            <a [routerLink]="['/hotels', offres[2].ville, offres[2].hotelId]" class="btn-offre">Réserver</a>
           </div>
         </div>
       </div>
 
-      <!-- Offre 4 - LAST MINUTE -->
+      <!-- Offre 4 - Tahiti -->
       <div class="col-12 col-md-6 col-lg-3">
-        <div class="offre-card">
+        <div class="offre-card" [routerLink]="['/hotels', offres[3].ville, offres[3].hotelId]">
           <div class="offre-card-image">
             <img [src]="offres[3].image" [alt]="offres[3].title">
             <span class="offre-badge" [style.background-color]="offres[3].badgeColor">
@@ -74,7 +74,7 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[3].title }}</h3>
             <p class="offre-card-text">{{ offres[3].description }}</p>
-            <a href="#" class="btn-offre">Réserver</a>
+            <a [routerLink]="['/hotels', offres[3].ville, offres[3].hotelId]" class="btn-offre">Réserver</a>
           </div>
         </div>
       </div>
