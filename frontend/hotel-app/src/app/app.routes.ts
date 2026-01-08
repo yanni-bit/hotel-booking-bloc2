@@ -21,6 +21,7 @@ import { Admin } from './components/admin/admin';
 import { AdminHotels } from './components/admin-hotels/admin-hotels';
 import { AdminHotelForm } from './components/admin-hotel-form/admin-hotel-form';
 import { AdminReservations } from './components/admin-reservations/admin-reservations';
+import { SearchResults } from './components/search-results/search-results';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -42,6 +43,7 @@ export const routes: Routes = [
   { path: 'payment/:offreId', component: Payment, canActivate: [authGuard] },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
+  { path: 'search', component: SearchResults },
 
   // ROUTES PROTÉGÉES (nécessitent une connexion)
   {

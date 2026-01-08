@@ -66,6 +66,96 @@ function hotelRoutes(req, res) {
   }
 
   // ========================================
+  // GET /api/search?q=xxx&page=1 - Recherche full-text hôtels avec pagination
+  // ========================================
+  if (pathname === "/api/search" && method === "GET") {
+    const query = req.query.q;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 12;
+    const offset = (page - 1) * limit;
+
+    if (!query || query.trim() === "") {
+      res.statusCode = 400;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Paramètre de recherche requis",
+        })
+      );
+      return;
+    }
+
+    const db = require("../config/database");
+    const searchTerm = query.trim();
+
+    // Requête pour compter le total
+    const countSql = `
+    SELECT COUNT(*) as total
+    FROM hotel 
+    WHERE MATCH(nom_hotel, ville_hotel, pays_hotel, description_hotel) AGAINST(? IN NATURAL LANGUAGE MODE)
+  `;
+
+    // Requête pour les résultats paginés
+    const dataSql = `
+    SELECT id_hotel, nom_hotel, ville_hotel, pays_hotel, 
+           nbre_etoile_hotel, note_moy_hotel, description_hotel, img_hotel,
+           MATCH(nom_hotel, ville_hotel, pays_hotel, description_hotel) AGAINST(? IN NATURAL LANGUAGE MODE) AS score
+    FROM hotel 
+    WHERE MATCH(nom_hotel, ville_hotel, pays_hotel, description_hotel) AGAINST(? IN NATURAL LANGUAGE MODE)
+    ORDER BY score DESC, note_moy_hotel DESC
+    LIMIT ? OFFSET ?
+  `;
+
+    // Exécuter les 2 requêtes
+    db.query(countSql, [searchTerm], (err, countResult) => {
+      if (err) {
+        console.error("Erreur comptage:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ success: false, message: "Erreur serveur" }));
+        return;
+      }
+
+      const total = countResult[0].total;
+      const totalPages = Math.ceil(total / limit);
+
+      db.query(
+        dataSql,
+        [searchTerm, searchTerm, limit, offset],
+        (err, results) => {
+          if (err) {
+            console.error("Erreur recherche hôtels:", err);
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.end(
+              JSON.stringify({ success: false, message: "Erreur serveur" })
+            );
+            return;
+          }
+
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: true,
+              query: query,
+              pagination: {
+                currentPage: page,
+                totalPages: totalPages,
+                totalResults: total,
+                perPage: limit,
+              },
+              data: results,
+            })
+          );
+        }
+      );
+    });
+    return;
+  }
+
+  // ========================================
   // GET /api/hotels/:id/chambres - Chambres d'un hôtel
   // ========================================
   if (pathname.match(/^\/api\/hotels\/\d+\/chambres$/) && method === "GET") {

@@ -1,0 +1,110 @@
+<!-- PAGE RÉSULTATS DE RECHERCHE -->
+<section class="hotels-list-section py-5">
+  <div class="container">
+    
+    <!-- En-tête de page -->
+    <div class="mb-4">
+      <h1 class="page-title">Résultats de recherche pour "<span class="text-turquoise">{{ query }}</span>"</h1>
+      <p class="page-subtitle" *ngIf="!loading && !error">{{ totalResults }} hôtel(s) trouvé(s)</p>
+    </div>
+
+    <!-- État de chargement -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p class="mt-3">Recherche en cours...</p>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div *ngIf="error && !loading" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+
+    <!-- Aucun résultat trouvé -->
+    <div *ngIf="!loading && !error && results.length === 0 && query" class="text-center py-5">
+      <i class="bi bi-search display-1 text-muted"></i>
+      <h3 class="mt-3">Aucun résultat trouvé</h3>
+      <p class="text-muted">Essayez avec d'autres mots-clés</p>
+      <a routerLink="/" class="btn btn-primary mt-3">Retour à l'accueil</a>
+    </div>
+
+    <!-- Grille des hôtels -->
+    <div *ngIf="!loading && !error && results.length > 0" class="row g-4">
+      
+      <div *ngFor="let hotel of results" class="col-12 col-md-6 col-lg-4">
+        <div class="hotel-card">
+          
+          <!-- Image de l'hôtel -->
+          <div class="hotel-card-image">
+            <img [src]="hotel.img_hotel || 'images/hotel-placeholder.jpg'" [alt]="hotel.nom_hotel">
+          </div>
+
+          <!-- Corps de la carte -->
+          <div class="hotel-card-body">
+            <h3 class="hotel-card-title">{{ hotel.nom_hotel }}</h3>
+            
+            <!-- Étoiles -->
+            <div class="hotel-stars mb-2">
+              <i class="bi bi-star-fill" *ngFor="let star of [].constructor(hotel.nbre_etoile_hotel)"></i>
+            </div>
+
+            <!-- Description -->
+            <p class="hotel-card-text">{{ hotel.description_hotel }}</p>
+
+            <!-- Localisation -->
+            <p class="hotel-location">
+              <i class="bi bi-geo-alt"></i>
+              {{ hotel.ville_hotel }}, {{ hotel.pays_hotel }}
+            </p>
+
+            <!-- Note moyenne -->
+            <div class="hotel-rating" *ngIf="hotel.note_moy_hotel">
+              <span class="rating-badge">{{ hotel.note_moy_hotel }}/10</span>
+              <span class="rating-text">Excellent</span>
+            </div>
+
+            <!-- Bouton voir détails -->
+            <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">Voir les chambres</a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PAGINATION -->
+    <nav *ngIf="!loading && totalPages > 1" class="mt-5" aria-label="Pagination des résultats">
+      <ul class="pagination justify-content-center">
+        
+        <!-- Bouton Précédent -->
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="previousPage()" [disabled]="currentPage === 1">
+            <i class="bi bi-chevron-left"></i> Précédent
+          </button>
+        </li>
+        
+        <!-- Numéros de pages -->
+        <li class="page-item" 
+            *ngFor="let page of [].constructor(totalPages); let i = index"
+            [class.active]="currentPage === i + 1">
+          <button class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</button>
+        </li>
+        
+        <!-- Bouton Suivant -->
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages">
+            Suivant <i class="bi bi-chevron-right"></i>
+          </button>
+        </li>
+        
+      </ul>
+      
+      <!-- Info pagination -->
+      <p class="text-center text-muted mt-2">
+        Page {{ currentPage }} sur {{ totalPages }}
+      </p>
+    </nav>
+
+  </div>
+</section>

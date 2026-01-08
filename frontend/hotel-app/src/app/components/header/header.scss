@@ -102,7 +102,6 @@ $blanc: #ffffff;
   color: var(--gris-moyen);
 }
 
-
 /* ==========================================================
    BLOC RECHERCHE HEADER (index.html, room.html, booking.html, contact.html)
    ---------------------------------------------------------- */
@@ -132,7 +131,6 @@ $blanc: #ffffff;
   font-size: 18px;
   pointer-events: none; /* Permet de cliquer sur l'input sous l'icône */
 }
-
 
 /* ==========================================================
    RUBAN TURQUOISE (index.html, room.html, booking.html, contact.html)
@@ -185,7 +183,7 @@ $blanc: #ffffff;
 .ribbon-btn:hover {
   background-color: var(--turquoise);
   /* Utilise la variable CSS du hover de lien définie dans base.css, mais moins visible ici, conservé. */
-  color: var(--link-hover); 
+  color: var(--link-hover);
 }
 
 /* Dropdown du ruban */
@@ -204,7 +202,7 @@ $blanc: #ffffff;
   background-color: var(--turquoise);
   min-width: 200px;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  
+
   /* Menu aligné à gauche */
   position: absolute !important;
   left: -60px !important;
@@ -217,29 +215,29 @@ $blanc: #ffffff;
   font-size: 0.9rem;
   color: $blanc;
   transition: all 0.2s ease;
-  
+
   i {
     color: var(--gris-fonce) !important;
   }
-  
+
   &:hover {
     background-color: var(--turquoise-hover);
     color: var(--link-hover);
-    
+
     i {
       color: var(--link-hover);
     }
   }
-  
+
   &.text-danger {
     color: $blanc;
     font-weight: 600;
-    
+
     &:hover {
       background-color: #c82333;
       color: $blanc;
     }
-    
+
     i {
       color: $blanc;
     }
@@ -253,31 +251,31 @@ $blanc: #ffffff;
 
 /* Triangle décoratif sous le ruban (Pseudo-éléments ::before et ::after) */
 .ribbon::before {
-  content: "";
+  content: '';
   position: absolute;
-  bottom: -20px;               /* distance sous le ruban */
-  left: 0;                     /* aligné à gauche */
+  bottom: -20px; /* distance sous le ruban */
+  left: 0; /* aligné à gauche */
   width: 0;
   height: 0;
   border-style: solid;
   border-width: 20px 65px 0 0; /* hauteur / largeur du triangle */
   border-color: var(--turquoise) transparent transparent transparent;
   z-index: 2;
-  box-shadow: -1px 0 0 rgba(0, 0, 0, .1);
+  box-shadow: -1px 0 0 rgba(0, 0, 0, 0.1);
 }
 
 .ribbon::after {
-  content: "";
+  content: '';
   position: absolute;
-  bottom: -20px;               /* même hauteur que le before */
-  right: 0;                    /* aligné à droite */
+  bottom: -20px; /* même hauteur que le before */
+  right: 0; /* aligné à droite */
   width: 0;
   height: 0;
   border-style: solid;
   border-width: 20px 0 0 65px; /* inverse les côtés du triangle */
   border-color: var(--turquoise) transparent transparent transparent;
   z-index: 2;
-  box-shadow: 1px 0 0 rgba(0, 0, 0, .1);
+  box-shadow: 1px 0 0 rgba(0, 0, 0, 0.1);
 }
 
 /* ==========================================================
@@ -305,30 +303,37 @@ $blanc: #ffffff;
   font-family: var(--font-principale);
 }
 
+// Bouton loupe cliquable
+.bloc-search-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background: transparent;
+  border: none;
+  padding: 0 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-// .header-nav {
-//   ul {
-//     display: flex;
-//     list-style: none;
-//     gap: 2rem;
-//     margin: 0;
-//     padding: 0;
-//   }
+  &:hover {
+    .bloc-search-ico {
+      color: var(--turquoise);
+    }
+  }
 
-//   a {
-//     color: $gris-fonce;
-//     text-decoration: none;
-//     font-weight: 500;
-//     transition: color 0.3s ease;
-    
-//     &:hover {
-//       color: $turquoise-hover;
-//     }
-//   }
-// }
+  &:focus {
+    outline: 2px solid var(--turquoise);
+    outline-offset: -2px;
+  }
+}
+
+.bloc-search-input {
+  padding-right: 40px; // Place pour la loupe
+}
 
 @media (max-width: 991px) {
-
   /* === HEADER GLOBAL (index.html, room.html, booking.html, contact.html) === */
 
   .base-header {
@@ -394,20 +399,17 @@ $blanc: #ffffff;
     justify-content: flex-start;
     display: flex;
   }
-
 }
 
 @media (min-width: 391px) and (max-width: 575px) {
-
-    /* [Header] BLOC RECHERCHE HEADER - Réduction de la largeur */
+  /* [Header] BLOC RECHERCHE HEADER - Réduction de la largeur */
   .bloc-search {
     width: 63%;
   }
 }
 
 @media (max-width: 390px) {
-
-    /* === HEADER - Réorganisation pour très petit écran === */
+  /* === HEADER - Réorganisation pour très petit écran === */
 
   /* Réorganisation de l'ordre des blocs du header (Ruban passe en haut du flux) */
   .base-header {
@@ -418,7 +420,7 @@ $blanc: #ffffff;
     display: flex;
     flex-direction: column;
   }
-  
+
   /* Retrait des pointes du ruban en mode full width (fix) */
   .base-header .ribbon::before,
   .base-header .ribbon::after {
@@ -472,7 +474,6 @@ $blanc: #ffffff;
   }
 }
 
-
 /* ==========================================================
    DROPDOWN MENU DU RUBAN - AUTHENTIFICATION
    ---------------------------------------------------------- */
@@ -483,45 +484,45 @@ $blanc: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     margin-top: 8px;
-    
+
     .dropdown-item {
       padding: 0.75rem 1rem;
       font-size: 0.9rem;
       color: $gris-fonce;
       transition: all 0.2s ease;
-      
+
       i {
         color: $turquoise;
       }
-      
+
       &:hover {
         background-color: rgba($turquoise, 0.1);
         color: $turquoise;
-        
+
         i {
           color: $turquoise-hover;
         }
       }
-      
+
       &.text-danger {
         color: #dc3545;
-        
+
         &:hover {
           background-color: #ffe6e6;
           color: #c82333;
         }
-        
+
         i {
           color: #dc3545;
         }
       }
     }
-    
+
     .dropdown-divider {
       margin: 0.5rem 0;
     }
   }
-  
+
   // Override du dropdown toggle pour le ruban
   .dropdown-toggle::after {
     margin-left: 0.5rem;

@@ -34,4 +34,9 @@ export class HotelService {
   getCities(): Observable<any> {
     return this.http.get(`${this.apiUrl}/cities`);
   }
+
+  // Recherche full-text hôtels avec pagination
+  searchHotels(query: string, page: number = 1): Observable<any> {
+    return this.http.get(`${this.apiUrl}/search?q=${encodeURIComponent(query)}&page=${page}`);
+  }
 }

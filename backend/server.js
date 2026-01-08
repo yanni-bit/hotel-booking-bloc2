@@ -76,7 +76,8 @@ async function router(req, res) {
     if (
       req.pathname.startsWith("/api/hotels") ||
       req.pathname === "/api/destinations" ||
-      req.pathname === "/api/cities"
+      req.pathname === "/api/cities" ||
+      req.pathname === "/api/search"
     ) {
       await hotelRoutes(req, res);
       return;
