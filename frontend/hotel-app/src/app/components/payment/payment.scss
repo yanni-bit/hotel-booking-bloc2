@@ -1,0 +1,235 @@
+// Variables
+$turquoise: #5cb8b2;
+$turquoise-dark: #4a9a95;
+$marron-clair: #a08060;
+
+.payment-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+// Indicateur d'étapes
+.steps-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: #e9ecef;
+    color: #6c757d;
+
+    &.active {
+      background-color: $turquoise;
+      color: white;
+    }
+
+    &.completed {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .step-number {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .step-label {
+      font-size: 0.9rem;
+    }
+  }
+
+  .step-line {
+    width: 60px;
+    height: 2px;
+    background-color: #dee2e6;
+    margin: 0 1rem;
+  }
+}
+
+// Titre avec numéro d'étape
+.step-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $marron-clair !important;
+  font-weight: 300;
+  font-size: 1.5rem;
+
+  .step-number-inline {
+    color: $turquoise;
+    font-weight: 400;
+  }
+}
+
+// Formulaire
+.form-label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+
+  &:focus {
+    border-color: $turquoise;
+    box-shadow: 0 0 0 0.2rem rgba($turquoise, 0.25);
+  }
+}
+
+.input-group-text {
+  background-color: #fff;
+  border-color: #ced4da;
+  color: #6c757d;
+}
+
+// Checkbox conditions
+.form-check {
+  .form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.15em;
+
+    &:checked {
+      background-color: $turquoise;
+      border-color: $turquoise;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba($turquoise, 0.25);
+    }
+  }
+
+  .form-check-label {
+    font-size: 0.95rem;
+    color: #495057;
+  }
+}
+
+// Boutons
+.btn-primary {
+  background-color: $turquoise;
+  border-color: $turquoise;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover {
+    background-color: $turquoise-dark;
+    border-color: $turquoise-dark;
+  }
+
+  &:disabled {
+    background-color: lighten($turquoise, 20%);
+    border-color: lighten($turquoise, 20%);
+  }
+}
+
+.btn-outline-secondary {
+  &:hover {
+    background-color: #6c757d;
+    color: white;
+  }
+}
+
+// Résumé réservation
+.reservation-details {
+  .detail-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.75rem;
+
+    .label {
+      font-weight: 600;
+      color: #495057;
+      font-size: 0.85rem;
+    }
+
+    .value {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// Prix total
+.total-price {
+  h3 {
+    color: #212529;
+    font-weight: 600;
+  }
+}
+
+// Box d'aide
+.help-box {
+  border-left: 3px solid $turquoise;
+
+  h4 {
+    color: #495057;
+  }
+}
+
+// Card de succès
+.success-card {
+  i.bi-check-circle-fill {
+    color: #28a745;
+  }
+}
+
+// Breadcrumb
+.breadcrumb {
+  background: transparent;
+  padding: 0;
+
+  .breadcrumb-item {
+    a {
+      color: $turquoise;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &.active {
+      color: #6c757d;
+    }
+  }
+}
+
+// Texte turquoise
+.text-turquoise {
+  color: $turquoise !important;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .steps-indicator {
+    .step {
+      padding: 0.4rem 0.75rem;
+
+      .step-label {
+        display: none;
+      }
+    }
+
+    .step-line {
+      width: 30px;
+    }
+  }
+
+  .btn-lg {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+}

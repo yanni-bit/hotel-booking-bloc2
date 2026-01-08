@@ -9,12 +9,14 @@ import { HotelReviews } from './components/hotel-reviews/hotel-reviews';
 import { HotelLocation } from './components/hotel-location/hotel-location';
 import { RoomDetail } from './components/room-detail/room-detail';
 import { Booking } from './components/booking/booking';
+import { Payment } from './components/payment/payment';
 import { Login } from './components/login/login';
 import { Register } from './components/register/register';
 import { Profil } from './components/profil/profil';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { MesReservations } from './components/mes-reservations/mes-reservations';
+import { ReservationDetail } from './components/reservation-detail/reservation-detail';
 import { Admin } from './components/admin/admin';
 import { AdminHotels } from './components/admin-hotels/admin-hotels';
 import { AdminHotelForm } from './components/admin-hotel-form/admin-hotel-form';
@@ -37,6 +39,7 @@ export const routes: Routes = [
   },
   { path: 'hotels/:ville/:hotelId/rooms/:chambreId', component: RoomDetail },
   { path: 'booking/:offreId', component: Booking },
+  { path: 'payment/:offreId', component: Payment, canActivate: [authGuard] },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
 
@@ -49,6 +52,11 @@ export const routes: Routes = [
   {
     path: 'reservations',
     component: MesReservations,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'reservations/:id',
+    component: ReservationDetail,
     canActivate: [authGuard]
   },
 

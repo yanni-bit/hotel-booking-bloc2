@@ -1,0 +1,122 @@
+// Variables
+$turquoise: #5cb8b2;
+$turquoise-dark: #4a9a95;
+
+.reservation-detail-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+// Breadcrumb
+.breadcrumb {
+  background: transparent;
+  padding: 0;
+
+  .breadcrumb-item {
+    a {
+      color: $turquoise;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &.active {
+      color: #6c757d;
+    }
+  }
+}
+
+// Texte turquoise
+.text-turquoise {
+  color: $turquoise !important;
+}
+
+// Cards
+.card {
+  border-radius: 8px;
+
+  .card-body {
+    h2 {
+      font-weight: 500;
+    }
+  }
+}
+
+// Image hôtel
+.img-fluid {
+  border-radius: 8px;
+  object-fit: cover;
+  width: 100%;
+  max-height: 200px;
+}
+
+// Date boxes
+.date-box {
+  border: 1px solid #e9ecef;
+  
+  .h5 {
+    color: #212529;
+  }
+}
+
+// Prix
+.price-detail {
+  font-size: 0.95rem;
+}
+
+// Badges
+.badge {
+  padding: 0.5em 1em;
+  font-weight: 500;
+
+  &.fs-6 {
+    font-size: 0.9rem !important;
+  }
+}
+
+// Boutons
+.btn-primary {
+  background-color: $turquoise;
+  border-color: $turquoise;
+
+  &:hover {
+    background-color: $turquoise-dark;
+    border-color: $turquoise-dark;
+  }
+}
+
+.btn-outline-primary {
+  color: $turquoise;
+  border-color: $turquoise;
+
+  &:hover {
+    background-color: $turquoise;
+    border-color: $turquoise;
+    color: white;
+  }
+}
+
+.btn-outline-danger {
+  &:hover {
+    color: white;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .date-box {
+    margin-bottom: 1rem;
+  }
+
+  .img-fluid {
+    max-height: 150px;
+    margin-bottom: 1rem;
+  }
+
+  .sticky-top {
+    position: relative !important;
+    top: 0 !important;
+  }
+}

@@ -34,7 +34,7 @@ class Reservation {
   `;
 
     const values = [
-      reservationData.id_user || null, // ← AJOUTE id_user
+      reservationData.id_user || null,
       reservationData.id_offre,
       reservationData.id_hotel,
       reservationData.id_chambre,
@@ -48,7 +48,7 @@ class Reservation {
       reservationData.devise,
       reservationData.special_requests || null,
       numConfirmation,
-      1, // id_statut = 1 (En attente)
+      reservationData.id_statut || 1, // id_statut (2 = Confirmée si paiement OK, sinon 1 = En attente)
     ];
 
     db.query(query, values, (err, result) => {
@@ -61,6 +61,47 @@ class Reservation {
         id_reservation: result.insertId,
         num_confirmation: numConfirmation,
       });
+    });
+  }
+
+  /**
+   * Récupère une réservation par son ID (avec vérification de propriété)
+   */
+  static getById(reservationId, userId, callback) {
+    const query = `
+    SELECT 
+      r.*,
+      h.nom_hotel,
+      h.ville_hotel,
+      h.pays_hotel,
+      h.img_hotel,
+      ch.type_room,
+      ch.cat_room,
+      o.nom_offre,
+      o.pension,
+      s.nom_statut,
+      s.couleur as couleur_statut
+    FROM RESERVATION r
+    INNER JOIN HOTEL h ON r.id_hotel = h.id_hotel
+    INNER JOIN CHAMBRE ch ON r.id_chambre = ch.id_chambre
+    INNER JOIN OFFRE o ON r.id_offre = o.id_offre
+    LEFT JOIN STATUT s ON r.id_statut = s.id_statut
+    WHERE r.id_reservation = ? AND r.id_user = ?
+  `;
+
+    db.query(query, [reservationId, userId], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+
+      if (!results || results.length === 0) {
+        return callback(
+          new Error("Réservation non trouvée ou accès refusé"),
+          null
+        );
+      }
+
+      callback(null, results[0]);
     });
   }
 
@@ -98,10 +139,10 @@ class Reservation {
   }
 
   /**
- * Récupère TOUTES les réservations (pour admin)
- */
-static getAll(callback) {
-  const query = `
+   * Récupère TOUTES les réservations (pour admin)
+   */
+  static getAll(callback) {
+    const query = `
     SELECT 
       r.*,
       h.nom_hotel,
@@ -125,32 +166,32 @@ static getAll(callback) {
     LEFT JOIN UTILISATEUR u ON r.id_user = u.id_user
     ORDER BY r.date_reservation DESC
   `;
-  
-  db.query(query, (err, results) => {
-    if (err) {
-      return callback(err, null);
-    }
-    callback(null, results);
-  });
-}
 
-/**
- * Met à jour le statut d'une réservation (pour admin)
- */
-static updateStatus(reservationId, newStatusId, callback) {
-  const query = `
+    db.query(query, (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  }
+
+  /**
+   * Met à jour le statut d'une réservation (pour admin)
+   */
+  static updateStatus(reservationId, newStatusId, callback) {
+    const query = `
     UPDATE RESERVATION 
     SET id_statut = ? 
     WHERE id_reservation = ?
   `;
-  
-  db.query(query, [newStatusId, reservationId], (err, result) => {
-    if (err) {
-      return callback(err, null);
-    }
-    callback(null, result);
-  });
-}
+
+    db.query(query, [newStatusId, reservationId], (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, result);
+    });
+  }
 
   /**
    * Annule une réservation (change le statut)

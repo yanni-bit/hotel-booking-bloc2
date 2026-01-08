@@ -26,8 +26,8 @@ export class ReservationService {
   }
 
   /**
- * Récupère les services additionnels d'un hôtel
- */
+   * Récupère les services additionnels d'un hôtel
+   */
   getHotelServices(hotelId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/hotels/${hotelId}/services`);
   }
@@ -40,23 +40,30 @@ export class ReservationService {
   }
 
   /**
- * Annule une réservation
- */
+   * Récupère une réservation par son ID
+   */
+  getReservationById(reservationId: number, userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservations/${reservationId}?userId=${userId}`);
+  }
+
+  /**
+   * Annule une réservation
+   */
   cancelReservation(reservationId: number, userId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/reservations/${reservationId}/cancel`, { userId });
   }
 
   /**
- * Récupère TOUTES les réservations (admin)
- */
-getAllReservations(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/reservations/all`);
-}
+   * Récupère TOUTES les réservations (admin)
+   */
+  getAllReservations(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservations/all`);
+  }
 
-/**
- * Change le statut d'une réservation (admin)
- */
-updateReservationStatus(reservationId: number, newStatusId: number): Observable<any> {
-  return this.http.put(`${this.apiUrl}/reservations/${reservationId}/status`, { newStatusId });
-}
+  /**
+   * Change le statut d'une réservation (admin)
+   */
+  updateReservationStatus(reservationId: number, newStatusId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/reservations/${reservationId}/status`, { newStatusId });
+  }
 }

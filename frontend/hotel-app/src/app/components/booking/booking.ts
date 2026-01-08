@@ -205,6 +205,9 @@ export class Booking implements OnInit {
     this.calculateNights();
   }
 
+  /**
+   * Crée la réservation en "En attente" et redirige vers le paiement
+   */
   confirmBooking() {
     // Vérifier si l'utilisateur est connecté
     const user = this.authService.currentUser();
@@ -227,7 +230,9 @@ export class Booking implements OnInit {
     }
 
     this.submitting = true;
+    this.cdr.markForCheck();
 
+    // Préparer les données de réservation
     const reservationData = {
       id_user: user.id_user,
       id_offre: this.offreId,
@@ -245,22 +250,30 @@ export class Booking implements OnInit {
       client_prenom: this.prenom,
       client_nom: this.nom,
       client_email: this.email,
-      client_telephone: this.telephone
+      client_telephone: this.telephone,
+      services: this.servicesSelectionnes,
+      id_statut: 1  // Statut "En attente" - paiement non effectué
     };
 
-    console.log('📦 Données réservation:', reservationData); // ← DEBUG
+    console.log('📦 Création réservation (En attente):', reservationData);
 
+    // Créer la réservation en base de données
     this.reservationService.createReservation(reservationData).subscribe({
       next: (response) => {
         console.log('✅ Réservation créée:', response);
+
+        const reservationId = response.data.id_reservation || response.data.id;
+        console.log('🔑 Reservation ID:', reservationId);
         this.confirmationNumber = response.data.num_confirmation;
-        this.bookingSuccess = true;
-        this.submitting = false;
-        this.cdr.markForCheck();
+
+        // Rediriger vers la page de paiement avec l'ID de la réservation
+        this.router.navigate(['/payment', this.offreId], {
+          queryParams: { reservationId: reservationId }
+        });
       },
       error: (err) => {
         console.error('❌ Erreur réservation:', err);
-        alert('Erreur lors de la réservation. Veuillez réessayer.');
+        alert('Erreur lors de la création de la réservation. Veuillez réessayer.');
         this.submitting = false;
         this.cdr.markForCheck();
       }

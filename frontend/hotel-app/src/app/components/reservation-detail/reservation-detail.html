@@ -1,0 +1,254 @@
+<main class="reservation-detail-page py-5">
+    <div class="container">
+
+        <!-- LOADING -->
+        <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-turquoise" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-3">Chargement de la réservation...</p>
+        </div>
+
+        <!-- ERROR -->
+        <div *ngIf="error && !loading" class="text-center py-5">
+            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
+            <h2 class="h4 mt-3">{{ error }}</h2>
+            <button (click)="goBack()" class="btn btn-primary mt-3">
+                <i class="bi bi-arrow-left me-2"></i>Retour à mes réservations
+            </button>
+        </div>
+
+        <!-- DÉTAIL RÉSERVATION -->
+        <div *ngIf="!loading && !error && reservation">
+
+            <!-- BREADCRUMB -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="['/']">Accueil</a></li>
+                    <li class="breadcrumb-item"><a [routerLink]="['/reservations']">Mes Réservations</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ reservation.num_confirmation }}</li>
+                </ol>
+            </nav>
+
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <h1 class="h3 text-turquoise mb-2">
+                        <i class="bi bi-receipt me-2"></i>Détail de la réservation
+                    </h1>
+                    <p class="text-muted mb-0">
+                        N° de confirmation : <strong class="text-dark">{{ reservation.num_confirmation }}</strong>
+                    </p>
+                </div>
+                <span class="badge fs-6" [ngClass]="getStatusBadgeClass(reservation.couleur_statut)">
+                    {{ reservation.nom_statut }}
+                </span>
+            </div>
+
+            <div class="row">
+
+                <!-- COLONNE GAUCHE -->
+                <div class="col-lg-8">
+
+                    <!-- HÔTEL -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h2 class="h5 mb-4 text-turquoise">
+                                <i class="bi bi-building me-2"></i>Hébergement
+                            </h2>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <img [src]="reservation.img_hotel" [alt]="reservation.nom_hotel"
+                                        class="img-fluid rounded">
+                                </div>
+                                <div class="col-md-8">
+                                    <h3 class="h5 mb-2">{{ reservation.nom_hotel }}</h3>
+                                    <p class="text-muted mb-3">
+                                        <i class="bi bi-geo-alt me-1"></i>
+                                        {{ reservation.ville_hotel }}, {{ reservation.pays_hotel }}
+                                    </p>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p class="mb-1"><strong>Chambre</strong></p>
+                                            <p class="text-muted">{{ reservation.type_room }} - {{ reservation.cat_room
+                                                }}</p>
+                                        </div>
+                                        <div class="col-6">
+                                            <p class="mb-1"><strong>Offre</strong></p>
+                                            <p class="text-muted">{{ reservation.nom_offre }}</p>
+                                        </div>
+                                    </div>
+
+                                    <a [routerLink]="['/hotels', reservation.ville_hotel, reservation.id_hotel]"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye me-1"></i>Voir l'hôtel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DATES & VOYAGEURS -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h2 class="h5 mb-4 text-turquoise">
+                                <i class="bi bi-calendar-check me-2"></i>Dates et voyageurs
+                            </h2>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="date-box text-center p-3 bg-light rounded mb-3">
+                                        <p class="text-muted small mb-1">Arrivée</p>
+                                        <p class="h5 mb-0">{{ formatDate(reservation.check_in) }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="date-box text-center p-3 bg-light rounded mb-3">
+                                        <p class="text-muted small mb-1">Départ</p>
+                                        <p class="h5 mb-0">{{ formatDate(reservation.check_out) }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="date-box text-center p-3 bg-light rounded mb-3">
+                                        <p class="text-muted small mb-1">Durée</p>
+                                        <p class="h5 mb-0">{{ reservation.nbre_nuits }} nuit{{ reservation.nbre_nuits >
+                                            1 ? 's' : '' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <p class="mb-2">
+                                    <i class="bi bi-people me-2 text-turquoise"></i>
+                                    <strong>{{ reservation.nbre_adults }}</strong> adulte{{ reservation.nbre_adults > 1
+                                    ? 's' : '' }}
+                                    <span *ngIf="reservation.nbre_children > 0">
+                                        , <strong>{{ reservation.nbre_children }}</strong> enfant{{
+                                        reservation.nbre_children > 1 ? 's' : '' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DEMANDES SPÉCIALES -->
+                    <div class="card border-0 shadow-sm mb-4" *ngIf="reservation.special_requests">
+                        <div class="card-body p-4">
+                            <h2 class="h5 mb-3 text-turquoise">
+                                <i class="bi bi-chat-text me-2"></i>Demandes spéciales
+                            </h2>
+                            <p class="mb-0 text-muted">{{ reservation.special_requests }}</p>
+                        </div>
+                    </div>
+
+                    <!-- INFORMATIONS DE RÉSERVATION -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h2 class="h5 mb-4 text-turquoise">
+                                <i class="bi bi-info-circle me-2"></i>Informations de réservation
+                            </h2>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p class="mb-2">
+                                        <span class="text-muted">Date de réservation :</span><br>
+                                        <strong>{{ formatDateTime(reservation.date_reservation) }}</strong>
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="mb-2">
+                                        <span class="text-muted">N° de confirmation :</span><br>
+                                        <strong>{{ reservation.num_confirmation }}</strong>
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="mb-2">
+                                        <span class="text-muted">Statut :</span><br>
+                                        <span class="badge" [ngClass]="getStatusBadgeClass(reservation.couleur_statut)">
+                                            {{ reservation.nom_statut }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- COLONNE DROITE -->
+                <div class="col-lg-4">
+
+                    <!-- RÉCAPITULATIF PRIX -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h2 class="h5 mb-4">Récapitulatif</h2>
+
+                            <div class="price-detail mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Prix par nuit</span>
+                                    <span>{{ reservation.prix_nuit }} {{ reservation.devise }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Nombre de nuits</span>
+                                    <span>x {{ reservation.nbre_nuits }}</span>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <strong class="h5 mb-0">Total</strong>
+                                <strong class="h4 mb-0 text-turquoise">{{ reservation.total_price }} {{
+                                    reservation.devise }}</strong>
+                            </div>
+
+                            <p class="small text-muted text-center mb-4">
+                                <i class="bi bi-shield-check me-1"></i>TVA (20%) incluse
+                            </p>
+
+                            <!-- ACTIONS -->
+                            <div class="d-grid gap-2">
+                                <button (click)="goBack()" class="btn btn-outline-primary">
+                                    <i class="bi bi-arrow-left me-2"></i>Retour
+                                </button>
+
+                                <!-- BOUTON PAYER (si en attente) -->
+                                <button *ngIf="reservation.id_statut === 1" (click)="goToPayment()"
+                                    class="btn btn-success">
+                                    <i class="bi bi-credit-card me-2"></i>Payer maintenant
+                                </button>
+
+                                <button *ngIf="canCancel()" (click)="cancelReservation()"
+                                    class="btn btn-outline-danger">
+                                    <i class="bi bi-x-circle me-2"></i>Annuler la réservation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AIDE -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h3 class="h6 mb-3">
+                                <i class="bi bi-question-circle me-2 text-turquoise"></i>Besoin d'aide ?
+                            </h3>
+                            <p class="small text-muted mb-3">
+                                Notre équipe est disponible 24h/24 pour répondre à vos questions.
+                            </p>
+                            <p class="mb-0">
+                                <i class="bi bi-telephone me-2 text-turquoise"></i>
+                                <strong>1-555-555-555</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</main>
