@@ -6,7 +6,7 @@
 const HotelController = require("../controllers/hotelController");
 const ChambreController = require("../controllers/chambreController");
 const AvisController = require("../controllers/avisController");
-const Hotel = require('../models/Hotel');
+const Hotel = require("../models/Hotel");
 
 function hotelRoutes(req, res) {
   const pathname = req.pathname;
@@ -25,6 +25,43 @@ function hotelRoutes(req, res) {
   // ========================================
   if (pathname === "/api/destinations" && method === "GET") {
     HotelController.getDestinationsCount(req, res);
+    return;
+  }
+
+  // ========================================
+  // GET /api/cities - Liste des villes distinctes
+  // ========================================
+  if (pathname === "/api/cities" && method === "GET") {
+    const db = require("../config/database");
+
+    db.query(
+      "SELECT DISTINCT ville_hotel FROM hotel ORDER BY ville_hotel ASC",
+      (err, results) => {
+        if (err) {
+          console.error("Erreur récupération villes:", err);
+          res.statusCode = 500;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: false,
+              message: "Erreur serveur",
+            })
+          );
+          return;
+        }
+
+        const cities = results.map((row) => row.ville_hotel);
+
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: true,
+            data: cities,
+          })
+        );
+      }
+    );
     return;
   }
 
@@ -162,12 +199,14 @@ function hotelRoutes(req, res) {
     });
 
     req.on("end", () => {
-
-      console.log('📥 Body reçu (raw):', body); // debug
+      console.log("📥 Body reçu (raw):", body); // debug
       try {
         const hotelData = JSON.parse(body);
-        console.log('📦 Hotel data parsé:', hotelData); // debug
-        console.log('📊 Type nbre_etoile_hotel:', typeof hotelData.nbre_etoile_hotel); // debug
+        console.log("📦 Hotel data parsé:", hotelData); // debug
+        console.log(
+          "📊 Type nbre_etoile_hotel:",
+          typeof hotelData.nbre_etoile_hotel
+        ); // debug
 
         Hotel.create(hotelData, (err, result) => {
           if (err) {

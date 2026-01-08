@@ -10,55 +10,62 @@
   </div>
 
   <!-- Boutons de navigation -->
-  <a class="prev" (click)="previousSlide()">&#10094;</a>
-  <a class="next" (click)="nextSlide()">&#10095;</a>
+  <a class="prev" (click)="previousSlide()" aria-label="Image précédente" role="button" tabindex="0">&#10094;</a>
+  <a class="next" (click)="nextSlide()" aria-label="Image suivante" role="button" tabindex="0">&#10095;</a>
 
   <!-- Indicateurs (dots) -->
-  <div class="dots">
+  <div class="dots" role="tablist" aria-label="Navigation du carrousel">
     <span class="dot" *ngFor="let slide of slides; let i = index" 
           [class.active]="currentSlide === i"
-          (click)="goToSlide(i)"></span>
+          (click)="goToSlide(i)"
+          role="tab"
+          [attr.aria-selected]="currentSlide === i"
+          [attr.aria-label]="'Aller à l\'image ' + (i + 1)"
+          tabindex="0"></span>
   </div>
 
   <!-- FORMULAIRE DE RECHERCHE (OVERLAY) -->
   <div class="search-overlay-container">
-    <div class="search-overlay-content">
+    <div class="search-overlay-content" role="search" aria-label="Rechercher un hôtel">
       <div class="row g-0">
 
         <!-- COLONNE 1 : QUOI? -->
         <div class="col-12 col-lg-3 d-flex flex-column">
           <h5 class="search-field-box-title"><em>01</em> Quoi?</h5>
           <div class="search-field-box">
-            <div class="row-buttons">
-              <div class="search-col-button">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type" id="hotel" checked>
-                  <label class="form-check-label" for="hotel">Hotel</label>
+            <fieldset>
+              <legend class="visually-hidden">Type de réservation</legend>
+              <div class="row-buttons">
+                <div class="search-col-button">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type" id="hotel" checked>
+                    <label class="form-check-label" for="hotel">Hotel</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type" id="vol" disabled>
+                    <label class="form-check-label text-muted" for="vol" title="Non disponible">Vol</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type" id="vol-hotel" disabled>
+                    <label class="form-check-label text-muted" for="vol-hotel" title="Non disponible">Vol & Hotel</label>
+                  </div>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type" id="vol">
-                  <label class="form-check-label" for="vol">Vol</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type" id="vol-hotel">
-                  <label class="form-check-label" for="vol-hotel">Vol & Hotel</label>
+                <div class="search-col-button">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type" id="studio" disabled>
+                    <label class="form-check-label text-muted" for="studio" title="Non disponible">Studio</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type" id="croisiere" disabled>
+                    <label class="form-check-label text-muted" for="croisiere" title="Non disponible">Croisière</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type" id="voiture" disabled>
+                    <label class="form-check-label text-muted" for="voiture" title="Non disponible">Location voiture</label>
+                  </div>
                 </div>
               </div>
-              <div class="search-col-button">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type" id="studio">
-                  <label class="form-check-label" for="studio">Studio</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type" id="croisiere">
-                  <label class="form-check-label" for="croisiere">Croisière</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type" id="voiture">
-                  <label class="form-check-label" for="voiture">Location voiture</label>
-                </div>
-              </div>
-            </div>
+            </fieldset>
           </div>
         </div>
 
@@ -67,7 +74,21 @@
           <h5 class="search-field-box-title"><em>02</em> Où?</h5>
           <div class="search-field-box">
             <label for="destination"><h5>Votre destination</h5></label>
-            <input type="text" class="form-control" placeholder="Ville, région..." id="destination">
+            <select class="form-control" 
+                    id="destination" 
+                    [(ngModel)]="selectedCity"
+                    (change)="validateCity()"
+                    (blur)="validateCity()"
+                    [class.is-invalid]="touched.city && errors.city"
+                    [class.is-valid]="touched.city && !errors.city && selectedCity"
+                    aria-describedby="destinationError"
+                    aria-required="true">
+              <option value="">Sélectionnez une ville</option>
+              <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+            </select>
+            <div class="invalid-feedback" id="destinationError" *ngIf="touched.city && errors.city" role="alert">
+              {{ errors.city }}
+            </div>
           </div>
         </div>
 
@@ -78,11 +99,37 @@
             <div class="search-col-date d-flex flex-row">
               <div class="mb-3">
                 <label for="checkin"><h5>Check-in</h5></label>
-                <input type="date" class="form-control" id="checkin">
+                <input type="date" 
+                       class="form-control" 
+                       id="checkin" 
+                       [(ngModel)]="checkinDate" 
+                       [min]="minDate"
+                       (change)="validateCheckin()"
+                       (blur)="validateCheckin()"
+                       [class.is-invalid]="touched.checkin && errors.checkin"
+                       [class.is-valid]="touched.checkin && !errors.checkin && checkinDate"
+                       aria-describedby="checkinError"
+                       aria-required="true">
+                <div class="invalid-feedback" id="checkinError" *ngIf="touched.checkin && errors.checkin" role="alert">
+                  {{ errors.checkin }}
+                </div>
               </div>
               <div class="mb-3">
                 <label for="checkout"><h5>Check-out</h5></label>
-                <input type="date" class="form-control" id="checkout">
+                <input type="date" 
+                       class="form-control" 
+                       id="checkout" 
+                       [(ngModel)]="checkoutDate" 
+                       [min]="checkinDate || minDate"
+                       (change)="validateCheckout()"
+                       (blur)="validateCheckout()"
+                       [class.is-invalid]="touched.checkout && errors.checkout"
+                       [class.is-valid]="touched.checkout && !errors.checkout && checkoutDate"
+                       aria-describedby="checkoutError"
+                       aria-required="true">
+                <div class="invalid-feedback" id="checkoutError" *ngIf="touched.checkout && errors.checkout" role="alert">
+                  {{ errors.checkout }}
+                </div>
               </div>
             </div>
           </div>
@@ -95,15 +142,43 @@
             <div class="search-col-who d-flex flex-row">
               <div class="mb-3">
                 <label for="rooms"><h5>Chambres</h5></label>
-                <input type="number" class="form-control" id="rooms" min="1" value="1">
+                <input type="number" 
+                       class="form-control" 
+                       id="rooms" 
+                       min="1" 
+                       max="10"
+                       [(ngModel)]="rooms"
+                       (change)="validateRooms()"
+                       aria-label="Nombre de chambres">
               </div>
               <div class="mb-3">
                 <label for="adults"><h5>Adultes</h5></label>
-                <input type="number" class="form-control" id="adults" min="1" value="2">
+                <input type="number" 
+                       class="form-control" 
+                       id="adults" 
+                       min="1" 
+                       max="20"
+                       [(ngModel)]="adults"
+                       (change)="validateAdults()"
+                       (blur)="validateAdults()"
+                       [class.is-invalid]="touched.adults && errors.adults"
+                       [class.is-valid]="touched.adults && !errors.adults"
+                       aria-describedby="adultsError"
+                       aria-required="true">
+                <div class="invalid-feedback" id="adultsError" *ngIf="touched.adults && errors.adults" role="alert">
+                  {{ errors.adults }}
+                </div>
               </div>
               <div class="mb-3">
                 <label for="children"><h5>Enfants</h5></label>
-                <input type="number" class="form-control" id="children" min="0" value="0">
+                <input type="number" 
+                       class="form-control" 
+                       id="children" 
+                       min="0" 
+                       max="10"
+                       [(ngModel)]="children"
+                       (change)="validateChildren()"
+                       aria-label="Nombre d'enfants">
               </div>
             </div>
           </div>
@@ -114,7 +189,12 @@
       <!-- BOUTON RECHERCHER -->
       <div class="row mt-3 mx-0 searchProcess">
         <div class="col-12 mb-0 text-center">
-          <button type="button" class="btn px-3 pt-2 pb-1 btn-custom w-20">Rechercher</button>
+          <button type="button" 
+                  class="btn px-3 pt-2 pb-1 btn-custom w-20" 
+                  (click)="onSearch()"
+                  aria-label="Rechercher des hôtels">
+            Rechercher
+          </button>
         </div>
       </div>
 

@@ -29,4 +29,9 @@ export class HotelService {
   getPopularHotels(city: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/hotels/popular/${city}`);
   }
+
+  // Récupérer les villes disponibles
+  getCities(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/cities`);
+  }
 }
