@@ -1,0 +1,275 @@
+<main class="admin-messages-page py-5">
+  <div class="container-fluid">
+
+    <!-- En-tête -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <a [routerLink]="['/admin']" class="text-muted me-3">
+          <i class="bi bi-arrow-left"></i> Retour
+        </a>
+        <h1 class="h3 text-turquoise d-inline-block mb-0">
+          <i class="bi bi-envelope me-2"></i>Messages de contact
+        </h1>
+      </div>
+      <div>
+        <span class="badge bg-primary me-2">{{ filteredMessages.length }} message(s)</span>
+        <span class="badge bg-danger" *ngIf="getUnreadCount() > 0">
+          {{ getUnreadCount() }} non lu(s)
+        </span>
+      </div>
+    </div>
+
+    <!-- FILTRES -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-3">
+        <div class="row g-3">
+
+          <!-- Filtre par statut -->
+          <div class="col-md-2">
+            <label class="form-label small fw-bold">Statut</label>
+            <select class="form-select form-select-sm" [(ngModel)]="filterStatus" (change)="onFilterChange()">
+              <option value="all">Tous</option>
+              <option value="unread">Non lus</option>
+              <option value="read">Lus</option>
+              <option value="untreated">Non traités</option>
+              <option value="treated">Traités</option>
+            </select>
+          </div>
+
+          <!-- Filtre par sujet -->
+          <div class="col-md-2">
+            <label class="form-label small fw-bold">Sujet</label>
+            <select class="form-select form-select-sm" [(ngModel)]="filterSubject" (change)="onFilterChange()">
+              <option value="all">Tous les sujets</option>
+              <option [value]="sujet.value" *ngFor="let sujet of sujets">
+                {{ sujet.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Recherche -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Recherche</label>
+            <input 
+              type="text" 
+              class="form-control form-control-sm" 
+              [(ngModel)]="searchTerm"
+              (input)="onFilterChange()"
+              placeholder="Rechercher par nom, email, message...">
+          </div>
+
+          <!-- Bouton rafraîchir -->
+          <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-sm btn-outline-primary w-100" (click)="loadMessages()">
+              <i class="bi bi-arrow-clockwise me-1"></i>Rafraîchir
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-turquoise" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p class="mt-3">Chargement des messages...</p>
+    </div>
+
+    <!-- ERROR -->
+    <div *ngIf="error && !loading" class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+    </div>
+
+    <!-- TABLEAU -->
+    <div *ngIf="!loading && !error" class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th width="50"></th>
+                <th>Expéditeur</th>
+                <th>Sujet</th>
+                <th>Message</th>
+                <th width="150">Date</th>
+                <th width="100" class="text-center">Statut</th>
+                <th width="120" class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr 
+                *ngFor="let message of filteredMessages" 
+                [class.table-warning]="message.lu === 0"
+                [class.fw-bold]="message.lu === 0"
+                style="cursor: pointer;"
+                (click)="viewMessage(message)">
+
+                <!-- Indicateur non lu -->
+                <td class="align-middle text-center">
+                  <i 
+                    class="bi" 
+                    [ngClass]="message.lu === 0 ? 'bi-envelope-fill text-primary' : 'bi-envelope-open text-muted'">
+                  </i>
+                </td>
+
+                <!-- Expéditeur -->
+                <td class="align-middle">
+                  <div><strong>{{ message.nom }}</strong></div>
+                  <small class="text-muted">{{ message.email }}</small>
+                  <small class="text-muted d-block" *ngIf="message.telephone">
+                    <i class="bi bi-telephone me-1"></i>{{ message.telephone }}
+                  </small>
+                </td>
+
+                <!-- Sujet -->
+                <td class="align-middle">
+                  <span class="badge" [ngClass]="getSujetBadgeClass(message.sujet)">
+                    {{ getSujetLabel(message.sujet) }}
+                  </span>
+                </td>
+
+                <!-- Aperçu message -->
+                <td class="align-middle">
+                  <div class="message-preview">
+                    {{ message.message.length > 80 ? (message.message | slice:0:80) + '...' : message.message }}
+                  </div>
+                </td>
+
+                <!-- Date -->
+                <td class="align-middle">
+                  <small>{{ formatDate(message.date_envoi) }}</small>
+                </td>
+
+                <!-- Statut traité -->
+                <td class="align-middle text-center">
+                  <span 
+                    class="badge" 
+                    [ngClass]="message.traite === 1 ? 'bg-success' : 'bg-warning'">
+                    {{ message.traite === 1 ? 'Traité' : 'En attente' }}
+                  </span>
+                </td>
+
+                <!-- Actions -->
+                <td class="align-middle text-end" (click)="$event.stopPropagation()">
+                  <div class="btn-group" role="group">
+                    <button 
+                      class="btn btn-sm btn-outline-info"
+                      title="Voir"
+                      (click)="viewMessage(message)">
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <button 
+                      class="btn btn-sm btn-outline-danger"
+                      title="Supprimer"
+                      (click)="deleteMessage(message)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Message si aucun message -->
+          <div *ngIf="filteredMessages.length === 0" class="text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 3rem; color: var(--turquoise);"></i>
+            <p class="text-muted mt-3">Aucun message trouvé</p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL DÉTAIL MESSAGE -->
+<div 
+  class="modal fade show" 
+  [class.d-block]="selectedMessage" 
+  [style.background]="selectedMessage ? 'rgba(0,0,0,0.5)' : 'transparent'"
+  *ngIf="selectedMessage"
+  (click)="closeModal()">
+  
+  <div class="modal-dialog modal-lg modal-dialog-centered" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      
+      <!-- Header -->
+      <div class="modal-header bg-turquoise text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-envelope-open me-2"></i>
+          Message de {{ selectedMessage.nom }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      
+      <!-- Body -->
+      <div class="modal-body">
+        
+        <!-- Infos expéditeur -->
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <p class="mb-1"><strong>Nom :</strong> {{ selectedMessage.nom }}</p>
+            <p class="mb-1"><strong>Email :</strong> 
+              <a [href]="'mailto:' + selectedMessage.email">{{ selectedMessage.email }}</a>
+            </p>
+            <p class="mb-0" *ngIf="selectedMessage.telephone">
+              <strong>Téléphone :</strong> 
+              <a [href]="'tel:' + selectedMessage.telephone">{{ selectedMessage.telephone }}</a>
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="mb-1">
+              <span class="badge" [ngClass]="getSujetBadgeClass(selectedMessage.sujet)">
+                {{ getSujetLabel(selectedMessage.sujet) }}
+              </span>
+            </p>
+            <p class="mb-1"><small class="text-muted">{{ formatDate(selectedMessage.date_envoi) }}</small></p>
+            <p class="mb-0">
+              <span 
+                class="badge" 
+                [ngClass]="selectedMessage.traite === 1 ? 'bg-success' : 'bg-warning'">
+                {{ selectedMessage.traite === 1 ? 'Traité' : 'En attente' }}
+              </span>
+            </p>
+          </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Message -->
+        <div class="message-content p-3 bg-light rounded">
+          <p class="mb-0" style="white-space: pre-wrap;">{{ selectedMessage.message }}</p>
+        </div>
+        
+      </div>
+      
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button 
+          *ngIf="selectedMessage.traite === 0"
+          class="btn btn-success"
+          (click)="markAsTreated(selectedMessage)">
+          <i class="bi bi-check-circle me-2"></i>Marquer comme traité
+        </button>
+        <a 
+          [href]="'mailto:' + selectedMessage.email + '?subject=Re: ' + getSujetLabel(selectedMessage.sujet)"
+          class="btn btn-primary">
+          <i class="bi bi-reply me-2"></i>Répondre par email
+        </a>
+        <button 
+          class="btn btn-outline-danger"
+          (click)="deleteMessage(selectedMessage)">
+          <i class="bi bi-trash me-2"></i>Supprimer
+        </button>
+        <button class="btn btn-secondary" (click)="closeModal()">Fermer</button>
+      </div>
+      
+    </div>
+  </div>
+</div>

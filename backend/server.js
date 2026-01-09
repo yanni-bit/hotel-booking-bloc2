@@ -11,6 +11,7 @@ const offreRoutes = require("./routes/offreRoutes");
 const reservationRoutes = require("./routes/reservationRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const authRoutes = require("./routes/authRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "localhost";
@@ -51,6 +52,14 @@ async function router(req, res) {
     // ========================================
     if (req.pathname.startsWith("/api/auth")) {
       await authRoutes(req, res);
+      return;
+    }
+
+    // ========================================
+    // ROUTES CONTACT
+    // ========================================
+    if (req.pathname.startsWith("/api/contact")) {
+      await contactRoutes(req, res);
       return;
     }
 

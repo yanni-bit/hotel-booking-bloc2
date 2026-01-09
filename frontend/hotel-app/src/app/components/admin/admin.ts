@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { ContactService } from '../../services/contact.service';
 
 @Component({
   selector: 'app-admin',
@@ -17,7 +18,9 @@ export class Admin implements OnInit {
     hotels: 0,
     reservations: 0,
     users: 0,
-    services: 0
+    services: 0,
+    messages: 0,
+    messagesUnread: 0
   };
   
   loading: boolean = true;
@@ -25,6 +28,7 @@ export class Admin implements OnInit {
   constructor(
     public authService: AuthService,
     private http: HttpClient,
+    private contactService: ContactService,
     private cdr: ChangeDetectorRef
   ) {}
   
@@ -33,16 +37,25 @@ export class Admin implements OnInit {
   }
   
   loadStats() {
-    // Pour l'instant, on simule les stats
-    // On créera les vraies routes API plus tard
+    // Charger les stats de messages
+    this.contactService.getAllMessages().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.stats.messages = response.data.length;
+          this.stats.messagesUnread = response.data.filter(m => m.lu === 0).length;
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err) => console.error('Erreur chargement messages:', err)
+    });
     
+    // Pour l'instant, on simule les autres stats
+    // On créera les vraies routes API plus tard
     setTimeout(() => {
-      this.stats = {
-        hotels: 101,
-        reservations: 0,
-        users: 4,
-        services: 505
-      };
+      this.stats.hotels = 101;
+      this.stats.reservations = 0;
+      this.stats.users = 4;
+      this.stats.services = 505;
       this.loading = false;
       this.cdr.markForCheck();
     }, 500);

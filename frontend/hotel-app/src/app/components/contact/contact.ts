@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ContactService, ContactMessage } from '../../services/contact.service';
 
 @Component({
   selector: 'app-contact',
@@ -15,8 +16,12 @@ export class Contact {
   isSubmitting = false;
   showSuccess = false;
   showError = false;
+  errorMessage = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private contactService: ContactService
+  ) {
     this.contactForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
@@ -43,21 +48,44 @@ export class Contact {
     this.showSuccess = false;
     this.showError = false;
 
-    // Simuler l'envoi du formulaire (pas de backend pour contact)
-    // En production, tu pourrais appeler un service pour envoyer un email
-    setTimeout(() => {
-      console.log('Formulaire soumis:', this.contactForm.value);
-      
-      this.isSubmitting = false;
-      this.showSuccess = true;
-      
-      // Réinitialiser le formulaire après succès
-      this.contactForm.reset();
-      
-      // Masquer le message de succès après 5 secondes
-      setTimeout(() => {
-        this.showSuccess = false;
-      }, 5000);
-    }, 1000);
+    // Préparer les données pour l'API
+    const messageData: ContactMessage = {
+      nom: this.contactForm.value.name,
+      email: this.contactForm.value.email,
+      telephone: this.contactForm.value.phone || undefined,
+      sujet: this.contactForm.value.subject,
+      message: this.contactForm.value.message
+    };
+
+    // Appeler le service pour envoyer le message
+    this.contactService.sendMessage(messageData).subscribe({
+      next: (response) => {
+        this.isSubmitting = false;
+        
+        if (response.success) {
+          this.showSuccess = true;
+          this.contactForm.reset();
+          
+          // Masquer le message de succès après 5 secondes
+          setTimeout(() => {
+            this.showSuccess = false;
+          }, 5000);
+        } else {
+          this.showError = true;
+          this.errorMessage = response.message || 'Une erreur est survenue';
+        }
+      },
+      error: (error) => {
+        console.error('Erreur envoi message:', error);
+        this.isSubmitting = false;
+        this.showError = true;
+        this.errorMessage = error.error?.message || 'Une erreur est survenue. Veuillez réessayer plus tard.';
+        
+        // Masquer le message d'erreur après 5 secondes
+        setTimeout(() => {
+          this.showError = false;
+        }, 5000);
+      }
+    });
   }
 }

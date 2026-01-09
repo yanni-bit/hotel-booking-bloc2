@@ -21,6 +21,7 @@ import { Admin } from './components/admin/admin';
 import { AdminHotels } from './components/admin-hotels/admin-hotels';
 import { AdminHotelForm } from './components/admin-hotel-form/admin-hotel-form';
 import { AdminReservations } from './components/admin-reservations/admin-reservations';
+import { AdminMessages } from './components/admin-messages/admin-messages';
 import { SearchResults } from './components/search-results/search-results';
 import { Contact } from './components/contact/contact';
 
@@ -88,6 +89,11 @@ export const routes: Routes = [
   { 
     path: 'admin/reservations', 
     component: AdminReservations,
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/messages', 
+    component: AdminMessages,
     canActivate: [adminGuard]
   },
 
