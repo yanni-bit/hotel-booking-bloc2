@@ -22,6 +22,7 @@ import { AdminHotels } from './components/admin-hotels/admin-hotels';
 import { AdminHotelForm } from './components/admin-hotel-form/admin-hotel-form';
 import { AdminReservations } from './components/admin-reservations/admin-reservations';
 import { SearchResults } from './components/search-results/search-results';
+import { Contact } from './components/contact/contact';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -44,6 +45,7 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'search', component: SearchResults },
+  { path: 'contact', component: Contact },
 
   // ROUTES PROTÉGÉES (nécessitent une connexion)
   {
