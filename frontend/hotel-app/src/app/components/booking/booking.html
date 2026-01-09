@@ -188,7 +188,7 @@
                           <small class="text-muted d-block">{{ service.description_service }}</small>
                         </div>
                         <div class="text-end ms-3" *ngIf="!service.inclus">
-                          <span class="fw-bold text-turquoise">{{ service.prix_service }}€</span>
+                          <span class="fw-bold text-turquoise">{{ service.prix_service | appCurrency }}</span>
                           <small class="d-block text-muted">
                             <ng-container [ngSwitch]="service.type_service">
                               <span *ngSwitchCase="'journalier'">{{ 'booking.perDay' | translate }}</span>
@@ -267,7 +267,7 @@
             <div class="mb-3">
               <div class="d-flex justify-content-between mb-2">
                 <span>{{ 'booking.room' | translate }} ({{ nbreNuits }} {{ 'booking.nights' | translate }})</span>
-                <span>{{ (offre.prix_nuit * nbreNuits).toFixed(2) }}€</span>
+                <span>{{ offre.prix_nuit * nbreNuits | appCurrency }}</span>
               </div>
 
               <!-- Services additionnels -->
@@ -278,7 +278,7 @@
                     <i [class]="getServiceIcon(service.nom_service) + ' me-1'"></i>
                     {{ service.nom_service }}
                   </span>
-                  <span>{{ calculateServicePrice(service) }}€</span>
+                  <span>{{ calculateServicePrice(service) | appCurrency }}</span>
                 </div>
               </div>
             </div>
@@ -286,10 +286,10 @@
             <div class="alert alert-success mb-3">
               <div class="d-flex justify-content-between align-items-center">
                 <strong>{{ 'booking.total' | translate }}</strong>
-                <span class="h4 mb-0">{{ prixTotal.toFixed(2) }}€</span>
+                <span class="h4 mb-0">{{ prixTotal | appCurrency }}</span>
               </div>
               <small class="text-muted d-block mt-1" *ngIf="servicesSelectionnes.length > 0">
-                ({{ 'booking.includingServices' | translate }} {{ prixServices.toFixed(2) }}€)
+                ({{ 'booking.includingServices' | translate }} {{ prixServices | appCurrency }})
               </small>
             </div>
 

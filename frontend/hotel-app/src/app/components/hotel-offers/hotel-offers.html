@@ -93,7 +93,7 @@
               <div class="text-end">
                 <p class="mb-0" *ngIf="chambre.prix_minimum">
                   <small class="text-muted">{{ 'hotel.from' | translate }}</small><br>
-                  <span class="h4 prix fw-bold mb-0">{{ chambre.prix_minimum }}€</span>
+                  <span class="h4 prix fw-bold mb-0">{{ chambre.prix_minimum | appCurrency }}</span>
                   <small class="text-muted">{{ 'hotel.perNight' | translate }}</small>
                 </p>
               </div>

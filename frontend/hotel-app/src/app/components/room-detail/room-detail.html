@@ -96,8 +96,7 @@
                 </div>
                 <div class="text-end">
                   <div class="price-tag">
-                    <span class="price">{{ offre.prix_nuit }}</span>
-                    <span class="currency">{{ offre.devise || 'EUR' }}</span>
+                    <span class="price">{{ offre.prix_nuit | appCurrency }}</span>
                     <small class="d-block text-gris-moyen">{{ 'hotel.perNight' | translate }}</small>
                   </div>
                 </div>
@@ -166,8 +165,7 @@
         <div class="card border-0 shadow-sm p-3 mb-3 sidebar-top text-gris-moyen">
           <h3 class="h6 mb-3 text-center">{{ 'hotel.from' | translate }}</h3>
           <div class="text-center mb-3">
-            <span class="display-4 fw-bold text-turquoise">{{ getPrixMinimum() }}</span>
-            <span class="h5 text-gris-moyen">€</span>
+            <span class="display-4 fw-bold text-turquoise">{{ getPrixMinimum() | appCurrency }}</span>
             <small class="d-block text-gris-moyen">{{ 'room.perNight' | translate }}</small>
           </div>
 

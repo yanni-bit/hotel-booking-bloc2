@@ -4,10 +4,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ReservationService } from '../../services/reservation';
 import { TranslateModule } from '@ngx-translate/core';
+import { CurrencyPipe } from '../../pipes/currency.pipe';
 
 @Component({
   selector: 'app-reservation-detail',
-  imports: [CommonModule, RouterLink, TranslateModule],
+  imports: [CommonModule, RouterLink, TranslateModule, CurrencyPipe],
   templateUrl: './reservation-detail.html',
   styleUrl: './reservation-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

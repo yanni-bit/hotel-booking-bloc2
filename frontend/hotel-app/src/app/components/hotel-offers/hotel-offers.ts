@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ChambreService } from '../../services/chambre';
 import { TranslateModule } from '@ngx-translate/core';
+import { CurrencyPipe } from '../../pipes/currency.pipe';
 
 @Component({
   selector: 'app-hotel-offers',
-  imports: [CommonModule, RouterLink, TranslateModule],
+  imports: [CommonModule, RouterLink, TranslateModule, CurrencyPipe],
   templateUrl: './hotel-offers.html',
   styleUrl: './hotel-offers.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

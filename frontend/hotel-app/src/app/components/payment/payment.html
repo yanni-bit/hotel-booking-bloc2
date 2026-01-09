@@ -241,7 +241,7 @@
 
             <!-- Prix total -->
             <div class="total-price">
-              <h3 class="h4 mb-1">{{ 'booking.total' | translate }} : {{ bookingData.total_price ? (bookingData.total_price | number:'1.2-2') : '0.00' }} €</h3>
+              <h3 class="h4 mb-1">{{ 'booking.total' | translate }} : {{ bookingData.total_price | appCurrency }}</h3>
               <small class="text-muted">{{ 'booking.vatIncluded' | translate }}</small>
             </div>
 

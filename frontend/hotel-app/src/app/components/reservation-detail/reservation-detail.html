@@ -184,7 +184,7 @@
                             <div class="price-detail mb-3">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>{{ 'reservations.pricePerNight' | translate }}</span>
-                                    <span>{{ reservation.prix_nuit }} {{ reservation.devise }}</span>
+                                    <span>{{ reservation.prix_nuit | appCurrency }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>{{ 'reservations.numberOfNights' | translate }}</span>
@@ -196,7 +196,7 @@
 
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <strong class="h5 mb-0">{{ 'booking.total' | translate }}</strong>
-                                <strong class="h4 mb-0 text-turquoise">{{ reservation.total_price }} {{ reservation.devise }}</strong>
+                                <strong class="h4 mb-0 text-turquoise">{{ reservation.total_price | appCurrency }}</strong>
                             </div>
 
                             <p class="small text-muted text-center mb-4">

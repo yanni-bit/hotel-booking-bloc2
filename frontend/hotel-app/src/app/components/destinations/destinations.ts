@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DestinationService } from '../../services/destination';
 import { TranslateModule } from '@ngx-translate/core';
+import { CurrencyPipe } from '../../pipes/currency.pipe';
 
 interface Destination {
   id: number;
   title: string;
   pays: string;
   nombrehotels: string;
-  prix: string;
+  prix: number;
   image: string;
   badge: string;
   badgeColor: string;
@@ -17,7 +18,7 @@ interface Destination {
 
 @Component({
   selector: 'app-destinations',
-  imports: [CommonModule, RouterLink, TranslateModule],
+  imports: [CommonModule, RouterLink, TranslateModule, CurrencyPipe],
   templateUrl: './destinations.html',
   styleUrl: './destinations.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -30,7 +31,7 @@ export class Destinations implements OnInit {
       title: 'Paris',
       pays: 'France',
       nombrehotels: '0',
-      prix: '190€',
+      prix: 190,
       image: 'images/paris.jpg',
       badge: 'PROMO',
       badgeColor: '#5fc8c2'
@@ -40,7 +41,7 @@ export class Destinations implements OnInit {
       title: 'Amsterdam',
       pays: 'Netherlands',
       nombrehotels: '0',
-      prix: '180€',
+      prix: 180,
       image: 'images/amsterdam.jpg',
       badge: '',
       badgeColor: ''
@@ -50,7 +51,7 @@ export class Destinations implements OnInit {
       title: 'St Petersburg',
       pays: 'Russia',
       nombrehotels: '0',
-      prix: '180€',
+      prix: 180,
       image: 'images/saint-petersburg.jpg',
       badge: '',
       badgeColor: ''
@@ -60,7 +61,7 @@ export class Destinations implements OnInit {
       title: 'Prague',
       pays: 'Czech Republic',
       nombrehotels: '0',
-      prix: '190€',
+      prix: 190,
       image: 'images/prague.jpg',
       badge: '',
       badgeColor: ''
@@ -70,7 +71,7 @@ export class Destinations implements OnInit {
       title: 'Tahiti',
       pays: 'French Polynesia',
       nombrehotels: '0',
-      prix: '1190€',
+      prix: 1190,
       image: 'images/offre-4.jpg',
       badge: 'NOUVEAU',
       badgeColor: '#5fc8c2'
@@ -80,7 +81,7 @@ export class Destinations implements OnInit {
       title: 'Zanzibar',
       pays: 'Tanzania',
       nombrehotels: '0',
-      prix: '1180€',
+      prix: 1180,
       image: 'images/zanzibar.webp',
       badge: '',
       badgeColor: ''
@@ -90,7 +91,7 @@ export class Destinations implements OnInit {
       title: 'Maldives',
       pays: 'Maldives',
       nombrehotels: '0',
-      prix: '2320€',
+      prix: 2320,
       image: 'images/maldives.jpg',
       badge: '',
       badgeColor: ''
@@ -100,7 +101,7 @@ export class Destinations implements OnInit {
       title: 'Cancun',
       pays: 'Mexico',
       nombrehotels: '0',
-      prix: '1590€',
+      prix: 1590,
       image: 'images/cancun.jpg',
       badge: '',
       badgeColor: ''
@@ -110,7 +111,7 @@ export class Destinations implements OnInit {
       title: 'Dubai',
       pays: 'United Arab Emirates',
       nombrehotels: '0',
-      prix: '310€',
+      prix: 310,
       image: 'images/dubai.jpg',
       badge: '',
       badgeColor: ''
@@ -120,7 +121,7 @@ export class Destinations implements OnInit {
       title: 'Bali',
       pays: 'Indonesia',
       nombrehotels: '0',
-      prix: '1680€',
+      prix: 1680,
       image: 'images/bali.jpg',
       badge: '',
       badgeColor: ''
@@ -130,7 +131,7 @@ export class Destinations implements OnInit {
       title: 'New York',
       pays: 'United States',
       nombrehotels: '0',
-      prix: '760€',
+      prix: 760,
       image: 'images/new-york.webp',
       badge: '',
       badgeColor: ''
@@ -140,7 +141,7 @@ export class Destinations implements OnInit {
       title: 'Tokyo',
       pays: 'Japan',
       nombrehotels: '0',
-      prix: '980€',
+      prix: 980,
       image: 'images/tokyo.jpg',
       badge: '',
       badgeColor: ''
@@ -150,7 +151,7 @@ export class Destinations implements OnInit {
   constructor(
     private destinationService: DestinationService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadDestinationsCount();
@@ -160,7 +161,7 @@ export class Destinations implements OnInit {
     this.destinationService.getDestinationsCount().subscribe({
       next: (response) => {
         console.log('📊 Données destinations API:', response);
-        
+
         if (response.success && response.data) {
           // Créer un NOUVEAU tableau (immutabilité)
           this.destinations = this.destinations.map(dest => {
@@ -169,7 +170,7 @@ export class Destinations implements OnInit {
               // Correspondance normale
               return api.ville_hotel === dest.title;
             });
-            
+
             // Si trouvé, retourner un NOUVEL objet avec le nombre mis à jour
             if (apiDest) {
               console.log(`✅ ${dest.title}: ${apiDest.nombre_hotels} hôtels`);
@@ -178,11 +179,11 @@ export class Destinations implements OnInit {
                 nombrehotels: apiDest.nombre_hotels.toString()
               };
             }
-            
+
             // Sinon retourner l'objet inchangé
             return dest;
           });
-          
+
           // Forcer Angular à détecter le changement
           this.cdr.markForCheck();
         }

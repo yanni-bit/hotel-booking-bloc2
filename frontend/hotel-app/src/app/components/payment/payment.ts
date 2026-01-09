@@ -5,10 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { ReservationService } from '../../services/reservation';
 import { AuthService } from '../../services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { CurrencyPipe } from '../../pipes/currency.pipe';
 
 @Component({
   selector: 'app-payment',
-  imports: [CommonModule, RouterLink, FormsModule, TranslateModule],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, CurrencyPipe],
   templateUrl: './payment.html',
   styleUrl: './payment.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

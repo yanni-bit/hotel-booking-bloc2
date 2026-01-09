@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ReservationService } from '../../services/reservation';
 import { TranslateModule } from '@ngx-translate/core';
+import { CurrencyPipe } from '../../pipes/currency.pipe';
 
 @Component({
   selector: 'app-mes-reservations',
-  imports: [CommonModule, RouterLink, TranslateModule],
+  imports: [CommonModule, RouterLink, TranslateModule, CurrencyPipe],
   templateUrl: './mes-reservations.html',
   styleUrl: './mes-reservations.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

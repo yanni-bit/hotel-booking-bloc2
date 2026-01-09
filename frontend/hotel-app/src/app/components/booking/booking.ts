@@ -5,10 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { ReservationService } from '../../services/reservation';
 import { AuthService } from '../../services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { CurrencyPipe } from '../../pipes/currency.pipe';
 
 @Component({
   selector: 'app-booking',
-  imports: [CommonModule, RouterLink, FormsModule, TranslateModule],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, CurrencyPipe],
   templateUrl: './booking.html',
   styleUrl: './booking.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
