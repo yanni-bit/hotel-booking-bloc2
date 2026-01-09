@@ -156,6 +156,32 @@ function hotelRoutes(req, res) {
   }
 
   // ========================================
+  // GET /api/hotels/deal-of-day/:country?exclude=:id - Offre du jour d'un pays
+  // ========================================
+  if (
+    pathname.match(/^\/api\/hotels\/deal-of-day\/[^/]+$/) &&
+    method === "GET"
+  ) {
+    const country = decodeURIComponent(pathname.split("/")[4]);
+    const excludeId = parseInt(req.query.exclude) || 0;
+    HotelController.getDealOfDayByCountry(req, res, country, excludeId);
+    return;
+  }
+
+  // ========================================
+  // GET /api/hotels/popular-by-country/:country?exclude=:id - Hôtels populaires d'un pays
+  // ========================================
+  if (
+    pathname.match(/^\/api\/hotels\/popular-by-country\/[^/]+$/) &&
+    method === "GET"
+  ) {
+    const country = decodeURIComponent(pathname.split("/")[4]);
+    const excludeId = parseInt(req.query.exclude) || 0;
+    HotelController.getPopularHotelsByCountry(req, res, country, excludeId);
+    return;
+  }
+
+  // ========================================
   // GET /api/hotels/:id/chambres - Chambres d'un hôtel
   // ========================================
   if (pathname.match(/^\/api\/hotels\/\d+\/chambres$/) && method === "GET") {

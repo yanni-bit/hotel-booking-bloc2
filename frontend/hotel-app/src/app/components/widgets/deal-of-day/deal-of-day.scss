@@ -1,0 +1,49 @@
+.deal-of-day {
+  background-color: #f8f9fa;
+
+  .deal-content {
+    .deal-img-link {
+      display: block;
+      
+      .deal-img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+      }
+    }
+
+    .deal-info {
+      .deal-name {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #5cb8b2;
+        line-height: 1.3;
+
+        &:hover {
+          color: #489e98;
+          text-decoration: underline !important;
+        }
+      }
+
+      .deal-stars {
+        margin: 3px 0;
+
+        i {
+          font-size: 0.7rem;
+        }
+      }
+
+      .deal-price {
+        font-size: 0.8rem;
+      }
+
+      .deal-rating {
+        .badge {
+          font-size: 0.75rem;
+          padding: 4px 10px;
+        }
+      }
+    }
+  }
+}

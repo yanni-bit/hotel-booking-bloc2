@@ -1,0 +1,71 @@
+.popular-hotels {
+  background-color: #f8f9fa;
+
+  .hotels-list {
+    .hotel-item {
+      &:last-child {
+        border-bottom: none !important;
+      }
+
+      .hotel-img-link {
+        flex-shrink: 0;
+        
+        .hotel-thumb {
+          width: 70px;
+          height: 55px;
+          object-fit: cover;
+        }
+      }
+
+      .hotel-info {
+        min-width: 0; // Permet le text-truncate
+
+        .hotel-name {
+          display: block;
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #5cb8b2;
+          line-height: 1.2;
+          margin-bottom: 2px;
+
+          &:hover {
+            color: #489e98;
+            text-decoration: underline !important;
+          }
+        }
+
+        .hotel-stars {
+          margin-bottom: 2px;
+          
+          i {
+            font-size: 0.65rem;
+          }
+        }
+
+        .hotel-price {
+          font-size: 0.75rem;
+          line-height: 1.3;
+        }
+
+        .hotel-rating {
+          margin-top: 3px;
+
+          .badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+          }
+        }
+      }
+    }
+  }
+
+  // Lien "Show all"
+  .btn-link {
+    color: #5cb8b2;
+    font-size: 0.85rem;
+
+    &:hover {
+      color: #489e98;
+    }
+  }
+}

@@ -156,6 +156,69 @@ class Hotel {
   }
 
   /**
+   * Récupère les hôtels populaires d'un même pays (exclut l'hôtel courant)
+   */
+  static getPopularByCountry(country, excludeHotelId, limit, callback) {
+    const query = `
+    SELECT 
+      h.id_hotel,
+      h.nom_hotel,
+      h.ville_hotel,
+      h.pays_hotel,
+      h.nbre_etoile_hotel,
+      h.note_moy_hotel,
+      h.img_hotel,
+      MIN(o.prix_nuit) as prix_min
+    FROM HOTEL h
+    LEFT JOIN CHAMBRE c ON h.id_hotel = c.id_hotel
+    LEFT JOIN OFFRE o ON c.id_chambre = o.id_chambre
+    WHERE h.pays_hotel = ? AND h.id_hotel != ?
+    GROUP BY h.id_hotel
+    ORDER BY h.note_moy_hotel DESC, h.nbre_etoile_hotel DESC
+    LIMIT ?
+  `;
+
+    db.query(query, [country, excludeHotelId, limit], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  }
+
+  /**
+   * Récupère l'offre du jour (meilleur rapport qualité/prix d'un pays)
+   */
+  static getDealOfDay(country, excludeHotelId, callback) {
+    const query = `
+    SELECT 
+      h.id_hotel,
+      h.nom_hotel,
+      h.ville_hotel,
+      h.pays_hotel,
+      h.nbre_etoile_hotel,
+      h.note_moy_hotel,
+      h.img_hotel,
+      MIN(o.prix_nuit) as prix_min,
+      (h.note_moy_hotel / MIN(o.prix_nuit)) * 100 as rapport_qualite_prix
+    FROM HOTEL h
+    LEFT JOIN CHAMBRE c ON h.id_hotel = c.id_hotel
+    LEFT JOIN OFFRE o ON c.id_chambre = o.id_chambre
+    WHERE h.pays_hotel = ? AND h.id_hotel != ? AND o.prix_nuit IS NOT NULL
+    GROUP BY h.id_hotel
+    ORDER BY rapport_qualite_prix DESC
+    LIMIT 1
+  `;
+
+    db.query(query, [country, excludeHotelId], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, results[0] || null);
+    });
+  }
+
+  /**
    * Crée un nouvel hôtel
    */
   static create(hotelData, callback) {

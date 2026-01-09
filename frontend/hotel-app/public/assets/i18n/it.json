@@ -400,6 +400,11 @@
     "largestSelection": "La più grande selezione",
     "largestSelectionText": "Oltre 140.000 hotel nel mondo.",
     "alwaysHere": "Sempre al tuo servizio",
-    "alwaysHereText": "Servizio clienti disponibile 24/7."
+    "alwaysHereText": "Servizio clienti disponibile 24/7.",
+    "from": "Da",
+    "perNight": "per notte",
+    "showAll": "Mostra tutto",
+    "noHotelsFound": "Nessun hotel trovato",
+    "noDealsFound": "Nessuna offerta disponibile"
   }
 }

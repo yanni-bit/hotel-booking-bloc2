@@ -1,6 +1,51 @@
-<aside class="card p-3 mb-4 border-0 shadow-sm bg-light">
+<aside class="popular-hotels card p-3 mb-4 border-0 shadow-sm">
   <h3 class="h6 text-uppercase fw-bold pb-2 border-bottom">
-    {{ 'sidebar.popularHotelsIn' | translate }} {{ city }}
+    {{ 'sidebar.popularHotelsIn' | translate }} {{ country }}
   </h3>
-  <p class="small text-muted mt-2">{{ 'sidebar.comingSoon' | translate }}</p>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-3">
+    <div class="spinner-border spinner-border-sm text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Liste des hôtels -->
+  <div *ngIf="!loading && hotels.length > 0" class="hotels-list">
+    <div *ngFor="let hotel of hotels" class="hotel-item d-flex py-2 border-bottom">
+      <!-- Image -->
+      <a [routerLink]="['/hotel', hotel.id_hotel]" class="hotel-img-link">
+        <img [src]="hotel.img_hotel" [alt]="hotel.nom_hotel" class="hotel-thumb rounded">
+      </a>
+
+      <!-- Infos -->
+      <div class="hotel-info ms-2 flex-grow-1">
+        <a [routerLink]="['/hotel', hotel.id_hotel]" class="hotel-name text-decoration-none">
+          {{ hotel.nom_hotel }}
+        </a>
+
+        <!-- Étoiles -->
+        <div class="hotel-stars">
+          <i *ngFor="let star of getStars(hotel.nbre_etoile_hotel)" class="bi bi-star-fill text-warning small"></i>
+        </div>
+
+        <!-- Prix -->
+        <div class="hotel-price small">
+          <span class="text-muted">{{ 'sidebar.from' | translate }}</span>
+          <span class="fw-bold text-primary"> {{ hotel.prix_min | appCurrency }}</span>
+          <span class="text-muted">/ {{ 'sidebar.perNight' | translate }}</span>
+        </div>
+
+        <!-- Note -->
+        <div class="hotel-rating">
+          <span class="badge bg-success">{{ hotel.note_moy_hotel }}/10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aucun résultat -->
+  <p *ngIf="!loading && hotels.length === 0" class="small text-muted mt-2">
+    {{ 'sidebar.noHotelsFound' | translate }}
+  </p>
 </aside>

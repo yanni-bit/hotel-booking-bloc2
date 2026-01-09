@@ -1,6 +1,49 @@
-<aside class="card p-3 mb-4 border-0 shadow-sm bg-light">
+<aside class="deal-of-day card p-3 mb-4 border-0 shadow-sm">
   <h3 class="h6 text-uppercase fw-bold pb-2 border-bottom">
     {{ 'sidebar.dealOfDay' | translate }}
   </h3>
-  <p class="small text-muted mt-2">{{ 'sidebar.comingSoon' | translate }}</p>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-3">
+    <div class="spinner-border spinner-border-sm text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Contenu -->
+  <div *ngIf="!loading && hotel" class="deal-content mt-2">
+    <!-- Image -->
+    <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="deal-img-link">
+      <img [src]="hotel.img_hotel" [alt]="hotel.nom_hotel" class="deal-img rounded w-100">
+    </a>
+
+    <!-- Infos -->
+    <div class="deal-info mt-2">
+      <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="deal-name text-decoration-none">
+        {{ hotel.nom_hotel }}
+      </a>
+
+      <!-- Étoiles -->
+      <div class="deal-stars">
+        <i *ngFor="let star of getStars(hotel.nbre_etoile_hotel)" class="bi bi-star-fill text-warning small"></i>
+      </div>
+
+      <!-- Prix -->
+      <div class="deal-price small">
+        <span class="text-muted">{{ 'sidebar.from' | translate }}</span>
+        <span class="fw-bold text-primary"> {{ hotel.prix_min | appCurrency }}</span>
+        <span class="text-muted">/ {{ 'sidebar.perNight' | translate }}</span>
+      </div>
+
+      <!-- Note -->
+      <div class="deal-rating mt-1">
+        <span class="badge bg-success">{{ hotel.note_moy_hotel }}/10</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aucun résultat -->
+  <p *ngIf="!loading && !hotel" class="small text-muted mt-2">
+    {{ 'sidebar.noDealsFound' | translate }}
+  </p>
 </aside>

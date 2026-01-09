@@ -30,6 +30,20 @@ export class HotelService {
     return this.http.get(`${this.apiUrl}/hotels/popular/${city}`);
   }
 
+  /**
+ * Récupère les hôtels populaires d'un pays (exclut l'hôtel courant)
+ */
+  getPopularHotelsByCountry(country: string, excludeId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/hotels/popular-by-country/${encodeURIComponent(country)}?exclude=${excludeId}`);
+  }
+
+  /**
+ * Récupère l'offre du jour d'un pays (meilleur rapport qualité/prix)
+ */
+  getDealOfDay(country: string, excludeId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/hotels/deal-of-day/${encodeURIComponent(country)}?exclude=${excludeId}`);
+  }
+
   // Récupérer les villes disponibles
   getCities(): Observable<any> {
     return this.http.get(`${this.apiUrl}/cities`);
