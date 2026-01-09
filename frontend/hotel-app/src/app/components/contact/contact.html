@@ -13,16 +13,16 @@
     <nav aria-label="breadcrumb" class="mb-1">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a routerLink="/">Accueil</a>
+          <a routerLink="/">{{ 'nav.home' | translate }}</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">Contact</li>
+        <li class="breadcrumb-item active" aria-current="page">{{ 'nav.contact' | translate }}</li>
       </ol>
     </nav>
 
     <!-- === EN-TÊTE PAGE === -->
     <div class="contact-header text-center mb-5">
-      <h1>Contactez-nous</h1>
-      <p class="lead">Nous sommes là pour vous aider. N'hésitez pas à nous contacter !</p>
+      <h1>{{ 'contact.title' | translate }}</h1>
+      <p class="lead">{{ 'contact.subtitle' | translate }}</p>
     </div>
     <!-- FIN : En-tête page -->
 
@@ -62,9 +62,9 @@
                     <div class="info-icon">
                       <i class="bi bi-telephone-fill"></i>
                     </div>
-                    <h6>Téléphone</h6>
+                    <h6>{{ 'contact.phoneTitle' | translate }}</h6>
                   </div>
-                  <p class="mb-0">Support 24/7</p>
+                  <p class="mb-0">{{ 'contact.phoneSubtitle' | translate }}</p>
                   <a href="tel:+15555555555">1-555-555-5555</a>
                 </div>
               </div>
@@ -79,9 +79,9 @@
                     <div class="info-icon">
                       <i class="bi bi-envelope-fill"></i>
                     </div>
-                    <h6>Email</h6>
+                    <h6>{{ 'contact.emailTitle' | translate }}</h6>
                   </div>
-                  <p class="mb-0">Réponse sous 24h</p>
+                  <p class="mb-0">{{ 'contact.emailSubtitle' | translate }}</p>
                   <a href="mailto:booking@mail.com">booking&#64;mail.com</a>
                 </div>
               </div>
@@ -103,14 +103,14 @@
 
         <!-- === FORMULAIRE DE CONTACT === -->
         <div class="contact-form-wrapper">
-          <h3 class="mb-4">Envoyez-nous un message</h3>
+          <h3 class="mb-4">{{ 'contact.formTitle' | translate }}</h3>
 
           <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
 
             <!-- Champ Nom (obligatoire) -->
             <div class="mb-3">
               <label for="name" class="form-label">
-                Votre nom <span class="text-danger">*</span>
+                {{ 'contact.name' | translate }} <span class="text-danger">*</span>
               </label>
               <input 
                 type="text" 
@@ -121,15 +121,15 @@
                 [class.is-valid]="f['name'].touched && f['name'].valid"
                 aria-required="true">
               <div class="invalid-feedback" *ngIf="f['name'].touched && f['name'].errors">
-                <span *ngIf="f['name'].errors['required']">Le nom est obligatoire.</span>
-                <span *ngIf="f['name'].errors['minlength']">Le nom doit contenir au moins 2 caractères.</span>
+                <span *ngIf="f['name'].errors['required']">{{ 'contact.nameRequired' | translate }}</span>
+                <span *ngIf="f['name'].errors['minlength']">{{ 'contact.nameMinLength' | translate }}</span>
               </div>
             </div>
 
             <!-- Champ Email (obligatoire) -->
             <div class="mb-3">
               <label for="email" class="form-label">
-                Votre e-mail <span class="text-danger">*</span>
+                {{ 'contact.email' | translate }} <span class="text-danger">*</span>
               </label>
               <input 
                 type="email" 
@@ -140,26 +140,26 @@
                 [class.is-valid]="f['email'].touched && f['email'].valid"
                 aria-required="true">
               <div class="invalid-feedback" *ngIf="f['email'].touched && f['email'].errors">
-                <span *ngIf="f['email'].errors['required']">L'email est obligatoire.</span>
-                <span *ngIf="f['email'].errors['email']">Veuillez entrer un email valide.</span>
+                <span *ngIf="f['email'].errors['required']">{{ 'contact.emailRequired' | translate }}</span>
+                <span *ngIf="f['email'].errors['email']">{{ 'contact.emailInvalid' | translate }}</span>
               </div>
             </div>
 
             <!-- Champ Téléphone (optionnel) -->
             <div class="mb-3">
-              <label for="phone" class="form-label">Téléphone</label>
+              <label for="phone" class="form-label">{{ 'contact.phone' | translate }}</label>
               <input 
                 type="tel" 
                 class="form-control" 
                 id="phone" 
                 formControlName="phone"
-                placeholder="Optionnel">
+                [placeholder]="'contact.phonePlaceholder' | translate">
             </div>
 
             <!-- Champ Sujet (obligatoire, select) -->
             <div class="mb-3">
               <label for="subject" class="form-label">
-                Sujet <span class="text-danger">*</span>
+                {{ 'contact.subject' | translate }} <span class="text-danger">*</span>
               </label>
               <select 
                 class="form-select" 
@@ -168,21 +168,21 @@
                 [class.is-invalid]="f['subject'].touched && f['subject'].invalid"
                 [class.is-valid]="f['subject'].touched && f['subject'].valid"
                 aria-required="true">
-                <option value="">Sélectionnez un sujet</option>
-                <option value="reservation">Réservation</option>
-                <option value="information">Demande d'information</option>
-                <option value="reclamation">Réclamation</option>
-                <option value="autre">Autre</option>
+                <option value="">{{ 'contact.subjectPlaceholder' | translate }}</option>
+                <option value="reservation">{{ 'contact.subjectReservation' | translate }}</option>
+                <option value="information">{{ 'contact.subjectInfo' | translate }}</option>
+                <option value="reclamation">{{ 'contact.subjectComplaint' | translate }}</option>
+                <option value="autre">{{ 'contact.subjectOther' | translate }}</option>
               </select>
               <div class="invalid-feedback" *ngIf="f['subject'].touched && f['subject'].errors">
-                <span *ngIf="f['subject'].errors['required']">Veuillez sélectionner un sujet.</span>
+                <span *ngIf="f['subject'].errors['required']">{{ 'contact.subjectRequired' | translate }}</span>
               </div>
             </div>
 
             <!-- Champ Message (obligatoire, textarea) -->
             <div class="mb-3">
               <label for="message" class="form-label">
-                Votre message <span class="text-danger">*</span>
+                {{ 'contact.message' | translate }} <span class="text-danger">*</span>
               </label>
               <textarea 
                 class="form-control" 
@@ -194,8 +194,8 @@
                 aria-required="true">
               </textarea>
               <div class="invalid-feedback" *ngIf="f['message'].touched && f['message'].errors">
-                <span *ngIf="f['message'].errors['required']">Le message est obligatoire.</span>
-                <span *ngIf="f['message'].errors['minlength']">Le message doit contenir au moins 10 caractères.</span>
+                <span *ngIf="f['message'].errors['required']">{{ 'contact.messageRequired' | translate }}</span>
+                <span *ngIf="f['message'].errors['minlength']">{{ 'contact.messageMinLength' | translate }}</span>
               </div>
             </div>
 
@@ -206,24 +206,24 @@
               [disabled]="isSubmitting">
               <span *ngIf="!isSubmitting">
                 <i class="bi bi-send-fill me-2"></i>
-                Envoyer le message
+                {{ 'contact.send' | translate }}
               </span>
               <span *ngIf="isSubmitting">
                 <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Envoi en cours...
+                {{ 'contact.sending' | translate }}
               </span>
             </button>
 
             <!-- Message de succès -->
             <div class="alert alert-success mt-3" *ngIf="showSuccess" role="alert">
               <i class="bi bi-check-circle-fill me-2"></i>
-              Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.
+              {{ 'contact.successMessage' | translate }}
             </div>
 
             <!-- Message d'erreur -->
             <div class="alert alert-danger mt-3" *ngIf="showError" role="alert">
               <i class="bi bi-exclamation-triangle-fill me-2"></i>
-              Une erreur est survenue. Veuillez réessayer plus tard.
+              {{ 'contact.errorMessage' | translate }}
             </div>
 
           </form>

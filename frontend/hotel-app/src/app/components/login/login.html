@@ -5,9 +5,9 @@
         
         <div class="text-center mb-4">
           <h1 class="h3 text-turquoise">
-            <i class="bi bi-person-circle me-2"></i>Connexion
+            <i class="bi bi-person-circle me-2"></i>{{ 'auth.login' | translate }}
           </h1>
-          <p class="text-muted">Connectez-vous à votre compte</p>
+          <p class="text-muted">{{ 'auth.loginSubtitle' | translate }}</p>
         </div>
         
         <div class="card border-0 shadow-sm">
@@ -23,7 +23,7 @@
               
               <!-- Email -->
               <div class="mb-3">
-                <label class="form-label fw-bold">Email</label>
+                <label class="form-label fw-bold">{{ 'booking.email' | translate }}</label>
                 <input 
                   type="email" 
                   class="form-control form-control-lg" 
@@ -37,7 +37,7 @@
               
               <!-- Mot de passe -->
               <div class="mb-4">
-                <label class="form-label fw-bold">Mot de passe</label>
+                <label class="form-label fw-bold">{{ 'auth.password' | translate }}</label>
                 <input 
                   type="password" 
                   class="form-control form-control-lg" 
@@ -56,19 +56,19 @@
                 [disabled]="loading"
               >
                 <span *ngIf="!loading">
-                  <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                  <i class="bi bi-box-arrow-in-right me-2"></i>{{ 'auth.loginBtn' | translate }}
                 </span>
                 <span *ngIf="loading">
-                  <span class="spinner-border spinner-border-sm me-2"></span>Connexion...
+                  <span class="spinner-border spinner-border-sm me-2"></span>{{ 'auth.loggingIn' | translate }}
                 </span>
               </button>
               
               <!-- Lien inscription -->
               <div class="text-center">
                 <p class="mb-0 text-muted">
-                  Pas encore de compte ?
+                  {{ 'auth.noAccount' | translate }}
                   <a [routerLink]="['/register']" class="text-turquoise fw-bold ms-1">
-                    Créer un compte
+                    {{ 'auth.createAccount' | translate }}
                   </a>
                 </p>
               </div>
@@ -81,14 +81,14 @@
         <!-- Retour accueil -->
         <div class="text-center mt-3">
           <a [routerLink]="['/']" class="text-muted">
-            <i class="bi bi-arrow-left me-1"></i>Retour à l'accueil
+            <i class="bi bi-arrow-left me-1"></i>{{ 'booking.backHome' | translate }}
           </a>
         </div>
         
         <!-- Comptes de test -->
         <div class="card border-0 bg-light mt-4">
           <div class="card-body p-3">
-            <p class="small mb-2"><strong>Comptes de test :</strong></p>
+            <p class="small mb-2"><strong>{{ 'auth.testAccounts' | translate }}</strong></p>
             <p class="small mb-1">Client : <code>client@test.com</code> / <code>client123</code></p>
             <p class="small mb-0">Admin : <code>admin@bookhotel.com</code> / <code>admin123</code></p>
           </div>

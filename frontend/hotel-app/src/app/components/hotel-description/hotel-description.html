@@ -1,14 +1,14 @@
 <!-- LOADING -->
 <div *ngIf="loading" class="text-center py-4">
   <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Chargement...</span>
+    <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
   </div>
 </div>
 
 <!-- CONTENU -->
 <div *ngIf="!loading && hotel" class="hotel-description">
   <h2 class="h4 mb-3 border-bottom pb-2 text-secondary">
-    <i class="bi bi-file-text me-2"></i>Description de l'hôtel
+    <i class="bi bi-file-text me-2"></i>{{ 'hotel.descriptionTitle' | translate }}
   </h2>
   
   <div class="bg-white p-4 border rounded shadow-sm">
@@ -21,21 +21,21 @@
         <div class="col-md-6">
           <p class="mb-2">
             <i class="bi bi-geo-alt turquoise me-2"></i>
-            <a class="sous-titre"><strong>Localisation :</strong> {{ hotel.ville_hotel }}, {{ hotel.pays_hotel }}</a>
+            <a class="sous-titre"><strong>{{ 'hotel.location' | translate }} :</strong> {{ hotel.ville_hotel }}, {{ hotel.pays_hotel }}</a>
           </p>
           <p class="mb-2">
             <i class="bi bi-star-fill text-warning me-2"></i>
-            <a class="sous-titre"><strong>Catégorie :</strong> {{ hotel.nbre_etoile_hotel }} étoiles</a>
+            <a class="sous-titre"><strong>{{ 'hotel.category' | translate }} :</strong> {{ hotel.nbre_etoile_hotel }} {{ 'hotel.stars' | translate }}</a>
           </p>
         </div>
         <div class="col-md-6">
           <p class="mb-2" *ngIf="hotel.nombre_chambres">
             <i class="bi bi-door-open turquoise me-2"></i>
-            <a class="sous-titre"><strong>Chambres :</strong> {{ hotel.nombre_chambres }}</a>
+            <a class="sous-titre"><strong>{{ 'hotel.rooms' | translate }} :</strong> {{ hotel.nombre_chambres }}</a>
           </p>
           <p class="mb-2" *ngIf="hotel.note_moyenne">
             <i class="bi bi-hand-thumbs-up turquoise me-2"></i>
-            <a class="sous-titre"><strong>Note moyenne :</strong> {{ hotel.note_moyenne | number:'1.1-1' }}/10</a>
+            <a class="sous-titre"><strong>{{ 'hotel.averageRating' | translate }} :</strong> {{ hotel.note_moyenne | number:'1.1-1' }}/10</a>
           </p>
         </div>
       </div>
@@ -45,14 +45,14 @@
     
     <!-- Description -->
     <div class="description-text sous-titre">
-      <h4 class="h6 mb-3">À propos de cet établissement</h4>
+      <h4 class="h6 mb-3">{{ 'hotel.aboutProperty' | translate }}</h4>
       
       <div *ngIf="hotel.description_hotel" class="text-muted" style="line-height: 1.8;">
         {{ hotel.description_hotel }}
       </div>
       
       <div *ngIf="!hotel.description_hotel" class="text-muted fst-italic">
-        Aucune description disponible pour cet établissement.
+        {{ 'hotel.noDescription' | translate }}
       </div>
     </div>
     
@@ -61,12 +61,12 @@
       <div class="row">
         <div class="col-md-7 mb-2">
           <small class="text-muted">
-            <i class="bi bi-envelope turquoise me-2"></i>{{ hotel.email_hotel || 'Non renseigné' }}
+            <i class="bi bi-envelope turquoise me-2"></i>{{ hotel.email_hotel || ('hotel.notProvided' | translate) }}
           </small>
         </div>
         <div class="col-md-5 mb-2">
           <small class="text-muted">
-            <i class="bi bi-telephone turquoise me-2"></i>{{ hotel.telephone_hotel || 'Non renseigné' }}
+            <i class="bi bi-telephone turquoise me-2"></i>{{ hotel.tel_hotel || ('hotel.notProvided' | translate) }}
           </small>
         </div>
       </div>
@@ -77,5 +77,5 @@
 
 <!-- ERREUR -->
 <div *ngIf="!loading && !hotel" class="alert alert-warning">
-  Impossible de charger les informations de l'hôtel.
+  {{ 'hotel.loadError' | translate }}
 </div>

@@ -4,29 +4,28 @@
 
             <div class="col-lg-3 footer_contact">
                 <div class="p-3">
-                    <h2>{{ contactInfo.company }}</h2>
-                    <p>{{ contactInfo.address }}</p>
-                    <p><em>P:</em> {{ contactInfo.phone }}</p>
-                    <p><em>E:</em> <a [href]="'mailto:' + contactInfo.email">{{ contactInfo.email }}</a></p>
+                    <h2>{{ 'footer.company' | translate }}</h2>
+                    <p>{{ 'footer.address' | translate }}</p>
+                    <p><em>P:</em> 1-555-555-5555</p>
+                    <p><em>E:</em> <a href="mailto:booking@mail.com">booking@mail.com</a></p>
                 </div>
             </div>
 
-            <ng-container *ngFor="let section of linkSections">
-                <div class="col-lg-3">
-                    <div class="p-3 footer_support">
-                        <h2>{{ section.title }}</h2>
-                        <ul>
-                            <li *ngFor="let item of section.items">
-                                <a [routerLink]="item.routerLink" [title]="item.label">{{ item.label }}</a>
-                            </li>
-                        </ul>
-                    </div>
+            <div class="col-lg-3">
+                <div class="p-3 footer_support">
+                    <h2>{{ 'footer.support' | translate }}</h2>
+                    <ul>
+                        <li><a routerLink="/faq" [title]="'footer.faq' | translate">{{ 'footer.faq' | translate }}</a></li>
+                        <li><a routerLink="/how-to-book" [title]="'footer.howToBook' | translate">{{ 'footer.howToBook' | translate }}</a></li>
+                        <li><a routerLink="/payment-options" [title]="'footer.paymentOptions' | translate">{{ 'footer.paymentOptions' | translate }}</a></li>
+                        <li><a routerLink="/booking-tips" [title]="'footer.bookingTips' | translate">{{ 'footer.bookingTips' | translate }}</a></li>
+                    </ul>
                 </div>
-            </ng-container>
+            </div>
 
             <div class="col-lg-3">
                 <div class="p-3 footer_follow">
-                    <h2>Suivez-Nous</h2>
+                    <h2>{{ 'footer.followUs' | translate }}</h2>
                     <ul class="list-unstyled d-flex gap-2 mt-3">
                         <li *ngFor="let social of socialLinks">
                             <a [href]="social.url" [attr.aria-label]="social.ariaLabel" target="_blank">
@@ -39,17 +38,16 @@
 
             <div class="col-lg-3">
                 <div class="p-3 footer_newsletter">
-                    <h2>Newsletter</h2>
-                    <p>Inscrivez-vous pour recevoir nos offres exclusives !</p>
+                    <h2>{{ 'footer.newsletter' | translate }}</h2>
+                    <p>{{ 'footer.newsletterText' | translate }}</p>
                     <form (ngSubmit)="subscribeToNewsletter()">
-                        <label for="newsletter-email" class="visually-hidden">Votre adresse
-                            email</label>
+                        <label for="newsletter-email" class="visually-hidden">{{ 'footer.emailPlaceholder' | translate }}</label>
                         <div class="input-group">
-                            <input type="email" id="newsletter-email" class="form-control" placeholder="Votre email"
-                                required aria-required="true" aria-label="Votre adresse email" name="newsletterEmail"
+                            <input type="email" id="newsletter-email" class="form-control" [placeholder]="'footer.emailPlaceholder' | translate"
+                                required aria-required="true" [attr.aria-label]="'footer.emailPlaceholder' | translate" name="newsletterEmail"
                                 [(ngModel)]="newsletterEmail">
                             <button class="btn btn-dark" type="submit"
-                                aria-label="S'inscrire à la newsletter">OK</button>
+                                [attr.aria-label]="'footer.subscribeAriaLabel' | translate">{{ 'footer.subscribe' | translate }}</button>
                         </div>
                     </form>
                 </div>
@@ -59,13 +57,18 @@
     </div>
 </footer>
 <div class="bottom w-100 p-3">
-    <p class="copy">{{ contactInfo.copyright }}</p>
+    <p class="copy">{{ 'footer.copyright' | translate }}</p>
 
     <nav>
         <ul class="list-inline text-center mb-0">
-            <li class="list-inline-item" *ngFor="let link of bottomLinks">
-                <a [routerLink]="link.routerLink" [title]="link.label">{{ link.label }}</a>
-            </li>
+            <li class="list-inline-item"><a routerLink="/about" [title]="'footer.aboutUs' | translate">{{ 'footer.aboutUs' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/contact" [title]="'nav.contact' | translate">{{ 'nav.contact' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/partners" [title]="'footer.partners' | translate">{{ 'footer.partners' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/customer-service" [title]="'footer.customerService' | translate">{{ 'footer.customerService' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/faq" [title]="'footer.faq' | translate">{{ 'footer.faq' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/careers" [title]="'footer.careers' | translate">{{ 'footer.careers' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/terms" [title]="'footer.terms' | translate">{{ 'footer.terms' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/privacy" [title]="'footer.privacy' | translate">{{ 'footer.privacy' | translate }}</a></li>
         </ul>
     </nav>
 </div>

@@ -4,16 +4,16 @@
     
     <!-- En-tête de page -->
     <div class="mb-4">
-      <h1 class="page-title">Résultats de recherche pour "<span class="text-turquoise">{{ query }}</span>"</h1>
-      <p class="page-subtitle" *ngIf="!loading && !error">{{ totalResults }} hôtel(s) trouvé(s)</p>
+      <h1 class="page-title">{{ 'searchResults.title' | translate }} "<span class="text-turquoise">{{ query }}</span>"</h1>
+      <p class="page-subtitle" *ngIf="!loading && !error">{{ totalResults }} {{ 'searchResults.hotelsFound' | translate }}</p>
     </div>
 
     <!-- État de chargement -->
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Chargement...</span>
+        <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
       </div>
-      <p class="mt-3">Recherche en cours...</p>
+      <p class="mt-3">{{ 'searchResults.searching' | translate }}</p>
     </div>
 
     <!-- Message d'erreur -->
@@ -24,9 +24,9 @@
     <!-- Aucun résultat trouvé -->
     <div *ngIf="!loading && !error && results.length === 0 && query" class="text-center py-5">
       <i class="bi bi-search display-1 text-muted"></i>
-      <h3 class="mt-3">Aucun résultat trouvé</h3>
-      <p class="text-muted">Essayez avec d'autres mots-clés</p>
-      <a routerLink="/" class="btn btn-primary mt-3">Retour à l'accueil</a>
+      <h3 class="mt-3">{{ 'searchResults.noResults' | translate }}</h3>
+      <p class="text-muted">{{ 'searchResults.tryOtherKeywords' | translate }}</p>
+      <a routerLink="/" class="btn btn-primary mt-3">{{ 'booking.backHome' | translate }}</a>
     </div>
 
     <!-- Grille des hôtels -->
@@ -61,11 +61,11 @@
             <!-- Note moyenne -->
             <div class="hotel-rating" *ngIf="hotel.note_moy_hotel">
               <span class="rating-badge">{{ hotel.note_moy_hotel }}/10</span>
-              <span class="rating-text">Excellent</span>
+              <span class="rating-text">{{ 'hotel.excellent' | translate }}</span>
             </div>
 
             <!-- Bouton voir détails -->
-            <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">Voir les chambres</a>
+            <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">{{ 'hotel.viewRooms' | translate }}</a>
           </div>
 
         </div>
@@ -74,13 +74,13 @@
     </div>
 
     <!-- PAGINATION -->
-    <nav *ngIf="!loading && totalPages > 1" class="mt-5" aria-label="Pagination des résultats">
+    <nav *ngIf="!loading && totalPages > 1" class="mt-5" [attr.aria-label]="'searchResults.paginationLabel' | translate">
       <ul class="pagination justify-content-center">
         
         <!-- Bouton Précédent -->
         <li class="page-item" [class.disabled]="currentPage === 1">
           <button class="page-link" (click)="previousPage()" [disabled]="currentPage === 1">
-            <i class="bi bi-chevron-left"></i> Précédent
+            <i class="bi bi-chevron-left"></i> {{ 'common.previous' | translate }}
           </button>
         </li>
         
@@ -94,7 +94,7 @@
         <!-- Bouton Suivant -->
         <li class="page-item" [class.disabled]="currentPage === totalPages">
           <button class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages">
-            Suivant <i class="bi bi-chevron-right"></i>
+            {{ 'common.next' | translate }} <i class="bi bi-chevron-right"></i>
           </button>
         </li>
         
@@ -102,7 +102,7 @@
       
       <!-- Info pagination -->
       <p class="text-center text-muted mt-2">
-        Page {{ currentPage }} sur {{ totalPages }}
+        {{ 'searchResults.page' | translate }} {{ currentPage }} {{ 'searchResults.of' | translate }} {{ totalPages }}
       </p>
     </nav>
 

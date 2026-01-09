@@ -9,6 +9,7 @@ import { WhyBook } from '../widgets/why-book/why-book';
 import { PopularHotels } from '../widgets/popular-hotels/popular-hotels';
 import { DealOfDay } from '../widgets/deal-of-day/deal-of-day';
 import { HelpContact } from '../widgets/help-contact/help-contact';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-hotel-detail',
@@ -22,7 +23,8 @@ import { HelpContact } from '../widgets/help-contact/help-contact';
     WhyBook,
     PopularHotels,
     DealOfDay,
-    HelpContact
+    HelpContact,
+    TranslateModule
   ],
   templateUrl: './hotel-detail.html',
   styleUrl: './hotel-detail.scss',

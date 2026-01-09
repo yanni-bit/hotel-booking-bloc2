@@ -1,9 +1,9 @@
 <!-- LOADING -->
 <div *ngIf="loading" class="text-center py-5">
   <div class="spinner-border text-turquoise" role="status">
-    <span class="visually-hidden">Chargement...</span>
+    <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
   </div>
-  <p class="mt-3">Chargement des détails de la chambre...</p>
+  <p class="mt-3">{{ 'room.loadingDetails' | translate }}</p>
 </div>
 
 <!-- ERROR -->
@@ -18,9 +18,9 @@
     <!-- BREADCRUMB -->
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a [routerLink]="['/']">Accueil</a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/']">{{ 'nav.home' | translate }}</a></li>
         <li class="breadcrumb-item"><a [routerLink]="['/hotels', ville]">{{ ville }}</a></li>
-        <li class="breadcrumb-item"><a [routerLink]="['/hotels', ville, hotelId, 'offers']">Chambres</a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/hotels', ville, hotelId, 'offers']">{{ 'room.rooms' | translate }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{{ chambre.type_room }}</li>
       </ol>
     </nav>
@@ -39,13 +39,13 @@
               <div class="col-md-3 col-6 mb-2">
                 <div class="feature-box">
                   <i class="bi bi-people text-turquoise me-2"></i>
-                  <strong>{{ chambre.nbre_adults_max || 2 }}</strong> adultes
+                  <strong>{{ chambre.nbre_adults_max || 2 }}</strong> {{ 'search.adults' | translate | lowercase }}
                 </div>
               </div>
               <div class="col-md-3 col-6 mb-2" *ngIf="chambre.nbre_children_max > 0">
                 <div class="feature-box">
                   <i class="bi bi-person text-turquoise me-2"></i>
-                  <strong>{{ chambre.nbre_children_max }}</strong> enfants
+                  <strong>{{ chambre.nbre_children_max }}</strong> {{ 'search.children' | translate | lowercase }}
                 </div>
               </div>
               <div class="col-md-3 col-6 mb-2" *ngIf="chambre.surface_m2">
@@ -57,7 +57,7 @@
               <div class="col-md-3 col-6 mb-2" *ngIf="chambre.nbre_lit">
                 <div class="feature-box">
                   <i class="bi bi-moon text-turquoise me-2"></i>
-                  <strong>{{ chambre.nbre_lit }}</strong> lit(s)
+                  <strong>{{ chambre.nbre_lit }}</strong> {{ 'hotel.beds' | translate }}
                 </div>
               </div>
             </div>
@@ -70,14 +70,14 @@
 
         <!-- OFFRES DISPONIBLES -->
         <h2 class="h4 mb-3 text-turquoise">
-          <i class="bi bi-tag-fill me-2 text-turquoise"></i>Offres disponibles
+          <i class="bi bi-tag-fill me-2 text-turquoise"></i>{{ 'room.availableOffers' | translate }}
           <span class="badge bg-turquoise ms-2">{{ offres.length }}</span>
         </h2>
 
         <!-- AUCUNE OFFRE -->
         <div *ngIf="offres.length === 0" class="alert alert-warning">
           <i class="bi bi-exclamation-triangle me-2"></i>
-          Aucune offre disponible pour cette chambre actuellement.
+          {{ 'room.noOffers' | translate }}
         </div>
 
         <!-- LISTE DES OFFRES -->
@@ -89,7 +89,7 @@
               <!-- Header offre -->
               <div class="d-flex justify-content-between align-items-start mb-3">
                 <div>
-                  <h3 class="h5 mb-2 text-gris-moyen">{{ offre.nom_offre || 'Offre standard' }}</h3>
+                  <h3 class="h5 mb-2 text-gris-moyen">{{ offre.nom_offre || ('room.standardOffer' | translate) }}</h3>
                   <p class="text-gris-moyen small mb-0" *ngIf="offre.description_offre">
                     {{ offre.description_offre }}
                   </p>
@@ -98,7 +98,7 @@
                   <div class="price-tag">
                     <span class="price">{{ offre.prix_nuit }}</span>
                     <span class="currency">{{ offre.devise || 'EUR' }}</span>
-                    <small class="d-block text-gris-moyen">/ nuit</small>
+                    <small class="d-block text-gris-moyen">{{ 'hotel.perNight' | translate }}</small>
                   </div>
                 </div>
               </div>
@@ -112,14 +112,14 @@
                 <div class="col-md-4 mb-2">
                   <div class="offre-feature">
                     <i class="bi bi-cup-hot text-turquoise me-2"></i>
-                    <strong>Pension :</strong>
+                    <strong>{{ 'room.board' | translate }} :</strong>
                     <span class="ms-1">
                       <ng-container [ngSwitch]="offre.pension">
-                        <span *ngSwitchCase="'none'">Sans repas</span>
-                        <span *ngSwitchCase="'breakfast'">Petit-déjeuner</span>
-                        <span *ngSwitchCase="'half_board'">Demi-pension</span>
-                        <span *ngSwitchCase="'full_board'">Pension complète</span>
-                        <span *ngSwitchCase="'all_inclusive'">Tout compris</span>
+                        <span *ngSwitchCase="'none'">{{ 'room.noMeals' | translate }}</span>
+                        <span *ngSwitchCase="'breakfast'">{{ 'room.breakfast' | translate }}</span>
+                        <span *ngSwitchCase="'half_board'">{{ 'room.halfBoard' | translate }}</span>
+                        <span *ngSwitchCase="'full_board'">{{ 'room.fullBoard' | translate }}</span>
+                        <span *ngSwitchCase="'all_inclusive'">{{ 'room.allInclusive' | translate }}</span>
                         <span *ngSwitchDefault>{{ offre.pension }}</span>
                       </ng-container>
                     </span>
@@ -130,7 +130,7 @@
                 <div class="col-md-4 mb-2" *ngIf="offre.petit_dejeuner_inclus">
                   <div class="offre-feature">
                     <i class="bi bi-check-circle-fill text-turquoise me-2"></i>
-                    <strong>Petit-déjeuner inclus</strong>
+                    <strong>{{ 'room.breakfastIncluded' | translate }}</strong>
                   </div>
                 </div>
 
@@ -139,7 +139,7 @@
                   <div class="offre-feature">
                     <i [class]="offre.remboursable ? 'bi bi-check-circle-fill text-turquoise' : 'bi bi-x-circle-fill text-turquoise'"
                       class="me-2"></i>
-                    <strong>{{ offre.remboursable ? 'Remboursable' : 'Non remboursable' }}</strong>
+                    <strong>{{ offre.remboursable ? ('room.refundable' | translate) : ('room.nonRefundable' | translate) }}</strong>
                   </div>
                 </div>
 
@@ -148,7 +148,7 @@
               <!-- Bouton réserver -->
               <div class="text-end">
                 <a [routerLink]="['/booking', offre.id_offre]" class="btn btn-primary">
-                  <i class="bi bi-calendar-check me-2"></i>Réserver cette offre
+                  <i class="bi bi-calendar-check me-2"></i>{{ 'room.bookThisOffer' | translate }}
                 </a>
               </div>
 
@@ -164,24 +164,24 @@
 
         <!-- Prix minimum -->
         <div class="card border-0 shadow-sm p-3 mb-3 sidebar-top text-gris-moyen">
-          <h3 class="h6 mb-3 text-center">À partir de</h3>
+          <h3 class="h6 mb-3 text-center">{{ 'hotel.from' | translate }}</h3>
           <div class="text-center mb-3">
             <span class="display-4 fw-bold text-turquoise">{{ getPrixMinimum() }}</span>
             <span class="h5 text-gris-moyen">€</span>
-            <small class="d-block text-gris-moyen">par nuit</small>
+            <small class="d-block text-gris-moyen">{{ 'room.perNight' | translate }}</small>
           </div>
 
           <div class="alert alert-info mb-0">
             <small class="text-gris-moyen">
               <i class="bi bi-info-circle me-2"></i>
-              Prix pour {{ chambre.nbre_adults_max || 2 }} adulte(s)
+              {{ 'room.priceFor' | translate }} {{ chambre.nbre_adults_max || 2 }} {{ 'room.adultsLabel' | translate }}
             </small>
           </div>
         </div>
 
         <!-- Infos chambre -->
         <div class="card border-0 shadow-sm p-3">
-          <h3 class="h6 mb-3">Informations</h3>
+          <h3 class="h6 mb-3">{{ 'room.information' | translate }}</h3>
 
           <div class="info-item mb-2" *ngIf="chambre.type_lit">
             <i class="bi bi-moon text-turquoise me-2"></i>
@@ -196,7 +196,7 @@
           <div class="info-item">
             <i class="bi bi-arrow-left-circle text-turquoise me-2"></i>
             <a [routerLink]="['/hotels', ville, hotelId, 'offers']" class="small text-decoration-none">
-              Retour aux chambres
+              {{ 'room.backToRooms' | translate }}
             </a>
           </div>
         </div>

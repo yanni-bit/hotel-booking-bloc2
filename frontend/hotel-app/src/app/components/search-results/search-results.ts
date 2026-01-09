@@ -2,11 +2,12 @@ import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HotelService } from '../../services/hotel';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './search-results.html',
   styleUrl: './search-results.scss'
 })

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HotelService } from '../../services/hotel';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-carousel',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './carousel.html',
   styleUrl: './carousel.scss'
 })

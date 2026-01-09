@@ -2,10 +2,11 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AvisService } from '../../services/avis';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-hotel-reviews',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './hotel-reviews.html',
   styleUrl: './hotel-reviews.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

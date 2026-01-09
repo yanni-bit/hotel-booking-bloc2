@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HotelService } from '../../services/hotel';
 import * as L from 'leaflet';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-hotel-location',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './hotel-location.html',
   styleUrl: './hotel-location.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

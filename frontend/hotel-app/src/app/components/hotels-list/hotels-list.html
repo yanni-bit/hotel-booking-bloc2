@@ -4,16 +4,16 @@
     
     <!-- En-tête de page -->
     <div class="mb-4">
-      <h1 class="page-title">Hôtels à {{ ville }}</h1>
-      <p class="page-subtitle" *ngIf="!loading && !error">{{ hotels.length }} établissement(s) trouvé(s)</p>
+      <h1 class="page-title">{{ 'hotel.hotelsIn' | translate }} {{ ville }}</h1>
+      <p class="page-subtitle" *ngIf="!loading && !error">{{ hotels.length }} {{ 'hotel.establishmentsFound' | translate }}</p>
     </div>
 
     <!-- État de chargement -->
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Chargement...</span>
+        <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
       </div>
-      <p class="mt-3">Chargement des hôtels...</p>
+      <p class="mt-3">{{ 'hotel.loadingHotels' | translate }}</p>
     </div>
 
     <!-- Message d'erreur -->
@@ -23,7 +23,7 @@
 
     <!-- Aucun hôtel trouvé -->
     <div *ngIf="!loading && !error && hotels.length === 0" class="alert alert-info" role="alert">
-      Aucun hôtel trouvé pour {{ ville }}.
+      {{ 'hotel.noHotelsFound' | translate }} {{ ville }}.
     </div>
 
     <!-- Grille des hôtels -->
@@ -58,11 +58,11 @@
             <!-- Note moyenne -->
             <div class="hotel-rating" *ngIf="hotel.note_moy_hotel">
               <span class="rating-badge">{{ hotel.note_moy_hotel }}/10</span>
-              <span class="rating-text">Excellent</span>
+              <span class="rating-text">{{ 'hotel.excellent' | translate }}</span>
             </div>
 
             <!-- Bouton voir détails -->
-            <a [routerLink]="['/hotels', ville, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">Voir les chambres</a>
+            <a [routerLink]="['/hotels', ville, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">{{ 'hotel.viewRooms' | translate }}</a>
           </div>
 
         </div>

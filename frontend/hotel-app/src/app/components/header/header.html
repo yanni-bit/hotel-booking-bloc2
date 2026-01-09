@@ -1,5 +1,5 @@
 <!-- LIEN D'ÉVITEMENT (SKIP LINK) -->
-<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+<a href="#main-content" class="skip-link">{{ 'common.skipLink' | translate }}</a>
 
 <!-- HEADER - EN-TÊTE DU SITE -->
 <header class="base-header position-relative" role="banner">
@@ -9,7 +9,7 @@
       <!-- BLOC LOGO -->
       <div class="col-12 col-lg-5 order-0">
         <div class="header_logo">
-          <a href="/" class="my-logo d-block">
+          <a routerLink="/" class="my-logo d-block">
             <img src="images/logo.png" alt="Book Your Travel" class="my-logo-img">
           </a>
         </div>
@@ -33,7 +33,7 @@
               <i class="bi bi-telephone"></i>
             </div>
             <div class="text-contact">
-              <div class="bloc-contact-label">24/7 Support number</div>
+              <div class="bloc-contact-label">{{ 'header.support' | translate }}</div>
               <div class="bloc-contact-number">1-555-555-555</div>
             </div>
           </div>
@@ -45,9 +45,13 @@
         <div class="header_search">
           <div class="bloc-search" role="search" aria-label="Recherche rapide">
             <div class="position-relative">
-              <input type="search" class="form-control bloc-search-input"
-                placeholder="Rechercher un hôtel, une ville..." aria-label="Rechercher sur le site"
-                [(ngModel)]="searchQuery" (keyup)="onSearchKeyup($event)">
+              <input 
+                type="search" 
+                class="form-control bloc-search-input"
+                [placeholder]="'header.search' | translate" 
+                aria-label="Rechercher sur le site"
+                [(ngModel)]="searchQuery" 
+                (keyup)="onSearchKeyup($event)">
               <button type="button" class="bloc-search-btn" (click)="onSearch()" aria-label="Lancer la recherche">
                 <i class="bi bi-search bloc-search-ico"></i>
               </button>
@@ -57,44 +61,48 @@
       </div>
 
       <!-- RUBAN LATÉRAL (Mon compte, Langue, Monnaie) -->
-      <div class="ribbon">
+      <div class="mt-0 ribbon">
         <nav class="d-flex gap-2 flex-column align-items-stretch">
 
-          <!-- Mon Compte -->
+          <!-- Mon Compte - Non connecté -->
           <div class="dropdown" *ngIf="!authService.isAuthenticated()">
             <a class="btn btn-outline-dark w-100 pb-2 ribbon-btn" [routerLink]="['/login']" role="button">
-              <i class="bi bi-box-arrow-in-right me-1"></i> CONNEXION
+              <i class="bi bi-box-arrow-in-right me-1"></i> {{ 'header.login' | translate }}
             </a>
           </div>
 
           <!-- Mon Compte - Connecté -->
           <div class="dropdown" *ngIf="authService.isAuthenticated()">
-            <button class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" type="button" id="userDropdown"
-              data-bs-toggle="dropdown" aria-expanded="false">
+            <button 
+              class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" 
+              type="button" 
+              id="userDropdown"
+              data-bs-toggle="dropdown" 
+              aria-expanded="false">
               <i class="bi bi-person-circle me-1"></i>
               {{ authService.currentUser()?.prenom }}
             </button>
             <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="userDropdown">
               <li>
                 <a class="dropdown-item" [routerLink]="['/profil']">
-                  <i class="bi bi-person me-2"></i>Mon profil
+                  <i class="bi bi-person me-2"></i>{{ 'header.profile' | translate }}
                 </a>
               </li>
               <li>
                 <a class="dropdown-item" [routerLink]="['/reservations']">
-                  <i class="bi bi-clock-history me-2"></i>Mes réservations
+                  <i class="bi bi-clock-history me-2"></i>{{ 'header.myReservations' | translate }}
                 </a>
               </li>
               <li *ngIf="authService.isAdmin()">
                 <hr class="dropdown-divider">
                 <a class="dropdown-item" [routerLink]="['/admin']">
-                  <i class="bi bi-shield-check me-2"></i>Administration
+                  <i class="bi bi-shield-check me-2"></i>{{ 'header.admin' | translate }}
                 </a>
               </li>
               <hr class="dropdown-divider">
               <li>
                 <a class="dropdown-item text-danger" (click)="logout()" style="cursor: pointer;">
-                  <i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+                  <i class="bi bi-box-arrow-right me-2"></i>{{ 'header.logout' | translate }}
                 </a>
               </li>
             </ul>
@@ -102,16 +110,48 @@
 
           <!-- Langue -->
           <div class="dropdown">
-            <button class="btn btn-outline-dark w-100 pb-2 ribbon-btn" type="button">
-              PAYS
+            <button 
+              class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" 
+              type="button"
+              id="langDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              {{ getCurrentLanguageLabel() }}
             </button>
+            <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="langDropdown">
+              <li *ngFor="let lang of languages">
+                <a 
+                  class="dropdown-item" 
+                  [class.active]="currentLang === lang.code"
+                  (click)="switchLanguage(lang.code)"
+                  style="cursor: pointer;">
+                  {{ lang.flag }} {{ lang.label }}
+                </a>
+              </li>
+            </ul>
           </div>
 
-          <!-- Monnaie -->
+          <!-- Devise -->
           <div class="dropdown">
-            <button class="btn btn-outline-dark w-100 pb-2 ribbon-btn" type="button">
-              MONNAIE
+            <button 
+              class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" 
+              type="button"
+              id="currencyDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              {{ getCurrentCurrencySymbol() }}
             </button>
+            <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="currencyDropdown">
+              <li *ngFor="let currency of currencies">
+                <a 
+                  class="dropdown-item"
+                  [class.active]="currentCurrency === currency.code"
+                  (click)="switchCurrency(currency.code)"
+                  style="cursor: pointer;">
+                  {{ currency.symbol }} {{ currency.label }}
+                </a>
+              </li>
+            </ul>
           </div>
 
         </nav>
@@ -131,13 +171,13 @@
   <div class="collapse navbar-collapse" [class.show]="menuOpen" id="menuPrincipal">
     <ul class="navbar-nav mx-auto">
       <li class="nav-item">
-        <a class="nav-link active" href="/">Accueil</a>
+        <a class="nav-link active" routerLink="/">{{ 'nav.home' | translate }}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/hotels">Hôtels</a>
+        <a class="nav-link" routerLink="/hotels">{{ 'nav.hotels' | translate }}</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/contact">Contact</a>
+        <a class="nav-link" routerLink="/contact">{{ 'nav.contact' | translate }}</a>
       </li>
     </ul>
   </div>

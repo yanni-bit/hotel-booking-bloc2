@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ReservationService } from '../../services/reservation';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-mes-reservations',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './mes-reservations.html',
   styleUrl: './mes-reservations.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

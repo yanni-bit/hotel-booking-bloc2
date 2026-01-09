@@ -4,8 +4,8 @@
     
     <!-- En-tête de section -->
     <div class="text-center mb-5">
-      <h2 class="section-title">Nos Dernières Offres</h2>
-      <p class="section-subtitle">Profitez de nos meilleures promotions du moment</p>
+      <h2 class="section-title">{{ 'offers.title' | translate }}</h2>
+      <p class="section-subtitle">{{ 'offers.subtitle' | translate }}</p>
     </div>
 
     <!-- Grille des offres -->
@@ -23,7 +23,7 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[0].title }}</h3>
             <p class="offre-card-text">{{ offres[0].description }}</p>
-            <a [routerLink]="['/hotels', offres[0].ville, offres[0].hotelId]" class="btn-offre">Réserver</a>
+            <a [routerLink]="['/hotels', offres[0].ville, offres[0].hotelId]" class="btn-offre">{{ 'offers.book' | translate }}</a>
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[1].title }}</h3>
             <p class="offre-card-text">{{ offres[1].description }}</p>
-            <a [routerLink]="['/hotels', offres[1].ville, offres[1].hotelId]" class="btn-offre">Réserver</a>
+            <a [routerLink]="['/hotels', offres[1].ville, offres[1].hotelId]" class="btn-offre">{{ 'offers.book' | translate }}</a>
           </div>
         </div>
       </div>
@@ -57,7 +57,7 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[2].title }}</h3>
             <p class="offre-card-text">{{ offres[2].description }}</p>
-            <a [routerLink]="['/hotels', offres[2].ville, offres[2].hotelId]" class="btn-offre">Réserver</a>
+            <a [routerLink]="['/hotels', offres[2].ville, offres[2].hotelId]" class="btn-offre">{{ 'offers.book' | translate }}</a>
           </div>
         </div>
       </div>
@@ -74,7 +74,7 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[3].title }}</h3>
             <p class="offre-card-text">{{ offres[3].description }}</p>
-            <a [routerLink]="['/hotels', offres[3].ville, offres[3].hotelId]" class="btn-offre">Réserver</a>
+            <a [routerLink]="['/hotels', offres[3].ville, offres[3].hotelId]" class="btn-offre">{{ 'offers.book' | translate }}</a>
           </div>
         </div>
       </div>

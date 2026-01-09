@@ -5,9 +5,9 @@
         
         <div class="text-center mb-4">
           <h1 class="h3 text-turquoise">
-            <i class="bi bi-person-plus-fill me-2"></i>Créer un compte
+            <i class="bi bi-person-plus-fill me-2"></i>{{ 'auth.createAccount' | translate }}
           </h1>
-          <p class="text-muted">Inscrivez-vous pour réserver vos séjours</p>
+          <p class="text-muted">{{ 'auth.registerSubtitle' | translate }}</p>
         </div>
         
         <div class="card border-0 shadow-sm">
@@ -29,25 +29,25 @@
               <!-- Prénom & Nom -->
               <div class="row mb-3">
                 <div class="col-md-6 mb-3 mb-md-0">
-                  <label class="form-label fw-bold">Prénom *</label>
+                  <label class="form-label fw-bold">{{ 'booking.firstName' | translate }} *</label>
                   <input 
                     type="text" 
                     class="form-control" 
                     [(ngModel)]="prenom"
                     name="prenom"
-                    placeholder="Votre prénom"
+                    [placeholder]="'booking.firstNamePlaceholder' | translate"
                     required
                   >
                 </div>
                 
                 <div class="col-md-6">
-                  <label class="form-label fw-bold">Nom *</label>
+                  <label class="form-label fw-bold">{{ 'booking.lastName' | translate }} *</label>
                   <input 
                     type="text" 
                     class="form-control" 
                     [(ngModel)]="nom"
                     name="nom"
-                    placeholder="Votre nom"
+                    [placeholder]="'booking.lastNamePlaceholder' | translate"
                     required
                   >
                 </div>
@@ -55,7 +55,7 @@
               
               <!-- Email -->
               <div class="mb-3">
-                <label class="form-label fw-bold">Email *</label>
+                <label class="form-label fw-bold">{{ 'booking.email' | translate }} *</label>
                 <input 
                   type="email" 
                   class="form-control" 
@@ -69,7 +69,7 @@
               
               <!-- Téléphone -->
               <div class="mb-3">
-                <label class="form-label fw-bold">Téléphone (optionnel)</label>
+                <label class="form-label fw-bold">{{ 'booking.phone' | translate }} ({{ 'contact.phonePlaceholder' | translate }})</label>
                 <input 
                   type="tel" 
                   class="form-control" 
@@ -82,28 +82,28 @@
               
               <!-- Mot de passe -->
               <div class="mb-3">
-                <label class="form-label fw-bold">Mot de passe *</label>
+                <label class="form-label fw-bold">{{ 'auth.password' | translate }} *</label>
                 <input 
                   type="password" 
                   class="form-control" 
                   [(ngModel)]="password"
                   name="password"
-                  placeholder="Minimum 6 caractères"
+                  [placeholder]="'profile.minChars' | translate"
                   required
                   autocomplete="new-password"
                 >
-                <small class="text-muted">Minimum 6 caractères</small>
+                <small class="text-muted">{{ 'profile.minChars' | translate }}</small>
               </div>
               
               <!-- Confirmation mot de passe -->
               <div class="mb-4">
-                <label class="form-label fw-bold">Confirmer le mot de passe *</label>
+                <label class="form-label fw-bold">{{ 'auth.confirmPassword' | translate }} *</label>
                 <input 
                   type="password" 
                   class="form-control" 
                   [(ngModel)]="confirmPassword"
                   name="confirmPassword"
-                  placeholder="Retapez votre mot de passe"
+                  [placeholder]="'auth.retypePassword' | translate"
                   required
                   autocomplete="new-password"
                 >
@@ -116,19 +116,19 @@
                 [disabled]="loading"
               >
                 <span *ngIf="!loading">
-                  <i class="bi bi-person-plus me-2"></i>Créer mon compte
+                  <i class="bi bi-person-plus me-2"></i>{{ 'auth.createMyAccount' | translate }}
                 </span>
                 <span *ngIf="loading">
-                  <span class="spinner-border spinner-border-sm me-2"></span>Création...
+                  <span class="spinner-border spinner-border-sm me-2"></span>{{ 'auth.creating' | translate }}
                 </span>
               </button>
               
               <!-- Lien connexion -->
               <div class="text-center">
                 <p class="mb-0 text-muted">
-                  Vous avez déjà un compte ?
+                  {{ 'auth.hasAccount' | translate }}
                   <a [routerLink]="['/login']" class="text-turquoise fw-bold ms-1">
-                    Se connecter
+                    {{ 'auth.loginBtn' | translate }}
                   </a>
                 </p>
               </div>
@@ -141,7 +141,7 @@
         <!-- Retour accueil -->
         <div class="text-center mt-3">
           <a [routerLink]="['/']" class="text-muted">
-            <i class="bi bi-arrow-left me-1"></i>Retour à l'accueil
+            <i class="bi bi-arrow-left me-1"></i>{{ 'booking.backHome' | translate }}
           </a>
         </div>
         

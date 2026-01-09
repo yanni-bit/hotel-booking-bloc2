@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ReservationService } from '../../services/reservation';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reservation-detail',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './reservation-detail.html',
   styleUrl: './reservation-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

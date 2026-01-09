@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DestinationService } from '../../services/destination';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface Destination {
   id: number;
@@ -16,7 +17,7 @@ interface Destination {
 
 @Component({
   selector: 'app-destinations',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './destinations.html',
   styleUrl: './destinations.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
