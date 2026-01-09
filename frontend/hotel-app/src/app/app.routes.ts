@@ -24,6 +24,7 @@ import { AdminReservations } from './components/admin-reservations/admin-reserva
 import { AdminMessages } from './components/admin-messages/admin-messages';
 import { SearchResults } from './components/search-results/search-results';
 import { Contact } from './components/contact/contact';
+import { AdminAvis } from './components/admin-avis/admin-avis';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -76,26 +77,31 @@ export const routes: Routes = [
     component: AdminHotels,
     canActivate: [adminGuard]
   },
-  { 
-    path: 'admin/hotels/create', 
+  {
+    path: 'admin/hotels/create',
     component: AdminHotelForm,
     canActivate: [adminGuard]
   },
-  { 
-    path: 'admin/hotels/edit/:id', 
+  {
+    path: 'admin/hotels/edit/:id',
     component: AdminHotelForm,
     canActivate: [adminGuard]
   },
-  { 
-    path: 'admin/reservations', 
+  {
+    path: 'admin/reservations',
     component: AdminReservations,
     canActivate: [adminGuard]
   },
-  { 
-    path: 'admin/messages', 
+  {
+    path: 'admin/messages',
     component: AdminMessages,
     canActivate: [adminGuard]
   },
+  {
+    path: 'admin/avis',
+    component: AdminAvis,
+    canActivate: [adminGuard]
+  },
 
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];

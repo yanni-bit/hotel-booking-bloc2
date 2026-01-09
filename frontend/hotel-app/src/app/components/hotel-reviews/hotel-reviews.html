@@ -16,6 +16,141 @@
     {{ error }}
   </div>
   
+  <!-- ========================================
+       BOUTON / FORMULAIRE AJOUTER UN AVIS
+       ======================================== -->
+  <div *ngIf="!loading" class="add-review-section mb-4">
+    
+    <!-- Message succès -->
+    <div *ngIf="submitSuccess" class="alert alert-success alert-dismissible fade show">
+      <i class="bi bi-check-circle me-2"></i>
+      {{ editingAvis ? 'Votre avis a été modifié avec succès.' : 'Merci ! Votre avis a été publié avec succès.' }}
+      <button type="button" class="btn-close" (click)="submitSuccess = false"></button>
+    </div>
+    
+    <!-- Bouton pour afficher le formulaire (utilisateur connecté) -->
+    <div *ngIf="authService.isAuthenticated() && !showForm" class="text-center mb-4">
+      <button class="btn btn-turquoise" (click)="toggleForm()">
+        <i class="bi bi-plus-circle me-2"></i>Laisser un avis
+      </button>
+    </div>
+    
+    <!-- Message si non connecté -->
+    <div *ngIf="!authService.isAuthenticated()" class="alert alert-info mb-4">
+      <i class="bi bi-info-circle me-2"></i>
+      <a routerLink="/login" class="alert-link">Connectez-vous</a> pour laisser un avis sur cet hôtel.
+    </div>
+    
+    <!-- FORMULAIRE -->
+    <div *ngIf="showForm" class="review-form card border-0 shadow-sm mb-4">
+      <div class="card-header bg-turquoise text-white">
+        <h5 class="mb-0">
+          <i class="bi bi-pencil-square me-2"></i>
+          {{ editingAvis ? 'Modifier votre avis' : 'Donner votre avis' }}
+        </h5>
+      </div>
+      <div class="card-body p-4">
+        
+        <!-- Erreur -->
+        <div *ngIf="submitError" class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ submitError }}
+        </div>
+        
+        <!-- Note -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">Note globale *</label>
+          <div class="d-flex align-items-center gap-3">
+            <input 
+              type="range" 
+              class="form-range flex-grow-1" 
+              [(ngModel)]="newAvis.note"
+              min="1" 
+              max="10" 
+              step="0.1">
+            <span class="badge bg-turquoise fs-5" style="min-width: 70px;">
+              {{ newAvis.note | number:'1.1-1' }}/10
+            </span>
+          </div>
+          <div class="d-flex justify-content-between text-muted small mt-1">
+            <span>Mauvais</span>
+            <span>Moyen</span>
+            <span>Excellent</span>
+          </div>
+        </div>
+        
+        <div class="row">
+          <!-- Type de voyageur -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Type de séjour *</label>
+            <select class="form-select" [(ngModel)]="newAvis.type_voyageur">
+              <option *ngFor="let type of typesVoyageur" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+          </div>
+          
+          <!-- Pays -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">Votre pays *</label>
+            <select class="form-select" [(ngModel)]="newAvis.pays_origine">
+              <option *ngFor="let p of pays" [value]="p.code">
+                {{ p.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Titre (optionnel) -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Titre de l'avis <small class="text-muted">(optionnel)</small></label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [(ngModel)]="newAvis.titre_avis"
+            placeholder="Ex: Séjour exceptionnel !"
+            maxlength="100">
+        </div>
+        
+        <!-- Commentaire -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">Votre commentaire *</label>
+          <textarea 
+            class="form-control" 
+            [(ngModel)]="newAvis.commentaire"
+            rows="4"
+            placeholder="Décrivez votre expérience dans cet hôtel (minimum 10 caractères)..."
+            minlength="10"
+            maxlength="1000"></textarea>
+          <small class="text-muted">{{ newAvis.commentaire.length }}/1000 caractères</small>
+        </div>
+        
+        <!-- Boutons -->
+        <div class="d-flex gap-2">
+          <button 
+            class="btn btn-turquoise"
+            [disabled]="submitting"
+            (click)="submitAvis()">
+            <span *ngIf="!submitting">
+              <i class="bi bi-send me-2"></i>
+              {{ editingAvis ? 'Enregistrer les modifications' : 'Publier mon avis' }}
+            </span>
+            <span *ngIf="submitting">
+              <span class="spinner-border spinner-border-sm me-2"></span>Envoi en cours...
+            </span>
+          </button>
+          <button 
+            class="btn btn-outline-secondary"
+            [disabled]="submitting"
+            (click)="cancelForm()">
+            Annuler
+          </button>
+        </div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
   <!-- AUCUN AVIS -->
   <div *ngIf="!loading && !error && avis.length === 0" class="alert alert-info">
     <i class="bi bi-info-circle me-2"></i>{{ 'hotel.noReviews' | translate }}
@@ -56,7 +191,15 @@
               <i class="bi bi-calendar3 me-1"></i>{{ review.date_formatted || review.date_avis }}
             </small>
           </div>
-          <div class="text-end">
+          <div class="text-end d-flex align-items-center gap-2">
+            <!-- Bouton modifier (visible uniquement pour le créateur) -->
+            <button 
+              *ngIf="canEditAvis(review)"
+              class="btn btn-sm btn-outline-primary"
+              title="Modifier mon avis"
+              (click)="editAvis(review)">
+              <i class="bi bi-pencil"></i>
+            </button>
             <div class="review-note badge bg-turquoise">
               {{ review.note }}/10
             </div>
@@ -86,7 +229,7 @@
             <div class="col-md-6 text-end">
               <small class="text-muted">
                 <i class="bi bi-flag me-1"></i>
-                {{ review.pays_origine || ('hotel.countryNotSpecified' | translate) }}
+                {{ getPaysLabel(review.pays_origine) || ('hotel.countryNotSpecified' | translate) }}
               </small>
             </div>
           </div>

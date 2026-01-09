@@ -92,7 +92,7 @@ export class Header {
   // Obtenir le label de la langue actuelle
   getCurrentLanguageLabel(): string {
     const lang = this.languages.find(l => l.code === this.currentLang);
-    return lang ? lang.flag + ' ' + lang.code.toUpperCase() : 'FR';
+    return lang ? lang.label + ' ' + lang.code.toUpperCase() : 'Français FR';
   }
 
   // Changer de devise

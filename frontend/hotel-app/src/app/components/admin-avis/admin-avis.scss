@@ -1,0 +1,64 @@
+.admin-avis-page {
+  min-height: calc(100vh - 200px);
+  
+  .text-turquoise {
+    color: var(--turquoise, #5cb8b2);
+  }
+  
+  .stat-card {
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-3px);
+    }
+  }
+  
+  .table {
+    th {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #6c757d;
+      border-bottom: 2px solid #dee2e6;
+    }
+    
+    td {
+      vertical-align: middle;
+    }
+    
+    tbody tr {
+      transition: background-color 0.15s ease;
+      
+      &:hover {
+        background-color: rgba(92, 184, 178, 0.1) !important;
+      }
+    }
+    
+    // Ligne pour les avis clients (highlight)
+    .table-success {
+      background-color: rgba(25, 135, 84, 0.1) !important;
+    }
+  }
+  
+  .badge {
+    font-weight: 500;
+  }
+  
+  .btn-group {
+    .btn {
+      padding: 0.25rem 0.5rem;
+    }
+  }
+}
+
+// Modal
+.modal {
+  .modal-header.bg-turquoise {
+    background-color: var(--turquoise, #5cb8b2) !important;
+  }
+  
+  .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+}

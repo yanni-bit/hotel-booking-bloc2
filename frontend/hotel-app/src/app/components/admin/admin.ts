@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { ContactService } from '../../services/contact.service';
+import { AvisService } from '../../services/avis';
 
 @Component({
   selector: 'app-admin',
@@ -20,7 +21,9 @@ export class Admin implements OnInit {
     users: 0,
     services: 0,
     messages: 0,
-    messagesUnread: 0
+    messagesUnread: 0,
+    avis: 0,
+    avisNew: 0
   };
   
   loading: boolean = true;
@@ -29,6 +32,7 @@ export class Admin implements OnInit {
     public authService: AuthService,
     private http: HttpClient,
     private contactService: ContactService,
+    private avisService: AvisService,
     private cdr: ChangeDetectorRef
   ) {}
   
@@ -39,14 +43,36 @@ export class Admin implements OnInit {
   loadStats() {
     // Charger les stats de messages
     this.contactService.getAllMessages().subscribe({
-      next: (response) => {
+      next: (response: any) => {
         if (response.success && response.data) {
           this.stats.messages = response.data.length;
-          this.stats.messagesUnread = response.data.filter(m => m.lu === 0).length;
+          this.stats.messagesUnread = response.data.filter((m: any) => m.lu === 0).length;
         }
         this.cdr.markForCheck();
       },
-      error: (err) => console.error('Erreur chargement messages:', err)
+      error: (err: any) => console.error('Erreur chargement messages:', err)
+    });
+    
+    // Charger les stats des avis
+    this.avisService.getAllAvis().subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          this.stats.avis = response.data.length;
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err: any) => console.error('Erreur chargement avis:', err)
+    });
+    
+    // Charger le nombre de nouveaux avis
+    this.avisService.countNewAvis().subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          this.stats.avisNew = response.data.newCount;
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err: any) => console.error('Erreur comptage avis:', err)
     });
     
     // Pour l'instant, on simule les autres stats
