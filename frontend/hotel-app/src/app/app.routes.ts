@@ -27,6 +27,7 @@ import { Contact } from './components/contact/contact';
 import { AdminAvis } from './components/admin-avis/admin-avis';
 import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { ResetPassword } from './components/reset-password/reset-password';
+import { AdminUsers } from './components/admin-users/admin-users';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -104,6 +105,11 @@ export const routes: Routes = [
   {
     path: 'admin/avis',
     component: AdminAvis,
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'admin/users',
+    component: AdminUsers,
     canActivate: [adminGuard]
   },
 

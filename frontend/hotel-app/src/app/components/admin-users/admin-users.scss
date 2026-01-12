@@ -1,0 +1,80 @@
+.admin-users-page {
+  min-height: 80vh;
+  background-color: var(--marron-clair);
+}
+
+.text-turquoise {
+  color: var(--turquoise) !important;
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--turquoise);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.role-select {
+  width: auto;
+  min-width: 120px;
+}
+
+.table {
+  th {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  td {
+    vertical-align: middle;
+  }
+}
+
+.btn-outline-warning:hover {
+  color: #000;
+}
+
+.btn-outline-success:hover {
+  color: #fff;
+}
+
+.btn-outline-danger:hover {
+  color: #fff;
+}
+
+// Modal
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.85rem;
+  }
+  
+  .avatar-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+}

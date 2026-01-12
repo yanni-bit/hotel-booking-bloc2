@@ -189,4 +189,50 @@ export class AuthService {
   resetPassword(token: string, newPassword: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
   }
+
+  // ============================================================================
+  // MÉTHODES ADMIN - GESTION UTILISATEURS
+  // ============================================================================
+
+  /**
+   * Récupère tous les utilisateurs (ADMIN)
+   */
+  getAllUsers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users`);
+  }
+
+  /**
+   * Récupère tous les rôles (ADMIN)
+   */
+  getAllRoles(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/roles`);
+  }
+
+  /**
+   * Modifie le rôle d'un utilisateur (ADMIN)
+   */
+  updateUserRole(userId: number, roleId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/users/${userId}/role`, { id_role: roleId });
+  }
+
+  /**
+   * Active/Désactive un utilisateur (ADMIN)
+   */
+  toggleUserActive(userId: number, actif: boolean): Observable<any> {
+    return this.http.put(`${this.apiUrl}/users/${userId}/toggle`, { actif });
+  }
+
+  /**
+   * Supprime un utilisateur (ADMIN)
+   */
+  deleteUser(userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/users/${userId}`);
+  }
+
+  /**
+   * Compte le nombre d'utilisateurs (ADMIN)
+   */
+  countUsers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users/count`);
+  }
 }
