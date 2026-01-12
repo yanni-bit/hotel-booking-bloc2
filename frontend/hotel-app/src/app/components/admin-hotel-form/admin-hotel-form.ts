@@ -33,6 +33,17 @@ export class AdminHotelForm implements OnInit {
     longitude: null as number | null
   };
 
+  // Services de l'hôtel
+  hotelServices: any[] = [];
+
+  // Types de services
+  typeServices = [
+    { value: 'journalier', label: 'Par jour' },
+    { value: 'sejour', label: 'Par séjour' },
+    { value: 'unitaire', label: 'Unitaire' },
+    { value: 'par_personne', label: 'Par personne/jour' }
+  ];
+
   loading: boolean = false;
   submitting: boolean = false;
   error: string = '';
@@ -51,6 +62,7 @@ export class AdminHotelForm implements OnInit {
       this.isEditMode = true;
       this.hotelId = parseInt(id);
       this.loadHotel();
+      this.loadHotelServices();
     }
   }
 
@@ -64,7 +76,6 @@ export class AdminHotelForm implements OnInit {
         console.log('✅ Hôtel chargé:', response);
         const hotelData = response.data;
 
-        // Pré-remplir le formulaire
         this.hotel = {
           nom_hotel: hotelData.nom_hotel || '',
           description_hotel: hotelData.description_hotel || '',
@@ -93,6 +104,27 @@ export class AdminHotelForm implements OnInit {
     });
   }
 
+  loadHotelServices() {
+  if (!this.hotelId) return;
+
+  this.hotelAdminService.getHotelServices(this.hotelId).subscribe({
+    next: (response) => {
+      console.log('✅ Services chargés (raw):', response);
+      console.log('✅ Premier service disponible:', response.data[0]?.disponible, typeof response.data[0]?.disponible);
+      this.hotelServices = response.data || [];
+      this.cdr.markForCheck();
+    },
+    error: (err) => {
+      console.error('❌ Erreur chargement services:', err);
+    }
+  });
+}
+
+  getTypeLabel(type: string): string {
+    const found = this.typeServices.find(t => t.value === type);
+    return found ? found.label : type;
+  }
+
   onSubmit() {
     // Validation
     if (!this.hotel.nom_hotel || !this.hotel.ville_hotel || !this.hotel.pays_hotel) {
@@ -118,8 +150,8 @@ export class AdminHotelForm implements OnInit {
       // MODE ÉDITION
       this.hotelAdminService.update(this.hotelId, hotelData).subscribe({
         next: () => {
-          alert('Hôtel modifié avec succès');
-          this.router.navigate(['/admin/hotels']);
+          // Sauvegarder aussi les services
+          this.saveHotelServices();
         },
         error: (err) => {
           console.error('❌ Erreur:', err);
@@ -143,5 +175,35 @@ export class AdminHotelForm implements OnInit {
         }
       });
     }
+  }
+
+  saveHotelServices() {
+    if (!this.hotelId || this.hotelServices.length === 0) {
+      alert('Hôtel modifié avec succès');
+      this.router.navigate(['/admin/hotels']);
+      return;
+    }
+
+    // Préparer les données des services
+    const servicesData = this.hotelServices.map(s => ({
+      id_hotel_service: s.id_hotel_service,
+      prix_service: parseFloat(s.prix_service) || 0,
+      disponible: Number(s.disponible) === 1 ? 1 : 0
+    }));
+
+    console.log('📤 Services à sauvegarder:', servicesData);
+
+    this.hotelAdminService.updateHotelServices(this.hotelId, servicesData).subscribe({
+      next: (response) => {
+        console.log('✅ Services mis à jour:', response);
+        alert('Hôtel et services modifiés avec succès');
+        this.router.navigate(['/admin/hotels']);
+      },
+      error: (err) => {
+        console.error('❌ Erreur services:', err);
+        alert('Hôtel modifié mais erreur sur les services');
+        this.router.navigate(['/admin/hotels']);
+      }
+    });
   }
 }

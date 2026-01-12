@@ -29,6 +29,7 @@ import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { ResetPassword } from './components/reset-password/reset-password';
 import { AdminUsers } from './components/admin-users/admin-users';
 import { AdminUserDetail } from './components/admin-user-detail/admin-user-detail';
+import { AdminServices } from './components/admin-services/admin-services';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -116,6 +117,11 @@ export const routes: Routes = [
   {
     path: 'admin/users/:id',
     component: AdminUserDetail,
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'admin/services',
+    component: AdminServices,
     canActivate: [adminGuard]
   },
 

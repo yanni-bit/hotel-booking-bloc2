@@ -83,7 +83,7 @@ async function router(req, res) {
     // ========================================
     // ROUTES SERVICES HÔTEL
     // ========================================
-    if (req.pathname.match(/^\/api\/hotels\/\d+\/services$/)) {
+    if (req.pathname.match(/^\/api\/hotels\/\d+\/services(\/admin)?$/)) {
       await serviceRoutes(req, res);
       return;
     }

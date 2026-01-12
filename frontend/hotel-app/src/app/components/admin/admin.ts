@@ -5,6 +5,8 @@ import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { ContactService } from '../../services/contact.service';
 import { AvisService } from '../../services/avis';
+import { ReservationService } from '../../services/reservation';
+import { ServiceService } from '../../services/service';
 
 @Component({
   selector: 'app-admin',
@@ -14,7 +16,7 @@ import { AvisService } from '../../services/avis';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Admin implements OnInit {
-  
+
   stats = {
     hotels: 0,
     reservations: 0,
@@ -25,21 +27,23 @@ export class Admin implements OnInit {
     avis: 0,
     avisNew: 0
   };
-  
+
   loading: boolean = true;
-  
+
   constructor(
     public authService: AuthService,
     private http: HttpClient,
     private contactService: ContactService,
     private avisService: AvisService,
+    private reservationService: ReservationService,
+    private serviceService: ServiceService,
     private cdr: ChangeDetectorRef
-  ) {}
-  
+  ) { }
+
   ngOnInit() {
     this.loadStats();
   }
-  
+
   loadStats() {
     // Charger les stats de messages
     this.contactService.getAllMessages().subscribe({
@@ -52,7 +56,7 @@ export class Admin implements OnInit {
       },
       error: (err: any) => console.error('Erreur chargement messages:', err)
     });
-    
+
     // Charger les stats des avis
     this.avisService.getAllAvis().subscribe({
       next: (response: any) => {
@@ -63,7 +67,7 @@ export class Admin implements OnInit {
       },
       error: (err: any) => console.error('Erreur chargement avis:', err)
     });
-    
+
     // Charger le nombre de nouveaux avis
     this.avisService.countNewAvis().subscribe({
       next: (response: any) => {
@@ -74,16 +78,54 @@ export class Admin implements OnInit {
       },
       error: (err: any) => console.error('Erreur comptage avis:', err)
     });
-    
-    // Pour l'instant, on simule les autres stats
-    // On créera les vraies routes API plus tard
-    setTimeout(() => {
-      this.stats.hotels = 101;
-      this.stats.reservations = 0;
-      this.stats.users = 4;
-      this.stats.services = 505;
-      this.loading = false;
-      this.cdr.markForCheck();
-    }, 500);
+
+    // Charger les réservations
+    this.reservationService.getAllReservations().subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          this.stats.reservations = response.data.length;
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err: any) => console.error('Erreur chargement réservations:', err)
+    });
+
+    // Charger les utilisateurs
+    this.authService.getAllUsers().subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          this.stats.users = response.data.length;
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err: any) => console.error('Erreur chargement utilisateurs:', err)
+    });
+
+    // Charger les hôtels
+    this.http.get<any>('http://localhost:3000/api/hotels').subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          this.stats.hotels = response.data.length;
+        }
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err: any) => {
+        console.error('Erreur chargement hôtels:', err);
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
+    });
+
+    // Charger les services
+    this.serviceService.getAllServices().subscribe({
+      next: (response: any) => {
+        if (response.success && response.data) {
+          this.stats.services = response.data.length;
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err: any) => console.error('Erreur chargement services:', err)
+    });
   }
 }

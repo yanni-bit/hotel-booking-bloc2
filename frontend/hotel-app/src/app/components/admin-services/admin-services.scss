@@ -1,0 +1,84 @@
+.admin-services-page {
+  min-height: 80vh;
+  background-color: var(--marron-clair);
+}
+
+.text-turquoise {
+  color: var(--turquoise) !important;
+}
+
+// Table
+.table {
+  th {
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  td {
+    vertical-align: middle;
+  }
+  
+  .table-secondary {
+    opacity: 0.7;
+  }
+}
+
+// Boutons
+.btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  
+  &:hover {
+    background-color: var(--turquoise-hover);
+    border-color: var(--turquoise-hover);
+  }
+}
+
+.btn-outline-primary {
+  color: var(--turquoise);
+  border-color: var(--turquoise);
+  
+  &:hover {
+    background-color: var(--turquoise);
+    border-color: var(--turquoise);
+    color: white;
+  }
+}
+
+// Modal
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  border-bottom: 1px solid #eee;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-footer {
+  border-top: 1px solid #eee;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.85rem;
+  }
+  
+  .btn-sm {
+    padding: 0.2rem 0.4rem;
+  }
+}

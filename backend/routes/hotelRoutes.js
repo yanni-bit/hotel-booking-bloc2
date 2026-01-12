@@ -7,6 +7,7 @@ const HotelController = require("../controllers/hotelController");
 const ChambreController = require("../controllers/chambreController");
 const AvisController = require("../controllers/avisController");
 const Hotel = require("../models/Hotel");
+const db = require("../config/database");
 
 function hotelRoutes(req, res) {
   const pathname = req.pathname;
@@ -32,8 +33,6 @@ function hotelRoutes(req, res) {
   // GET /api/cities - Liste des villes distinctes
   // ========================================
   if (pathname === "/api/cities" && method === "GET") {
-    const db = require("../config/database");
-
     db.query(
       "SELECT DISTINCT ville_hotel FROM hotel ORDER BY ville_hotel ASC",
       (err, results) => {
@@ -86,26 +85,25 @@ function hotelRoutes(req, res) {
       return;
     }
 
-    const db = require("../config/database");
     const searchTerm = query.trim();
 
     // Requête pour compter le total
     const countSql = `
-    SELECT COUNT(*) as total
-    FROM hotel 
-    WHERE MATCH(nom_hotel, ville_hotel, pays_hotel, description_hotel) AGAINST(? IN NATURAL LANGUAGE MODE)
-  `;
+      SELECT COUNT(*) as total
+      FROM hotel 
+      WHERE MATCH(nom_hotel, ville_hotel, pays_hotel, description_hotel) AGAINST(? IN NATURAL LANGUAGE MODE)
+    `;
 
     // Requête pour les résultats paginés
     const dataSql = `
-    SELECT id_hotel, nom_hotel, ville_hotel, pays_hotel, 
-           nbre_etoile_hotel, note_moy_hotel, description_hotel, img_hotel,
-           MATCH(nom_hotel, ville_hotel, pays_hotel, description_hotel) AGAINST(? IN NATURAL LANGUAGE MODE) AS score
-    FROM hotel 
-    WHERE MATCH(nom_hotel, ville_hotel, pays_hotel, description_hotel) AGAINST(? IN NATURAL LANGUAGE MODE)
-    ORDER BY score DESC, note_moy_hotel DESC
-    LIMIT ? OFFSET ?
-  `;
+      SELECT id_hotel, nom_hotel, ville_hotel, pays_hotel, 
+             nbre_etoile_hotel, note_moy_hotel, description_hotel, img_hotel,
+             MATCH(nom_hotel, ville_hotel, pays_hotel, description_hotel) AGAINST(? IN NATURAL LANGUAGE MODE) AS score
+      FROM hotel 
+      WHERE MATCH(nom_hotel, ville_hotel, pays_hotel, description_hotel) AGAINST(? IN NATURAL LANGUAGE MODE)
+      ORDER BY score DESC, note_moy_hotel DESC
+      LIMIT ? OFFSET ?
+    `;
 
     // Exécuter les 2 requêtes
     db.query(countSql, [searchTerm], (err, countResult) => {
@@ -211,7 +209,7 @@ function hotelRoutes(req, res) {
   // ========================================
   // GET /api/hotels/:id - Détails d'un hôtel
   // ========================================
-  if (pathname.startsWith("/api/hotels/") && method === "GET") {
+  if (pathname.match(/^\/api\/hotels\/\d+$/) && method === "GET") {
     const id = pathname.split("/")[3];
 
     if (!id || isNaN(id)) {
@@ -226,7 +224,7 @@ function hotelRoutes(req, res) {
       return;
     }
 
-    HotelController.getHotelDetails(req, res, id); // ← Change cette ligne
+    HotelController.getHotelDetails(req, res, id);
     return;
   }
 
@@ -315,14 +313,8 @@ function hotelRoutes(req, res) {
     });
 
     req.on("end", () => {
-      console.log("📥 Body reçu (raw):", body); // debug
       try {
         const hotelData = JSON.parse(body);
-        console.log("📦 Hotel data parsé:", hotelData); // debug
-        console.log(
-          "📊 Type nbre_etoile_hotel:",
-          typeof hotelData.nbre_etoile_hotel
-        ); // debug
 
         Hotel.create(hotelData, (err, result) => {
           if (err) {
