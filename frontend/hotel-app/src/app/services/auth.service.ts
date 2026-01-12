@@ -175,4 +175,18 @@ export class AuthService {
   changePassword(oldPassword: string, newPassword: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/password`, { oldPassword, newPassword });
   }
+
+  /**
+ * Demande de réinitialisation de mot de passe
+ */
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  /**
+   * Réinitialiser le mot de passe avec un token
+   */
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
+  }
 }

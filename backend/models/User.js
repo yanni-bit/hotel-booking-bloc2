@@ -236,6 +236,108 @@ static async changePassword(userId, oldPassword, newPassword, callback) {
     callback(error, null);
   }
 }
+
+// ============================================================================
+// MÉTHODES POUR RÉCUPÉRATION DE MOT DE PASSE
+// ============================================================================
+
+/**
+ * Génère un token de réinitialisation de mot de passe
+ */
+static createPasswordResetToken(userId, callback) {
+  // Générer un token unique
+  const crypto = require('crypto');
+  const token = crypto.randomBytes(32).toString('hex');
+  
+  // Expiration dans 1 heure
+  const expiresAt = new Date(Date.now() + 3600000);
+  
+  // Supprimer les anciens tokens non utilisés pour cet utilisateur
+  const deleteQuery = 'DELETE FROM PASSWORD_RESET WHERE id_user = ? AND used = 0';
+  
+  db.query(deleteQuery, [userId], (err) => {
+    if (err) {
+      return callback(err, null);
+    }
+    
+    // Insérer le nouveau token
+    const insertQuery = `
+      INSERT INTO PASSWORD_RESET (id_user, token, expires_at)
+      VALUES (?, ?, ?)
+    `;
+    
+    db.query(insertQuery, [userId, token, expiresAt], (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, { token, expiresAt });
+    });
+  });
+}
+
+/**
+ * Vérifie si un token de réinitialisation est valide
+ */
+static verifyPasswordResetToken(token, callback) {
+  const query = `
+    SELECT pr.*, u.email_user, u.prenom_user
+    FROM PASSWORD_RESET pr
+    INNER JOIN UTILISATEUR u ON pr.id_user = u.id_user
+    WHERE pr.token = ? 
+      AND pr.used = 0 
+      AND pr.expires_at > NOW()
+  `;
+  
+  db.query(query, [token], (err, results) => {
+    if (err) {
+      return callback(err, null);
+    }
+    callback(null, results[0] || null);
+  });
+}
+
+/**
+ * Réinitialise le mot de passe avec un token
+ */
+static async resetPasswordWithToken(token, newPassword, callback) {
+  try {
+    // Vérifier le token
+    this.verifyPasswordResetToken(token, async (err, resetData) => {
+      if (err) {
+        return callback(err, null);
+      }
+      
+      if (!resetData) {
+        return callback(new Error('Token invalide ou expiré'), null);
+      }
+      
+      // Hasher le nouveau mot de passe
+      const saltRounds = 10;
+      const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
+      
+      // Mettre à jour le mot de passe
+      const updateQuery = 'UPDATE UTILISATEUR SET mot_de_passe = ? WHERE id_user = ?';
+      
+      db.query(updateQuery, [newPasswordHash, resetData.id_user], (err, result) => {
+        if (err) {
+          return callback(err, null);
+        }
+        
+        // Marquer le token comme utilisé
+        const markUsedQuery = 'UPDATE PASSWORD_RESET SET used = 1 WHERE token = ?';
+        
+        db.query(markUsedQuery, [token], (err) => {
+          if (err) {
+            console.error('Erreur marquage token:', err);
+          }
+          callback(null, { success: true });
+        });
+      });
+    });
+  } catch (error) {
+    callback(error, null);
+  }
+}
 }
 
 module.exports = User;

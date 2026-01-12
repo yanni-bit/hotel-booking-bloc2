@@ -2,59 +2,48 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-5 col-lg-4">
-        
+
         <div class="text-center mb-4">
           <h1 class="h3 text-turquoise">
             <i class="bi bi-person-circle me-2"></i>{{ 'auth.login' | translate }}
           </h1>
           <p class="text-muted">{{ 'auth.loginSubtitle' | translate }}</p>
         </div>
-        
+
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
-            
+
             <!-- Message d'erreur -->
             <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
               <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
             </div>
-            
+
             <!-- Formulaire -->
             <form (ngSubmit)="onSubmit()">
-              
+
               <!-- Email -->
               <div class="mb-3">
                 <label class="form-label fw-bold">{{ 'booking.email' | translate }}</label>
-                <input 
-                  type="email" 
-                  class="form-control form-control-lg" 
-                  [(ngModel)]="email"
-                  name="email"
-                  placeholder="votre@email.com"
-                  required
-                  autocomplete="email"
-                >
+                <input type="email" class="form-control form-control-lg" [(ngModel)]="email" name="email"
+                  placeholder="votre@email.com" required autocomplete="email">
               </div>
-              
+
               <!-- Mot de passe -->
               <div class="mb-4">
                 <label class="form-label fw-bold">{{ 'auth.password' | translate }}</label>
-                <input 
-                  type="password" 
-                  class="form-control form-control-lg" 
-                  [(ngModel)]="password"
-                  name="password"
-                  placeholder="••••••••"
-                  required
-                  autocomplete="current-password"
-                >
+                <input type="password" class="form-control form-control-lg" [(ngModel)]="password" name="password"
+                  placeholder="••••••••" required autocomplete="current-password">
               </div>
-              
+
+              <!-- Lien mot de passe oublié -->
+              <div class="mb-4 text-end">
+                <a [routerLink]="['/forgot-password']" class="text-turquoise small">
+                  {{ 'auth.forgotPasswordLink' | translate }}
+                </a>
+              </div>
+
               <!-- Bouton connexion -->
-              <button 
-                type="submit" 
-                class="btn btn-primary btn-lg w-100 mb-3"
-                [disabled]="loading"
-              >
+              <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" [disabled]="loading">
                 <span *ngIf="!loading">
                   <i class="bi bi-box-arrow-in-right me-2"></i>{{ 'auth.loginBtn' | translate }}
                 </span>
@@ -62,7 +51,7 @@
                   <span class="spinner-border spinner-border-sm me-2"></span>{{ 'auth.loggingIn' | translate }}
                 </span>
               </button>
-              
+
               <!-- Lien inscription -->
               <div class="text-center">
                 <p class="mb-0 text-muted">
@@ -72,19 +61,19 @@
                   </a>
                 </p>
               </div>
-              
+
             </form>
-            
+
           </div>
         </div>
-        
+
         <!-- Retour accueil -->
         <div class="text-center mt-3">
           <a [routerLink]="['/']" class="text-muted">
             <i class="bi bi-arrow-left me-1"></i>{{ 'booking.backHome' | translate }}
           </a>
         </div>
-        
+
         <!-- Comptes de test -->
         <div class="card border-0 bg-light mt-4">
           <div class="card-body p-3">
@@ -93,7 +82,7 @@
             <p class="small mb-0">Admin : <code>admin@bookhotel.com</code> / <code>admin123</code></p>
           </div>
         </div>
-        
+
       </div>
     </div>
   </div>

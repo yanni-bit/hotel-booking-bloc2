@@ -420,6 +420,170 @@ function authRoutes(req, res) {
   }
 
   // ========================================
+  // POST /api/auth/forgot-password - Demande de réinitialisation
+  // ========================================
+  if (pathname === '/api/auth/forgot-password' && method === 'POST') {
+    let body = '';
+    
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    
+    req.on('end', () => {
+      try {
+        const { email } = JSON.parse(body);
+        
+        if (!email) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({
+            success: false,
+            message: 'Email requis'
+          }));
+          return;
+        }
+        
+        // Chercher l'utilisateur
+        User.findByEmail(email, (err, user) => {
+          if (err) {
+            console.error('Erreur recherche utilisateur:', err);
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+              success: false,
+              message: 'Erreur serveur'
+            }));
+            return;
+          }
+          
+          // Toujours répondre positivement (sécurité : ne pas révéler si l'email existe)
+          if (!user) {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+              success: true,
+              message: 'Si cet email existe, un lien de réinitialisation a été envoyé'
+            }));
+            return;
+          }
+          
+          // Créer le token
+          User.createPasswordResetToken(user.id_user, (err, tokenData) => {
+            if (err) {
+              console.error('Erreur création token:', err);
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({
+                success: false,
+                message: 'Erreur serveur'
+              }));
+              return;
+            }
+            
+            // ============================================
+            // SIMULATION : Afficher le lien dans la console
+            // ============================================
+            const resetLink = `http://localhost:4300/reset-password?token=${tokenData.token}`;
+            
+            console.log('\n========================================');
+            console.log('🔐 DEMANDE DE RÉINITIALISATION MOT DE PASSE');
+            console.log('========================================');
+            console.log(`📧 Email: ${email}`);
+            console.log(`👤 Utilisateur: ${user.prenom_user} ${user.nom_user}`);
+            console.log(`🔗 Lien de réinitialisation:`);
+            console.log(`   ${resetLink}`);
+            console.log(`⏰ Expire à: ${tokenData.expiresAt}`);
+            console.log('========================================\n');
+            
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+              success: true,
+              message: 'Si cet email existe, un lien de réinitialisation a été envoyé'
+            }));
+          });
+        });
+      } catch (error) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({
+          success: false,
+          message: 'Données invalides'
+        }));
+      }
+    });
+    return;
+  }
+
+  // ========================================
+  // POST /api/auth/reset-password - Réinitialiser le mot de passe
+  // ========================================
+  if (pathname === '/api/auth/reset-password' && method === 'POST') {
+    let body = '';
+    
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    
+    req.on('end', () => {
+      try {
+        const { token, newPassword } = JSON.parse(body);
+        
+        if (!token || !newPassword) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({
+            success: false,
+            message: 'Token et nouveau mot de passe requis'
+          }));
+          return;
+        }
+        
+        if (newPassword.length < 6) {
+          res.statusCode = 400;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({
+            success: false,
+            message: 'Le mot de passe doit contenir au moins 6 caractères'
+          }));
+          return;
+        }
+        
+        User.resetPasswordWithToken(token, newPassword, (err, result) => {
+          if (err) {
+            console.error('Erreur réinitialisation:', err);
+            
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+              success: false,
+              message: err.message || 'Erreur lors de la réinitialisation'
+            }));
+            return;
+          }
+          
+          console.log('✅ Mot de passe réinitialisé avec succès');
+          
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({
+            success: true,
+            message: 'Mot de passe réinitialisé avec succès'
+          }));
+        });
+      } catch (error) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({
+          success: false,
+          message: 'Données invalides'
+        }));
+      }
+    });
+    return;
+  }
+
+  // ========================================
   // Route non trouvée
   // ========================================
   res.statusCode = 404;

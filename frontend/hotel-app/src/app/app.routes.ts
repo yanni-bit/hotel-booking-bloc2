@@ -25,6 +25,8 @@ import { AdminMessages } from './components/admin-messages/admin-messages';
 import { SearchResults } from './components/search-results/search-results';
 import { Contact } from './components/contact/contact';
 import { AdminAvis } from './components/admin-avis/admin-avis';
+import { ForgotPassword } from './components/forgot-password/forgot-password';
+import { ResetPassword } from './components/reset-password/reset-password';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -46,6 +48,8 @@ export const routes: Routes = [
   { path: 'payment/:offreId', component: Payment, canActivate: [authGuard] },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
+  { path: 'forgot-password', component: ForgotPassword },
+  { path: 'reset-password', component: ResetPassword },
   { path: 'search', component: SearchResults },
   { path: 'contact', component: Contact },
 
