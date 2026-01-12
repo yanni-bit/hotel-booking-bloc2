@@ -1,0 +1,478 @@
+<main class="admin-user-detail-page py-5">
+  <div class="container">
+
+    <!-- LOADING -->
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-turquoise" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-3 text-muted">Chargement du profil...</p>
+      </div>
+    }
+
+    <!-- ERROR -->
+    @if (error && !loading) {
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+        <button class="btn btn-outline-danger ms-3" (click)="goBack()">
+          <i class="bi bi-arrow-left me-2"></i>Retour
+        </button>
+      </div>
+    }
+
+    <!-- CONTENU -->
+    @if (!loading && !error && user) {
+
+      <!-- En-tête -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <a [routerLink]="['/admin/users']" class="text-muted text-decoration-none mb-2 d-inline-block">
+            <i class="bi bi-arrow-left me-1"></i>Retour à la liste
+          </a>
+          <h1 class="h3 text-turquoise mb-0">
+            <i class="bi bi-person-circle me-2"></i>{{ user.prenom_user }} {{ user.nom_user }}
+          </h1>
+        </div>
+        <span class="badge" [ngClass]="getRoleBadgeClass(user.code_role)">
+          {{ user.nom_role }}
+        </span>
+      </div>
+
+      <!-- Messages -->
+      @if (successMessage) {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+          <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+        </div>
+      }
+
+      <div class="row">
+
+        <!-- COLONNE GAUCHE - PROFIL -->
+        <div class="col-lg-4 mb-4">
+          
+          <!-- Carte profil -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+              
+              <!-- Avatar -->
+              <div class="text-center mb-4">
+                <div class="avatar-large mx-auto mb-3">
+                  {{ user.prenom_user.charAt(0) }}{{ user.nom_user.charAt(0) }}
+                </div>
+                @if (!editMode) {
+                  <h5 class="mb-1">{{ user.prenom_user }} {{ user.nom_user }}</h5>
+                  <p class="text-muted mb-0">{{ user.email_user }}</p>
+                }
+              </div>
+
+              <!-- Mode lecture -->
+              @if (!editMode) {
+                <div class="profile-info">
+                  <div class="info-row">
+                    <span class="label"><i class="bi bi-envelope me-2"></i>Email</span>
+                    <span class="value">{{ user.email_user }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label"><i class="bi bi-telephone me-2"></i>Téléphone</span>
+                    <span class="value">{{ user.tel_user || 'Non renseigné' }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label"><i class="bi bi-shield me-2"></i>Rôle</span>
+                    <span class="badge" [ngClass]="getRoleBadgeClass(user.code_role)">{{ user.nom_role }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label"><i class="bi bi-toggle-on me-2"></i>Statut</span>
+                    @if (user.actif) {
+                      <span class="badge bg-success">Actif</span>
+                    } @else {
+                      <span class="badge bg-secondary">Inactif</span>
+                    }
+                  </div>
+                  <div class="info-row">
+                    <span class="label"><i class="bi bi-patch-check me-2"></i>Email vérifié</span>
+                    @if (user.email_verifie) {
+                      <span class="badge bg-success">Oui</span>
+                    } @else {
+                      <span class="badge bg-warning text-dark">Non</span>
+                    }
+                  </div>
+                  <div class="info-row">
+                    <span class="label"><i class="bi bi-calendar-plus me-2"></i>Inscription</span>
+                    <span class="value">{{ formatDate(user.date_inscription) }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label"><i class="bi bi-clock-history me-2"></i>Dernière connexion</span>
+                    <span class="value">{{ formatDateTime(user.derniere_connexion) }}</span>
+                  </div>
+                </div>
+
+                <!-- Adresse -->
+                @if (user.rue_user || user.ville_user) {
+                  <hr>
+                  <h6 class="mb-3"><i class="bi bi-geo-alt me-2"></i>Adresse</h6>
+                  <p class="text-muted mb-0">
+                    {{ user.rue_user }}<br>
+                    @if (user.complement_user) {
+                      {{ user.complement_user }}<br>
+                    }
+                    {{ user.code_postal_user }} {{ user.ville_user }}<br>
+                    {{ user.pays_user }}
+                  </p>
+                }
+
+                <hr>
+                <button class="btn btn-primary w-100" (click)="toggleEditMode()">
+                  <i class="bi bi-pencil me-2"></i>Modifier
+                </button>
+              }
+
+              <!-- Mode édition -->
+              @if (editMode) {
+                <div class="edit-form">
+                  <div class="mb-3">
+                    <label class="form-label">Prénom</label>
+                    <input type="text" class="form-control" [(ngModel)]="editedUser.prenom_user">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Nom</label>
+                    <input type="text" class="form-control" [(ngModel)]="editedUser.nom_user">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" [(ngModel)]="editedUser.email_user">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Téléphone</label>
+                    <input type="tel" class="form-control" [(ngModel)]="editedUser.tel_user">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Rôle</label>
+                    <select class="form-select" [(ngModel)]="editedUser.id_role">
+                      @for (role of roles; track role.id_role) {
+                        <option [value]="role.id_role">{{ role.nom_role }}</option>
+                      }
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Statut</label>
+                    <select class="form-select" [(ngModel)]="editedUser.actif">
+                      <option [value]="1">Actif</option>
+                      <option [value]="0">Inactif</option>
+                    </select>
+                  </div>
+                  
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-secondary flex-grow-1" (click)="cancelEdit()">
+                      <i class="bi bi-x-circle me-2"></i>Annuler
+                    </button>
+                    <button class="btn btn-success flex-grow-1" (click)="saveUser()">
+                      <i class="bi bi-check-circle me-2"></i>Enregistrer
+                    </button>
+                  </div>
+                </div>
+              }
+
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+              <h6 class="mb-3"><i class="bi bi-bar-chart me-2"></i>Statistiques</h6>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Réservations</span>
+                <strong>{{ reservations.length }}</strong>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">Total dépensé</span>
+                <strong class="text-turquoise">{{ getTotalReservations().toFixed(2) }} €</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- COLONNE DROITE - RÉSERVATIONS -->
+        <div class="col-lg-8">
+          
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+              <h5 class="mb-0">
+                <i class="bi bi-calendar-check me-2 text-turquoise"></i>
+                Réservations ({{ reservations.length }})
+              </h5>
+            </div>
+            <div class="card-body p-0">
+
+              @if (reservations.length === 0) {
+                <div class="text-center py-5">
+                  <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                  <p class="text-muted mt-3">Aucune réservation</p>
+                </div>
+              }
+
+              @if (reservations.length > 0) {
+                <div class="table-responsive">
+                  <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th>N°</th>
+                        <th>Hôtel</th>
+                        <th>Dates</th>
+                        <th class="text-center">Nuits</th>
+                        <th class="text-end">Prix</th>
+                        <th>Statut</th>
+                        <th class="text-center">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (reservation of reservations; track reservation.id_reservation) {
+                        <tr>
+                          <td class="align-middle">
+                            <small class="text-muted">#{{ reservation.id_reservation }}</small>
+                          </td>
+                          <td class="align-middle">
+                            <strong>{{ reservation.nom_hotel }}</strong><br>
+                            <small class="text-muted">{{ reservation.ville_hotel }}</small>
+                          </td>
+                          <td class="align-middle">
+                            <small>
+                              {{ formatDate(reservation.check_in) }} → {{ formatDate(reservation.check_out) }}
+                            </small>
+                          </td>
+                          <td class="align-middle text-center">
+                            <span class="badge bg-secondary">{{ reservation.nbre_nuits }}</span>
+                          </td>
+                          <td class="align-middle text-end">
+                            <strong class="text-turquoise">{{ reservation.total_price }} €</strong>
+                          </td>
+                          <td class="align-middle">
+                            <span class="badge" [ngClass]="'bg-' + getStatusColor(reservation.id_statut)">
+                              {{ getStatusName(reservation.id_statut) }}
+                            </span>
+                          </td>
+                          <td class="align-middle text-center">
+                            <button 
+                              class="btn btn-sm btn-outline-primary"
+                              (click)="openReservationModal(reservation)"
+                              title="Voir détail"
+                            >
+                              <i class="bi bi-eye"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+</main>
+
+<!-- ========================================
+     MODAL DÉTAIL RÉSERVATION
+======================================== -->
+@if (showReservationModal && selectedReservation) {
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal fade show d-block" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        
+        <!-- Header -->
+        <div class="modal-header bg-light">
+          <h5 class="modal-title">
+            <i class="bi bi-calendar-check me-2 text-turquoise"></i>
+            Réservation #{{ selectedReservation.id_reservation }}
+          </h5>
+          <button type="button" class="btn-close" (click)="closeReservationModal()"></button>
+        </div>
+        
+        <!-- Body -->
+        <div class="modal-body">
+          
+          <!-- Statut actuel -->
+          <div class="text-center mb-4">
+            <span class="badge fs-6 px-4 py-2" [ngClass]="'bg-' + getStatusColor(selectedReservation.id_statut)">
+              {{ getStatusName(selectedReservation.id_statut) }}
+            </span>
+            <div class="mt-2">
+              <small class="text-muted">N° {{ selectedReservation.num_confirmation }}</small>
+            </div>
+          </div>
+          
+          <div class="row">
+            
+            <!-- Hôtel -->
+            <div class="col-md-6">
+              <div class="card mb-3">
+                <div class="card-header bg-white">
+                  <i class="bi bi-building me-2"></i><strong>Hébergement</strong>
+                </div>
+                <div class="card-body">
+                  <p class="mb-1"><strong>{{ selectedReservation.nom_hotel }}</strong></p>
+                  <p class="mb-1 text-muted">
+                    <i class="bi bi-geo-alt me-2"></i>{{ selectedReservation.ville_hotel }}, {{ selectedReservation.pays_hotel }}
+                  </p>
+                  <p class="mb-0 text-muted">
+                    <i class="bi bi-door-open me-2"></i>{{ selectedReservation.type_room }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Dates -->
+            <div class="col-md-6">
+              <div class="card mb-3">
+                <div class="card-header bg-white">
+                  <i class="bi bi-calendar-range me-2"></i><strong>Séjour</strong>
+                </div>
+                <div class="card-body">
+                  <div class="row mb-2">
+                    <div class="col-6">
+                      <small class="text-muted">Arrivée</small>
+                      <p class="mb-0 fw-bold text-success">{{ formatDate(selectedReservation.check_in) }}</p>
+                    </div>
+                    <div class="col-6">
+                      <small class="text-muted">Départ</small>
+                      <p class="mb-0 fw-bold text-danger">{{ formatDate(selectedReservation.check_out) }}</p>
+                    </div>
+                  </div>
+                  <hr class="my-2">
+                  <div class="d-flex justify-content-between">
+                    <span><strong>{{ selectedReservation.nbre_nuits }}</strong> nuit(s)</span>
+                    <span><strong>{{ selectedReservation.nbre_adults }}</strong> adulte(s)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          
+          <!-- Prix -->
+          <div class="card mb-3">
+            <div class="card-header bg-white">
+              <i class="bi bi-cash-stack me-2"></i><strong>Tarification</strong>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-2">
+                <span>Prix par nuit</span>
+                <span>{{ selectedReservation.prix_nuit }} €</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Nombre de nuits</span>
+                <span>x {{ selectedReservation.nbre_nuits }}</span>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-between">
+                <strong>Total</strong>
+                <strong class="text-turquoise fs-5">{{ selectedReservation.total_price }} €</strong>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Services additionnels -->
+          @if (selectedServices.length > 0) {
+            <div class="card mb-3">
+              <div class="card-header bg-white">
+                <i class="bi bi-plus-circle me-2"></i><strong>Services additionnels</strong>
+              </div>
+              <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Service</th>
+                      <th class="text-center">Qté</th>
+                      <th class="text-end">Prix</th>
+                      <th class="text-end">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (service of selectedServices; track service.id_reservation_service) {
+                      <tr>
+                        <td>
+                          <i class="bi {{ service.icone_service || 'bi-check-circle' }} me-2 text-turquoise"></i>
+                          {{ service.nom_service }}
+                        </td>
+                        <td class="text-center">{{ service.quantite }}</td>
+                        <td class="text-end">{{ service.prix_unitaire }} €</td>
+                        <td class="text-end"><strong>{{ service.sous_total }} €</strong></td>
+                      </tr>
+                    }
+                  </tbody>
+                  <tfoot class="table-light">
+                    <tr>
+                      <td colspan="3" class="text-end"><strong>Total services :</strong></td>
+                      <td class="text-end"><strong class="text-turquoise">{{ getTotalServices() }} €</strong></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          }
+          
+          <!-- Demandes spéciales -->
+          @if (selectedReservation.special_requests) {
+            <div class="card mb-3">
+              <div class="card-header bg-white">
+                <i class="bi bi-chat-left-text me-2"></i><strong>Demandes spéciales</strong>
+              </div>
+              <div class="card-body">
+                <p class="mb-0 fst-italic">{{ selectedReservation.special_requests }}</p>
+              </div>
+            </div>
+          }
+          
+          <!-- Modifier le statut -->
+          <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+              <i class="bi bi-pencil-square me-2"></i><strong>Modifier le statut</strong>
+            </div>
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <select class="form-select" [(ngModel)]="selectedReservation.id_statut">
+                    @for (statut of statuts; track statut.id) {
+                      <option [value]="statut.id">{{ statut.nom }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <button class="btn btn-primary w-100" (click)="saveReservationStatus()">
+                    <i class="bi bi-check-circle me-2"></i>Enregistrer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center mt-3">
+            <small class="text-muted">
+              Réservé le {{ formatDateTime(selectedReservation.date_reservation) }}
+            </small>
+          </div>
+          
+        </div>
+        
+        <!-- Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeReservationModal()">
+            <i class="bi bi-x-circle me-2"></i>Fermer
+          </button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+}

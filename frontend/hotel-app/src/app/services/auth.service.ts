@@ -235,4 +235,25 @@ export class AuthService {
   countUsers(): Observable<any> {
     return this.http.get(`${this.apiUrl}/users/count`);
   }
+
+  /**
+ * Récupère un utilisateur par son ID (ADMIN)
+ */
+  getUserById(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users/${userId}`);
+  }
+
+  /**
+   * Met à jour un utilisateur (ADMIN)
+   */
+  updateUser(userId: number, userData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/users/${userId}`, userData);
+  }
+
+  /**
+   * Récupère les réservations d'un utilisateur (ADMIN)
+   */
+  getUserReservations(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users/${userId}/reservations`);
+  }
 }

@@ -23,7 +23,6 @@ function reservationRoutes(req, res) {
       try {
         const reservationData = JSON.parse(body);
 
-        // Générer numéro de confirmation
         reservationData.num_confirmation =
           Reservation.generateConfirmationNumber();
 
@@ -132,6 +131,39 @@ function reservationRoutes(req, res) {
   }
 
   // ========================================
+  // GET /api/reservations/:id/services - Services d'une réservation
+  // (DOIT être AVANT la route /api/reservations/:id)
+  // ========================================
+  if (pathname.match(/^\/api\/reservations\/\d+\/services$/) && method === "GET") {
+    const reservationId = pathname.split("/")[3];
+
+    Reservation.getServicesByReservationId(reservationId, (err, services) => {
+      if (err) {
+        console.error("Erreur récupération services:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: "Erreur serveur",
+          })
+        );
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: true,
+          data: services,
+        })
+      );
+    });
+    return;
+  }
+
+  // ========================================
   // GET /api/reservations/:id - Détail d'une réservation
   // ========================================
   if (pathname.match(/^\/api\/reservations\/\d+$/) && method === "GET") {
@@ -185,10 +217,7 @@ function reservationRoutes(req, res) {
   // ========================================
   // PUT /api/reservations/:id/status - Changer le statut (admin)
   // ========================================
-  if (
-    pathname.match(/^\/api\/reservations\/\d+\/status$/) &&
-    method === "PUT"
-  ) {
+  if (pathname.match(/^\/api\/reservations\/\d+\/status$/) && method === "PUT") {
     const reservationId = pathname.split("/")[3];
     let body = "";
 
@@ -252,10 +281,7 @@ function reservationRoutes(req, res) {
   // ========================================
   // PUT /api/reservations/:id/cancel - Annuler une réservation
   // ========================================
-  if (
-    pathname.match(/^\/api\/reservations\/\d+\/cancel$/) &&
-    method === "PUT"
-  ) {
+  if (pathname.match(/^\/api\/reservations\/\d+\/cancel$/) && method === "PUT") {
     const reservationId = pathname.split("/")[3];
     let body = "";
 

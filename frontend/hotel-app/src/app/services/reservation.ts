@@ -66,4 +66,11 @@ export class ReservationService {
   updateReservationStatus(reservationId: number, newStatusId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/reservations/${reservationId}/status`, { newStatusId });
   }
+
+  /**
+ * Récupère les services additionnels d'une réservation
+ */
+  getReservationServices(reservationId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservations/${reservationId}/services`);
+  }
 }

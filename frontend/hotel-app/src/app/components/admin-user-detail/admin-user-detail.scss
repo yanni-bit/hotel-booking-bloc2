@@ -1,4 +1,4 @@
-.admin-reservations-page {
+.admin-user-detail-page {
   min-height: 80vh;
   background-color: var(--marron-clair);
 }
@@ -7,10 +7,59 @@
   color: var(--turquoise) !important;
 }
 
+// Avatar large
+.avatar-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--turquoise);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+// Infos profil
+.profile-info {
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .label {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    
+    .value {
+      font-weight: 500;
+      text-align: right;
+    }
+  }
+}
+
+// Formulaire édition
+.edit-form {
+  .form-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+}
+
+// Table
 .table {
   th {
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 2px solid #dee2e6;
@@ -18,6 +67,17 @@
   
   td {
     vertical-align: middle;
+  }
+}
+
+// Boutons
+.btn-primary {
+  background-color: var(--turquoise);
+  border-color: var(--turquoise);
+  
+  &:hover {
+    background-color: var(--turquoise-hover);
+    border-color: var(--turquoise-hover);
   }
 }
 
@@ -29,16 +89,6 @@
     background-color: var(--turquoise);
     border-color: var(--turquoise);
     color: white;
-  }
-}
-
-.btn-primary {
-  background-color: var(--turquoise);
-  border-color: var(--turquoise);
-  
-  &:hover {
-    background-color: var(--turquoise-hover);
-    border-color: var(--turquoise-hover);
   }
 }
 
@@ -66,7 +116,6 @@
   border-top: 1px solid #eee;
 }
 
-// Cards dans le modal
 .modal-body .card {
   border-radius: 8px;
   border: 1px solid #eee;
@@ -89,22 +138,19 @@
   }
 }
 
-// Badge statut
-.badge {
-  font-weight: 500;
-}
-
 // Responsive
 @media (max-width: 768px) {
+  .avatar-large {
+    width: 60px;
+    height: 60px;
+    font-size: 1.2rem;
+  }
+  
   .table-responsive {
     font-size: 0.85rem;
   }
   
   .modal-dialog {
     margin: 10px;
-  }
-  
-  .modal-body .row > div {
-    margin-bottom: 1rem;
   }
 }

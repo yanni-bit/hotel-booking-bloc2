@@ -17,6 +17,7 @@ export class ReservationDetail implements OnInit {
 
   reservationId: number = 0;
   reservation: any = null;
+  services: any[] = [];
   loading: boolean = true;
   error: string = '';
 
@@ -49,7 +50,7 @@ export class ReservationDetail implements OnInit {
       next: (response) => {
         console.log('✅ Réservation:', response);
         this.reservation = response.data;
-        this.loading = false;
+        this.loadServices();
         this.cdr.markForCheck();
       },
       error: (err) => {
@@ -59,6 +60,27 @@ export class ReservationDetail implements OnInit {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  loadServices() {
+    this.reservationService.getReservationServices(this.reservationId).subscribe({
+      next: (response) => {
+        console.log('✅ Services:', response);
+        this.services = response.data || [];
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('❌ Erreur services:', err);
+        this.services = [];
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  getTotalServices(): number {
+    return this.services.reduce((sum, s) => sum + parseFloat(s.sous_total), 0);
   }
 
   formatDate(date: string): string {
@@ -81,15 +103,11 @@ export class ReservationDetail implements OnInit {
   }
 
   canCancel(): boolean {
-    // Peut annuler si le statut n'est pas "Annulée" (id_statut = 3) ou "Terminée" (id_statut = 5)
     return this.reservation && 
            this.reservation.id_statut !== 3 && 
            this.reservation.id_statut !== 5;
   }
 
-  /**
-   * Vérifie si la réservation peut être payée (statut "En attente")
-   */
   canPay(): boolean {
     return this.reservation && this.reservation.id_statut === 1;
   }
@@ -104,7 +122,7 @@ export class ReservationDetail implements OnInit {
     this.reservationService.cancelReservation(this.reservation.id_reservation, user.id_user).subscribe({
       next: () => {
         alert('Réservation annulée avec succès');
-        this.loadReservation(); // Recharger les données
+        this.loadReservation();
       },
       error: (err) => {
         console.error('❌ Erreur annulation:', err);
@@ -113,9 +131,6 @@ export class ReservationDetail implements OnInit {
     });
   }
 
-  /**
-   * Redirige vers la page de paiement pour une réservation en attente
-   */
   goToPayment() {
     this.router.navigate(['/payment', this.reservation.id_offre], {
       queryParams: { reservationId: this.reservation.id_reservation }

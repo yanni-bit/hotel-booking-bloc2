@@ -1014,6 +1014,166 @@ function authRoutes(req, res) {
   }
 
   // ========================================
+  // GET /api/auth/users/:id - Détail d'un utilisateur (ADMIN)
+  // ========================================
+  if (pathname.match(/^\/api\/auth\/users\/\d+$/) && method === "GET") {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ success: false, message: "Token manquant" }));
+      return;
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = User.verifyToken(token);
+
+    if (!decoded || decoded.role !== "admin") {
+      res.statusCode = 403;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({ success: false, message: "Accès non autorisé" })
+      );
+      return;
+    }
+
+    const userId = pathname.split("/")[4];
+
+    User.findById(userId, (err, user) => {
+      if (err) {
+        console.error("Erreur récupération utilisateur:", err);
+        res.statusCode = err.message === "Utilisateur non trouvé" ? 404 : 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: err.message || "Erreur serveur",
+          })
+        );
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ success: true, data: user }));
+    });
+    return;
+  }
+
+  // ========================================
+  // PUT /api/auth/users/:id - Modifier un utilisateur (ADMIN)
+  // ========================================
+  if (pathname.match(/^\/api\/auth\/users\/\d+$/) && method === "PUT") {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ success: false, message: "Token manquant" }));
+      return;
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = User.verifyToken(token);
+
+    if (!decoded || decoded.role !== "admin") {
+      res.statusCode = 403;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({ success: false, message: "Accès non autorisé" })
+      );
+      return;
+    }
+
+    const userId = pathname.split("/")[4];
+
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+    req.on("end", () => {
+      try {
+        const userData = JSON.parse(body);
+
+        User.updateByAdmin(userId, userData, (err, result) => {
+          if (err) {
+            console.error("Erreur modification utilisateur:", err);
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.end(
+              JSON.stringify({ success: false, message: "Erreur serveur" })
+            );
+            return;
+          }
+
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: true,
+              message: "Utilisateur modifié avec succès",
+            })
+          );
+        });
+      } catch (error) {
+        res.statusCode = 400;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({ success: false, message: "Données invalides" })
+        );
+      }
+    });
+    return;
+  }
+
+  // ========================================
+  // GET /api/auth/users/:id/reservations - Réservations d'un utilisateur (ADMIN)
+  // ========================================
+  if (
+    pathname.match(/^\/api\/auth\/users\/\d+\/reservations$/) &&
+    method === "GET"
+  ) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ success: false, message: "Token manquant" }));
+      return;
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = User.verifyToken(token);
+
+    if (!decoded || decoded.role !== "admin") {
+      res.statusCode = 403;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({ success: false, message: "Accès non autorisé" })
+      );
+      return;
+    }
+
+    const userId = pathname.split("/")[4];
+
+    User.getReservationsByUserId(userId, (err, reservations) => {
+      if (err) {
+        console.error("Erreur récupération réservations:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ success: false, message: "Erreur serveur" }));
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ success: true, data: reservations }));
+    });
+    return;
+  }
+
+  // ========================================
   // Route non trouvée
   // ========================================
   res.statusCode = 404;

@@ -1,176 +1,431 @@
 <main class="admin-reservations-page py-5">
-    <div class="container-fluid">
+  <div class="container-fluid">
 
-        <!-- En-tête -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <a [routerLink]="['/admin']" class="text-muted me-3">
-                    <i class="bi bi-arrow-left"></i> Retour
-                </a>
-                <h1 class="h3 text-turquoise d-inline-block mb-0">
-                    <i class="bi bi-calendar-check me-2"></i>Gestion des Réservations
-                </h1>
-            </div>
-            <div>
-                <span class="badge bg-primary">{{ filteredReservations.length }} réservation(s)</span>
-            </div>
+    <!-- En-tête -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <a [routerLink]="['/admin']" class="text-muted me-3">
+          <i class="bi bi-arrow-left"></i> Retour
+        </a>
+        <h1 class="h3 text-turquoise d-inline-block mb-0">
+          <i class="bi bi-calendar-check me-2"></i>Gestion des Réservations
+        </h1>
+      </div>
+      <div>
+        <span class="badge bg-primary">{{ filteredReservations.length }} réservation(s)</span>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    @if (successMessage) {
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+    </div>
+    }
+
+    @if (error) {
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+      <button type="button" class="btn-close" (click)="error = ''"></button>
+    </div>
+    }
+
+    <!-- FILTRES -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-3">
+        <div class="row g-3">
+
+          <!-- Filtre par statut -->
+          <div class="col-md-3">
+            <label class="form-label small fw-bold">Filtrer par statut</label>
+            <select class="form-select form-select-sm" [(ngModel)]="filterStatus" (change)="onFilterChange()">
+              <option value="all">Tous les statuts</option>
+              @for (statut of statuts; track statut.id) {
+              <option [value]="statut.id">{{ statut.nom }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Recherche -->
+          <div class="col-md-6">
+            <label class="form-label small fw-bold">Recherche</label>
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="searchTerm" (input)="onFilterChange()"
+              placeholder="Rechercher par hôtel, client, email, n° confirmation...">
+          </div>
+
+          <!-- Bouton rafraîchir -->
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-sm btn-outline-primary w-100" (click)="loadReservations()">
+              <i class="bi bi-arrow-clockwise me-1"></i>Rafraîchir
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-turquoise" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p class="mt-3">Chargement des réservations...</p>
+    </div>
+    }
+
+    <!-- TABLEAU -->
+    @if (!loading) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th width="80">N°</th>
+                <th>Client</th>
+                <th>Hôtel</th>
+                <th>Dates</th>
+                <th width="80" class="text-center">Nuits</th>
+                <th width="100" class="text-end">Prix</th>
+                <th width="150">Statut</th>
+                <th width="150">N° Confirmation</th>
+                <th width="100" class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (reservation of filteredReservations; track reservation.id_reservation) {
+              <tr>
+
+                <!-- ID -->
+                <td class="align-middle">
+                  <small class="text-muted">#{{ reservation.id_reservation }}</small>
+                </td>
+
+                <!-- Client -->
+                <td class="align-middle">
+                  <div>
+                    <strong>{{ reservation.prenom_user || reservation.client_prenom }} {{
+                      reservation.nom_user || reservation.client_nom }}</strong>
+                  </div>
+                  <small class="text-muted">{{ reservation.email_user || reservation.client_email
+                    }}</small>
+                </td>
+
+                <!-- Hôtel -->
+                <td class="align-middle">
+                  <div><strong>{{ reservation.nom_hotel }}</strong></div>
+                  <small class="text-muted">{{ reservation.ville_hotel }}</small>
+                </td>
+
+                <!-- Dates -->
+                <td class="align-middle">
+                  <div>
+                    <i class="bi bi-box-arrow-in-right text-success me-1"></i>
+                    <small>{{ formatDate(reservation.check_in) }}</small>
+                  </div>
+                  <div>
+                    <i class="bi bi-box-arrow-right text-danger me-1"></i>
+                    <small>{{ formatDate(reservation.check_out) }}</small>
+                  </div>
+                </td>
+
+                <!-- Nuits -->
+                <td class="align-middle text-center">
+                  <span class="badge bg-secondary">{{ reservation.nbre_nuits }}</span>
+                </td>
+
+                <!-- Prix -->
+                <td class="align-middle text-end">
+                  <strong class="text-turquoise">{{ reservation.total_price }} {{ reservation.devise
+                    || '€' }}</strong>
+                </td>
+
+                <!-- Statut -->
+                <td class="align-middle">
+                  <span class="badge" [ngClass]="'bg-' + getStatusColor(reservation.id_statut)">
+                    {{ getStatusName(reservation.id_statut) }}
+                  </span>
+                </td>
+
+                <!-- N° Confirmation -->
+                <td class="align-middle">
+                  <small class="fw-bold">{{ reservation.num_confirmation }}</small>
+                </td>
+
+                <!-- Actions -->
+                <td class="align-middle text-center">
+                  <button class="btn btn-sm btn-outline-primary" (click)="openDetailModal(reservation)"
+                    title="Voir détail">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </td>
+
+              </tr>
+              } @empty {
+              <tr>
+                <td colspan="9" class="text-center py-5">
+                  <i class="bi bi-inbox" style="font-size: 3rem; color: var(--turquoise);"></i>
+                  <p class="text-muted mt-3">Aucune réservation trouvée</p>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
         </div>
 
-        <!-- FILTRES -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body p-3">
-                <div class="row g-3">
+      </div>
+    </div>
+    }
 
-                    <!-- Filtre par statut -->
-                    <div class="col-md-3">
-                        <label class="form-label small fw-bold">Filtrer par statut</label>
-                        <select class="form-select form-select-sm" [(ngModel)]="filterStatus"
-                            (change)="onFilterChange()">
-                            <option value="all">Tous les statuts</option>
-                            <option [value]="statut.id" *ngFor="let statut of statuts">
-                                {{ statut.nom }}
-                            </option>
-                        </select>
-                    </div>
+  </div>
+</main>
 
-                    <!-- Recherche -->
-                    <div class="col-md-6">
-                        <label class="form-label small fw-bold">Recherche</label>
-                        <input type="text" class="form-control form-control-sm" [(ngModel)]="searchTerm"
-                            (input)="onFilterChange()"
-                            placeholder="Rechercher par hôtel, client, email, n° confirmation...">
-                    </div>
+<!-- ========================================
+     MODAL DÉTAIL RÉSERVATION
+======================================== -->
+@if (showDetailModal && selectedReservation) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
 
-                    <!-- Bouton rafraîchir -->
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button class="btn btn-sm btn-outline-primary w-100" (click)="loadReservations()">
-                            <i class="bi bi-arrow-clockwise me-1"></i>Rafraîchir
-                        </button>
-                    </div>
+      <!-- Header -->
+      <div class="modal-header bg-light">
+        <h5 class="modal-title">
+          <i class="bi bi-calendar-check me-2 text-turquoise"></i>
+          Réservation #{{ selectedReservation.id_reservation }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeDetailModal()"></button>
+      </div>
 
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- Statut actuel -->
+        <div class="text-center mb-4">
+          <span class="badge fs-6 px-4 py-2" [ngClass]="'bg-' + getStatusColor(selectedReservation.id_statut)">
+            {{ getStatusName(selectedReservation.id_statut) }}
+          </span>
+          <div class="mt-2">
+            <small class="text-muted">N° {{ selectedReservation.num_confirmation }}</small>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <!-- Colonne gauche : Client + Hôtel -->
+          <div class="col-md-6">
+
+            <!-- Informations client -->
+            <div class="card mb-3">
+              <div class="card-header bg-white">
+                <i class="bi bi-person me-2"></i><strong>Client</strong>
+              </div>
+              <div class="card-body">
+                <p class="mb-1">
+                  <strong>{{ selectedReservation.prenom_user || selectedReservation.client_prenom }}
+                    {{ selectedReservation.nom_user || selectedReservation.client_nom }}</strong>
+                </p>
+                <p class="mb-1 text-muted">
+                  <i class="bi bi-envelope me-2"></i>{{ selectedReservation.email_user ||
+                  selectedReservation.client_email }}
+                </p>
+                <p class="mb-0 text-muted">
+                  <i class="bi bi-telephone me-2"></i>{{ selectedReservation.tel_user ||
+                  selectedReservation.client_telephone || 'Non renseigné' }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Informations hôtel -->
+            <div class="card mb-3">
+              <div class="card-header bg-white">
+                <i class="bi bi-building me-2"></i><strong>Hébergement</strong>
+              </div>
+              <div class="card-body">
+                <p class="mb-1"><strong>{{ selectedReservation.nom_hotel }}</strong></p>
+                <p class="mb-1 text-muted">
+                  <i class="bi bi-geo-alt me-2"></i>{{ selectedReservation.ville_hotel }}, {{
+                  selectedReservation.pays_hotel }}
+                </p>
+                <p class="mb-1 text-muted">
+                  <i class="bi bi-door-open me-2"></i>{{ selectedReservation.type_room }} - {{
+                  selectedReservation.cat_room || '' }}
+                </p>
+                <p class="mb-0 text-muted">
+                  <i class="bi bi-tag me-2"></i>{{ selectedReservation.nom_offre }}
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Colonne droite : Dates + Prix -->
+          <div class="col-md-6">
+
+            <!-- Dates et voyageurs -->
+            <div class="card mb-3">
+              <div class="card-header bg-white">
+                <i class="bi bi-calendar-range me-2"></i><strong>Séjour</strong>
+              </div>
+              <div class="card-body">
+                <div class="row mb-2">
+                  <div class="col-6">
+                    <small class="text-muted">Arrivée</small>
+                    <p class="mb-0 fw-bold text-success">{{ formatDate(selectedReservation.check_in)
+                      }}</p>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted">Départ</small>
+                    <p class="mb-0 fw-bold text-danger">{{ formatDate(selectedReservation.check_out)
+                      }}</p>
+                  </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- LOADING -->
-        <div *ngIf="loading" class="text-center py-5">
-            <div class="spinner-border text-turquoise" role="status">
-                <span class="visually-hidden">Chargement...</span>
-            </div>
-            <p class="mt-3">Chargement des réservations...</p>
-        </div>
-
-        <!-- ERROR -->
-        <div *ngIf="error && !loading" class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
-        </div>
-
-        <!-- TABLEAU -->
-        <div *ngIf="!loading && !error" class="card border-0 shadow-sm">
-            <div class="card-body p-0">
-
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="80">N°</th>
-                                <th>Client</th>
-                                <th>Hôtel</th>
-                                <th>Dates</th>
-                                <th width="80" class="text-center">Nuits</th>
-                                <th width="100" class="text-end">Prix</th>
-                                <th width="200">Statut</th>
-                                <th width="150">N° Confirmation</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let reservation of filteredReservations">
-
-                                <!-- ID -->
-                                <td class="align-middle">
-                                    <small class="text-muted">#{{ reservation.id_reservation }}</small>
-                                </td>
-
-                                <!-- Client -->
-                                <td class="align-middle">
-                                    <div>
-                                        <strong>{{ reservation.prenom_user || reservation.client_prenom }} {{
-                                            reservation.nom_user || reservation.client_nom }}</strong>
-                                    </div>
-                                    <small class="text-muted">{{ reservation.email_user || reservation.client_email
-                                        }}</small><br>
-                                    <small class="text-muted">{{ reservation.tel_user || reservation.client_telephone
-                                        }}</small>
-                                </td>
-
-                                <!-- Hôtel -->
-                                <td class="align-middle">
-                                    <div><strong>{{ reservation.nom_hotel }}</strong></div>
-                                    <small class="text-muted">{{ reservation.ville_hotel }}, {{ reservation.pays_hotel
-                                        }}</small><br>
-                                    <small class="text-muted">{{ reservation.type_room }} - {{ reservation.nom_offre
-                                        }}</small>
-                                </td>
-
-                                <!-- Dates -->
-                                <td class="align-middle">
-                                    <div>
-                                        <i class="bi bi-calendar3 me-1"></i>
-                                        <small>{{ formatDate(reservation.check_in) }}</small>
-                                    </div>
-                                    <div>
-                                        <i class="bi bi-calendar3 me-1"></i>
-                                        <small>{{ formatDate(reservation.check_out) }}</small>
-                                    </div>
-                                    <small class="text-muted">
-                                        {{ reservation.nbre_adults }} adulte(s)
-                                        <span *ngIf="reservation.nbre_children > 0">, {{ reservation.nbre_children }}
-                                            enfant(s)</span>
-                                    </small>
-                                </td>
-
-                                <!-- Nuits -->
-                                <td class="align-middle text-center">
-                                    <span class="badge bg-secondary">{{ reservation.nbre_nuits }}</span>
-                                </td>
-
-                                <!-- Prix -->
-                                <td class="align-middle text-end">
-                                    <strong class="text-turquoise">{{ reservation.total_price }}€</strong>
-                                </td>
-
-                                <!-- Statut - SELECT au lieu de dropdown -->
-                                <td class="align-middle">
-                                    <select class="form-select form-select-sm" [value]="reservation.id_statut"
-                                        (change)="changeStatus(reservation, $event)"
-                                        [ngClass]="getStatusBadgeClass(reservation.couleur_statut)">
-                                        <option *ngFor="let statut of statuts" [value]="statut.id">
-                                            {{ statut.nom }}
-                                        </option>
-                                    </select>
-                                </td>
-
-                                <!-- N° Confirmation + Date -->
-                                <td class="align-middle">
-                                    <div><strong>{{ reservation.num_confirmation }}</strong></div>
-                                    <small class="text-muted">Réservé le {{ formatDate(reservation.date_reservation)
-                                        }}</small>
-                                </td>
-
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Message si aucune réservation -->
-                    <div *ngIf="filteredReservations.length === 0" class="text-center py-5">
-                        <i class="bi bi-inbox" style="font-size: 3rem; color: var(--turquoise);"></i>
-                        <p class="text-muted mt-3">Aucune réservation trouvée</p>
-                    </div>
-
+                <hr>
+                <div class="row">
+                  <div class="col-4 text-center">
+                    <i class="bi bi-moon fs-4 text-primary"></i>
+                    <p class="mb-0"><strong>{{ selectedReservation.nbre_nuits }}</strong> nuit(s)
+                    </p>
+                  </div>
+                  <div class="col-4 text-center">
+                    <i class="bi bi-person fs-4 text-primary"></i>
+                    <p class="mb-0"><strong>{{ selectedReservation.nbre_adults }}</strong> adulte(s)
+                    </p>
+                  </div>
+                  <div class="col-4 text-center">
+                    <i class="bi bi-person-hearts fs-4 text-primary"></i>
+                    <p class="mb-0"><strong>{{ selectedReservation.nbre_children || 0 }}</strong>
+                      enfant(s)</p>
+                  </div>
                 </div>
-
+              </div>
             </div>
+
+            <!-- Prix -->
+            <div class="card mb-3">
+              <div class="card-header bg-white">
+                <i class="bi bi-cash-stack me-2"></i><strong>Tarification</strong>
+              </div>
+              <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Prix par nuit</span>
+                  <span>{{ selectedReservation.prix_nuit }} {{ selectedReservation.devise || '€'
+                    }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Nombre de nuits</span>
+                  <span>x {{ selectedReservation.nbre_nuits }}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                  <strong>Total</strong>
+                  <strong class="text-turquoise fs-5">{{ selectedReservation.total_price }} {{
+                    selectedReservation.devise || '€' }}</strong>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
+
+        <!-- Services additionnels -->
+        @if (selectedServices.length > 0) {
+        <div class="card mb-3">
+          <div class="card-header bg-white">
+            <i class="bi bi-plus-circle me-2"></i><strong>Services additionnels</strong>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Service</th>
+                  <th class="text-center">Qté</th>
+                  <th class="text-end">Prix</th>
+                  <th class="text-end">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (service of selectedServices; track service.id_reservation_service) {
+                <tr>
+                  <td>
+                    <i class="bi {{ service.icone || 'bi-check-circle' }} me-2 text-turquoise"></i>
+                    {{ service.nom_service }}
+                  </td>
+                  <td class="text-center">{{ service.quantite }}</td>
+                  <td class="text-end">{{ service.prix_unitaire }} €</td>
+                  <td class="text-end"><strong>{{ service.sous_total }} €</strong></td>
+                </tr>
+                }
+              </tbody>
+              <tfoot class="table-light">
+                <tr>
+                  <td colspan="3" class="text-end"><strong>Total services :</strong></td>
+                  <td class="text-end"><strong class="text-turquoise">{{ getTotalServices() }}
+                      €</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        }
+
+        <!-- Demandes spéciales -->
+        @if (selectedReservation.special_requests) {
+        <div class="card mb-3">
+          <div class="card-header bg-white">
+            <i class="bi bi-chat-left-text me-2"></i><strong>Demandes spéciales</strong>
+          </div>
+          <div class="card-body">
+            <p class="mb-0 fst-italic">{{ selectedReservation.special_requests }}</p>
+          </div>
+        </div>
+        }
+
+        <!-- Modifier le statut -->
+        <div class="card border-primary">
+          <div class="card-header bg-primary text-white">
+            <i class="bi bi-pencil-square me-2"></i><strong>Modifier le statut</strong>
+          </div>
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <select class="form-select" [(ngModel)]="selectedReservation.id_statut">
+                  @for (statut of statuts; track statut.id) {
+                  <option [value]="statut.id">{{ statut.nom }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-primary w-100" (click)="saveReservation()">
+                  <i class="bi bi-check-circle me-2"></i>Enregistrer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations de réservation -->
+        <div class="text-center mt-3">
+          <small class="text-muted">
+            Réservé le {{ formatDateTime(selectedReservation.date_reservation) }}
+          </small>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">
+          <i class="bi bi-x-circle me-2"></i>Fermer
+        </button>
+      </div>
 
     </div>
-</main>
+  </div>
+</div>
+}

@@ -454,6 +454,111 @@ class User {
       callback(null, results[0].total);
     });
   }
+
+  /**
+   * Récupère un utilisateur par son ID (pour admin)
+   */
+  static findById(userId, callback) {
+    const query = `
+    SELECT 
+      u.id_user,
+      u.email_user,
+      u.prenom_user,
+      u.nom_user,
+      u.tel_user,
+      u.actif,
+      u.email_verifie,
+      u.date_inscription,
+      u.derniere_connexion,
+      u.id_role,
+      r.code_role,
+      r.nom_role,
+      a.rue_user,
+      a.complement_user,
+      a.code_postal_user,
+      a.ville_user,
+      a.pays_user
+    FROM UTILISATEUR u
+    INNER JOIN ROLE r ON u.id_role = r.id_role
+    LEFT JOIN ADRESSE_USER a ON u.id_adress_user = a.id_adress_user
+    WHERE u.id_user = ?
+  `;
+
+    db.query(query, [userId], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      if (!results || results.length === 0) {
+        return callback(new Error("Utilisateur non trouvé"), null);
+      }
+      callback(null, results[0]);
+    });
+  }
+
+  /**
+   * Met à jour un utilisateur (pour admin)
+   */
+  static updateByAdmin(userId, userData, callback) {
+    const query = `
+    UPDATE UTILISATEUR 
+    SET 
+      prenom_user = ?,
+      nom_user = ?,
+      email_user = ?,
+      tel_user = ?,
+      id_role = ?,
+      actif = ?
+    WHERE id_user = ?
+  `;
+
+    const values = [
+      userData.prenom_user,
+      userData.nom_user,
+      userData.email_user,
+      userData.tel_user || null,
+      userData.id_role,
+      userData.actif,
+      userId,
+    ];
+
+    db.query(query, values, (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, result);
+    });
+  }
+
+  /**
+   * Récupère les réservations d'un utilisateur (pour admin)
+   */
+  static getReservationsByUserId(userId, callback) {
+    const query = `
+    SELECT 
+      r.*,
+      h.nom_hotel,
+      h.ville_hotel,
+      h.pays_hotel,
+      ch.type_room,
+      o.nom_offre,
+      s.nom_statut,
+      s.couleur as couleur_statut
+    FROM RESERVATION r
+    INNER JOIN HOTEL h ON r.id_hotel = h.id_hotel
+    INNER JOIN CHAMBRE ch ON r.id_chambre = ch.id_chambre
+    INNER JOIN OFFRE o ON r.id_offre = o.id_offre
+    LEFT JOIN STATUT s ON r.id_statut = s.id_statut
+    WHERE r.id_user = ?
+    ORDER BY r.date_reservation DESC
+  `;
+
+    db.query(query, [userId], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  }
 }
 
 module.exports = User;

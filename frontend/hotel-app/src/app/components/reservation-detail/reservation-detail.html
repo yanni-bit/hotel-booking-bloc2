@@ -25,7 +25,8 @@
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a [routerLink]="['/']">{{ 'nav.home' | translate }}</a></li>
-                    <li class="breadcrumb-item"><a [routerLink]="['/reservations']">{{ 'reservations.title' | translate }}</a></li>
+                    <li class="breadcrumb-item"><a [routerLink]="['/reservations']">{{ 'reservations.title' | translate
+                            }}</a></li>
                     <li class="breadcrumb-item active" aria-current="page">{{ reservation.num_confirmation }}</li>
                 </ol>
             </nav>
@@ -37,7 +38,8 @@
                         <i class="bi bi-receipt me-2"></i>{{ 'reservations.reservationDetail' | translate }}
                     </h1>
                     <p class="text-muted mb-0">
-                        {{ 'reservations.confirmationNumber' | translate }} <strong class="text-dark">{{ reservation.num_confirmation }}</strong>
+                        {{ 'reservations.confirmationNumber' | translate }} <strong class="text-dark">{{
+                            reservation.num_confirmation }}</strong>
                     </p>
                 </div>
                 <span class="badge fs-6" [ngClass]="getStatusBadgeClass(reservation.couleur_statut)">
@@ -72,7 +74,8 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <p class="mb-1"><strong>{{ 'booking.room' | translate }}</strong></p>
-                                            <p class="text-muted">{{ reservation.type_room }} - {{ reservation.cat_room }}</p>
+                                            <p class="text-muted">{{ reservation.type_room }} - {{ reservation.cat_room
+                                                }}</p>
                                         </div>
                                         <div class="col-6">
                                             <p class="mb-1"><strong>{{ 'booking.offer' | translate }}</strong></p>
@@ -93,7 +96,8 @@
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
                             <h2 class="h5 mb-4 text-turquoise">
-                                <i class="bi bi-calendar-check me-2"></i>{{ 'reservations.datesAndTravelers' | translate }}
+                                <i class="bi bi-calendar-check me-2"></i>{{ 'reservations.datesAndTravelers' | translate
+                                }}
                             </h2>
 
                             <div class="row">
@@ -112,7 +116,8 @@
                                 <div class="col-md-4">
                                     <div class="date-box text-center p-3 bg-light rounded mb-3">
                                         <p class="text-muted small mb-1">{{ 'reservations.duration' | translate }}</p>
-                                        <p class="h5 mb-0">{{ reservation.nbre_nuits }} {{ 'booking.nights' | translate }}</p>
+                                        <p class="h5 mb-0">{{ reservation.nbre_nuits }} {{ 'booking.nights' | translate
+                                            }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -120,9 +125,11 @@
                             <div class="mt-3">
                                 <p class="mb-2">
                                     <i class="bi bi-people me-2 text-turquoise"></i>
-                                    <strong>{{ reservation.nbre_adults }}</strong> {{ reservation.nbre_adults > 1 ? ('booking.adults' | translate) : ('booking.adult' | translate) }}
+                                    <strong>{{ reservation.nbre_adults }}</strong> {{ reservation.nbre_adults > 1 ?
+                                    ('booking.adults' | translate) : ('booking.adult' | translate) }}
                                     <span *ngIf="reservation.nbre_children > 0">
-                                        , <strong>{{ reservation.nbre_children }}</strong> {{ reservation.nbre_children > 1 ? ('booking.children' | translate) : ('booking.child' | translate) }}
+                                        , <strong>{{ reservation.nbre_children }}</strong> {{ reservation.nbre_children
+                                        > 1 ? ('booking.children' | translate) : ('booking.child' | translate) }}
                                     </span>
                                 </p>
                             </div>
@@ -139,6 +146,52 @@
                         </div>
                     </div>
 
+                    <!-- SERVICES ADDITIONNELS -->
+                    @if (services.length > 0) {
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h2 class="h5 mb-4 text-turquoise">
+                                <i class="bi bi-plus-circle me-2"></i>{{ 'booking.additionalServices' | translate }}
+                            </h2>
+
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Service</th>
+                                            <th class="text-center">Quantité</th>
+                                            <th class="text-end">Prix unit.</th>
+                                            <th class="text-end">Sous-total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (service of services; track service.id_reservation_service) {
+                                        <tr>
+                                            <td>
+                                                <i
+                                                    class="bi {{ service.icone || 'bi-check-circle' }} me-2 text-turquoise"></i>
+                                                {{ service.nom_service }}
+                                            </td>
+                                            <td class="text-center">{{ service.quantite }}</td>
+                                            <td class="text-end">{{ service.prix_unitaire | appCurrency }}</td>
+                                            <td class="text-end"><strong>{{ service.sous_total | appCurrency }}</strong>
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot class="table-light">
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>Total services :</strong></td>
+                                            <td class="text-end"><strong class="text-turquoise">{{ getTotalServices() |
+                                                    appCurrency }}</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    }
+
                     <!-- INFORMATIONS DE RÉSERVATION -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
@@ -149,13 +202,15 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <p class="mb-2">
-                                        <span class="text-muted">{{ 'reservations.reservationDate' | translate }} :</span><br>
+                                        <span class="text-muted">{{ 'reservations.reservationDate' | translate }}
+                                            :</span><br>
                                         <strong>{{ formatDateTime(reservation.date_reservation) }}</strong>
                                     </p>
                                 </div>
                                 <div class="col-md-4">
                                     <p class="mb-2">
-                                        <span class="text-muted">{{ 'reservations.confirmationNumber' | translate }}</span><br>
+                                        <span class="text-muted">{{ 'reservations.confirmationNumber' | translate
+                                            }}</span><br>
                                         <strong>{{ reservation.num_confirmation }}</strong>
                                     </p>
                                 </div>
@@ -190,13 +245,22 @@
                                     <span>{{ 'reservations.numberOfNights' | translate }}</span>
                                     <span>x {{ reservation.nbre_nuits }}</span>
                                 </div>
+                                
+                                <!-- Services additionnels -->
+                                @if (services.length > 0) {
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Services additionnels</span>
+                                    <span>{{ getTotalServices() | appCurrency }}</span>
+                                </div>
+                                }
                             </div>
 
                             <hr>
 
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <strong class="h5 mb-0">{{ 'booking.total' | translate }}</strong>
-                                <strong class="h4 mb-0 text-turquoise">{{ reservation.total_price | appCurrency }}</strong>
+                                <strong class="h4 mb-0 text-turquoise">{{ reservation.total_price | appCurrency
+                                    }}</strong>
                             </div>
 
                             <p class="small text-muted text-center mb-4">
@@ -227,7 +291,8 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-4">
                             <h3 class="h6 mb-3">
-                                <i class="bi bi-question-circle me-2 text-turquoise"></i>{{ 'payment.needHelp' | translate }}
+                                <i class="bi bi-question-circle me-2 text-turquoise"></i>{{ 'payment.needHelp' |
+                                translate }}
                             </h3>
                             <p class="small text-muted mb-3">
                                 {{ 'reservations.helpText' | translate }}
