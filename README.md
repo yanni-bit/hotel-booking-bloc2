@@ -1,55 +1,143 @@
-﻿# Hôtel Booking Bloc 2
-Application web de réservation d'hôtel - Projet de formation
+﻿# 🏨 Book Your Travel - Application de Réservation d'Hôtel
 
-## Structure du projet
+> 🚧 **Projet en cours de finalisation** 🚧
 
-- **frontend/** : Application Angular
-- **backend/** : API Node.js/Express
-- **database/** : Scripts SQL et schémas
-- **docs/** : Documentation du projet
+## 📋 Description
 
-## Technologies
+Application web complète de réservation d'hôtels en ligne développée dans le cadre d'une certification professionnelle **Développeur Web (RNCP)**.
 
-### Frontend
-- Angular 21
-- TypeScript
-- Bootstrap 5
-- ARIA (accessibilité)
+Cette application permet aux utilisateurs de rechercher, consulter et réserver des chambres d'hôtel avec une interface responsive, accessible et multilingue.
 
-### Backend
-- Node.js 24
-- Express
-- MySQL 9.5
-- Architecture MVC/POO
-
-## Installation
-
-### Backend
-\\\ash
-cd backend
-npm install
-\\\
+## 🛠️ Stack Technique
 
 ### Frontend
-\\\ash
-cd frontend
-npm install
-\\\
+| Technologie | Détail |
+|-------------|--------|
+| Angular | 20 (standalone components) |
+| TypeScript | Intégré à Angular |
+| Bootstrap | 5 |
+| SCSS | Préprocesseur CSS |
+| ngx-translate | Multi-langue (FR/EN/IT) |
+| RxJS | Programmation réactive |
 
-## Développement
+### Backend
+| Technologie | Détail |
+|-------------|--------|
+| Node.js | Natif (sans framework) |
+| Architecture | MVC + POO |
+| JWT | Authentification |
+| bcrypt | Hash des mots de passe |
+| Nodemailer | Envoi d'emails |
 
-### Backend (port 3000)
-\\\ash
+### Base de données
+| Technologie | Détail |
+|-------------|--------|
+| MySQL | Base `hotel_booking` |
+| phpMyAdmin | Administration |
+| Index FULLTEXT | Recherche optimisée |
+
+## ✅ Fonctionnalités implémentées
+
+### Authentification
+- Inscription / Connexion / Déconnexion
+- JWT tokens avec rôles (admin, client)
+- Récupération mot de passe par email
+- Guards Angular (authGuard, adminGuard)
+
+### Réservations
+- Processus complet (recherche → booking → paiement)
+- Calendrier interactif (check-in/check-out)
+- Services additionnels sélectionnables
+- Validation carte bancaire (algorithme de Luhn)
+- Paiement différé possible
+
+### Espace Client
+- Profil modifiable
+- Historique des réservations
+- Annulation de réservation
+- Système d'avis (création, modification, suppression)
+
+### Interface Admin
+- Dashboard avec statistiques dynamiques
+- CRUD complet : Hôtels, Chambres, Services
+- Gestion des réservations et statuts
+- Gestion des utilisateurs et rôles
+- Gestion des messages contact
+- Modération des avis
+
+### Internationalisation
+- Multi-langue : Français, English, Italiano
+- Multi-devise : EUR, USD, GBP
+
+### Accessibilité & UX
+- Conformité ARIA / RGAA
+- Police OpenDyslexic disponible
+- Skip-link navigation
+- Responsive (mobile/tablet/desktop)
+
+### Autres
+- Recherche full-text avec pagination
+- Page contact avec formulaire
+- Widgets : Hôtels populaires, Offre du jour
+
+## 📁 Structure du projet
+
+```
+hotel-booking-bloc2/
+├── backend/
+│   ├── server.js          # Serveur principal
+│   ├── config/            # Configuration BDD
+│   ├── models/            # Classes (User, Hotel, Reservation...)
+│   ├── controllers/       # Logique métier
+│   ├── routes/            # Routes API REST
+│   └── middlewares/       # Auth, validation...
+│
+└── frontend/hotel-app/
+    └── src/app/
+        ├── components/    # Composants Angular
+        ├── services/      # Services (auth, hotel, currency...)
+        ├── pipes/         # Pipes personnalisés
+        ├── guards/        # Protection des routes
+        └── interceptors/  # Intercepteurs HTTP
+```
+
+## ⚙️ Installation
+
+### Prérequis
+- Node.js 18+
+- MySQL 8+
+- Angular CLI 20
+
+### Backend
+```bash
 cd backend
-npm run dev
-\\\
+npm install
+node server.js
+# → http://localhost:3000
+```
 
-### Frontend (port 4200)
-\\\ash
-cd frontend
+### Frontend
+```bash
+cd frontend/hotel-app
+npm install
 ng serve
-\\\
+# → http://localhost:4200
+```
 
-## Auteur
+### Base de données
+Importer le fichier SQL via phpMyAdmin dans une base nommée `hotel_booking`.
 
-Yannick - Formation Développeur Web Fullstack
+## 📝 Ce qui reste à faire
+
+- [ ] Documentation technique complète
+- [ ] Diagrammes UML (MCD, séquence)
+- [ ] Tests Lighthouse (accessibilité + performance)
+- [ ] Déploiement démo en ligne
+
+## 📄 Licence
+
+Projet réalisé dans un cadre éducatif - Certification Développeur Web.
+
+---
+
+*Dernière mise à jour : Janvier 2025*
