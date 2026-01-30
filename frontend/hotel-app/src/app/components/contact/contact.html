@@ -1,3 +1,26 @@
+<!-- ============================================================================
+     FICHIER : contact.component.html
+     DESCRIPTION : Page Contact avec carte Google Maps, informations de contact
+                   et formulaire d'envoi de message
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - Fil d'Ariane (Breadcrumb)
+       - En-tête de page (titre + sous-titre)
+       - Layout 2 colonnes :
+         * Colonne gauche (7/12) : Carte Google Maps + Cartes infos (tél/email)
+         * Colonne droite (5/12) : Formulaire de contact
+     ACCESSIBILITÉ :
+       - aria-label sur la carte Google Maps
+       - aria-required sur les champs obligatoires
+       - role="alert" sur les messages de succès/erreur
+       - role="main" sur le contenu principal
+     VALIDATION (Critère C2.b) :
+       - Validation réactive avec classes is-valid/is-invalid
+       - Messages d'erreur contextuels par champ
+     ============================================================================ -->
+
 <!-- ========================================
      PAGE CONTACT
      Fil d'Ariane + Header + 2 colonnes (Map/Infos + Formulaire)
@@ -6,10 +29,10 @@
 <main id="main-content" class="pb-5 contact-main" role="main">
   <div class="container">
 
-    <!-- ========================================
+    <!-- ========================================================================
          FIL D'ARIANE (BREADCRUMB)
          Navigation hiérarchique : Accueil > Contact
-         ======================================== -->
+         ======================================================================== -->
     <nav aria-label="breadcrumb" class="mb-1">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -19,42 +42,50 @@
       </ol>
     </nav>
 
-    <!-- === EN-TÊTE PAGE === -->
+    <!-- ========================================================================
+         EN-TÊTE DE PAGE
+         Titre et sous-titre centrés
+         ======================================================================== -->
     <div class="contact-header text-center mb-5">
       <h1>{{ 'contact.title' | translate }}</h1>
       <p class="lead">{{ 'contact.subtitle' | translate }}</p>
     </div>
-    <!-- FIN : En-tête page -->
 
-    <!-- === ROW PRINCIPALE - 2 COLONNES === -->
+    <!-- ========================================================================
+         LAYOUT PRINCIPAL - 2 COLONNES
+         ======================================================================== -->
     <div class="row g-4">
 
-      <!-- ========================================
-         COLONNE GAUCHE (7/12) - Map + Cartes info
-         ======================================== -->
+      <!-- ====================================================================
+           COLONNE GAUCHE (7/12) - Carte + Informations
+           ==================================================================== -->
       <div class="col-lg-7">
 
-        <!-- === CARTE GOOGLE MAPS === -->
+        <!-- ============================================================
+             CARTE GOOGLE MAPS
+             Iframe intégrée avec localisation de l'entreprise
+             ============================================================ -->
         <div class="map-container mb-4">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3105.2302828527404!2d-77.03495072365499!3d38.895848946794814!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b7b797ef60a829%3A0x308f6aa1bf4c84c5!2s1400%20Pennsylvania%20Ave%20NW%2C%20Washington%2C%20DC%2020004%2C%20%C3%89tats-Unis!5e0!3m2!1sfr!2sfr!4v1764687652916!5m2!1sfr!2sfr"
-            width="100%" 
-            height="450" 
-            style="border:0; border-radius: 12px;" 
-            allowfullscreen="" 
-            loading="lazy"
+            width="100%" height="450" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
             title="Localisation Book Your Travel - 1400 Pennsylvania Ave, Washington DC"
             aria-label="Carte Google Maps montrant l'emplacement de Book Your Travel">
           </iframe>
         </div>
-        <!-- FIN : Carte Google Maps -->
 
-        <!-- === CARTES INFORMATIONS CONTACT === -->
+        <!-- ============================================================
+             CARTES D'INFORMATIONS DE CONTACT
+             2 cartes : Téléphone et Email
+             ============================================================ -->
         <div class="contact-info-cards">
           <div class="row g-3">
 
-            <!-- Carte 1 : Téléphone -->
+            <!-- --------------------------------------------------------
+                 Carte Téléphone
+                 Icône + titre + description + lien tel:
+                 -------------------------------------------------------- -->
             <div class="col-md-6">
               <div class="info-card-phone-new">
                 <div class="info-content-phone">
@@ -69,9 +100,11 @@
                 </div>
               </div>
             </div>
-            <!-- FIN : Carte téléphone -->
 
-            <!-- Carte 2 : Email -->
+            <!-- --------------------------------------------------------
+                 Carte Email
+                 Icône + titre + description + lien mailto:
+                 -------------------------------------------------------- -->
             <div class="col-md-6">
               <div class="info-card-email-new">
                 <div class="info-content-email">
@@ -86,158 +119,158 @@
                 </div>
               </div>
             </div>
-            <!-- FIN : Carte email -->
 
           </div>
-          <!-- FIN : Row g-3 (cartes) -->
         </div>
-        <!-- FIN : Contact info cards -->
 
       </div>
-      <!-- FIN : Colonne gauche (7/12) -->
+      <!-- FIN : Colonne gauche -->
 
-      <!-- ========================================
-         COLONNE DROITE (5/12) - Formulaire de contact
-         ======================================== -->
+      <!-- ====================================================================
+           COLONNE DROITE (5/12) - Formulaire de contact
+           ==================================================================== -->
       <div class="col-lg-5">
 
-        <!-- === FORMULAIRE DE CONTACT === -->
+        <!-- ============================================================
+             FORMULAIRE DE CONTACT
+             FormGroup réactif avec validation (Critère C2.b)
+             ============================================================ -->
         <div class="contact-form-wrapper">
           <h3 class="mb-4">{{ 'contact.formTitle' | translate }}</h3>
 
           <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
 
-            <!-- Champ Nom (obligatoire) -->
+            <!-- --------------------------------------------------------
+                 Champ Nom (obligatoire)
+                 Validation : required, minLength(2)
+                 -------------------------------------------------------- -->
             <div class="mb-3">
               <label for="name" class="form-label">
                 {{ 'contact.name' | translate }} <span class="text-danger">*</span>
               </label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="name" 
-                formControlName="name"
+              <input type="text" class="form-control" id="name" formControlName="name"
                 [class.is-invalid]="f['name'].touched && f['name'].invalid"
-                [class.is-valid]="f['name'].touched && f['name'].valid"
-                aria-required="true">
+                [class.is-valid]="f['name'].touched && f['name'].valid" aria-required="true">
+              <!-- Messages d'erreur -->
               <div class="invalid-feedback" *ngIf="f['name'].touched && f['name'].errors">
                 <span *ngIf="f['name'].errors['required']">{{ 'contact.nameRequired' | translate }}</span>
                 <span *ngIf="f['name'].errors['minlength']">{{ 'contact.nameMinLength' | translate }}</span>
               </div>
             </div>
 
-            <!-- Champ Email (obligatoire) -->
+            <!-- --------------------------------------------------------
+                 Champ Email (obligatoire)
+                 Validation : required, email
+                 -------------------------------------------------------- -->
             <div class="mb-3">
               <label for="email" class="form-label">
                 {{ 'contact.email' | translate }} <span class="text-danger">*</span>
               </label>
-              <input 
-                type="email" 
-                class="form-control" 
-                id="email" 
-                formControlName="email"
+              <input type="email" class="form-control" id="email" formControlName="email"
                 [class.is-invalid]="f['email'].touched && f['email'].invalid"
-                [class.is-valid]="f['email'].touched && f['email'].valid"
-                aria-required="true">
+                [class.is-valid]="f['email'].touched && f['email'].valid" aria-required="true">
+              <!-- Messages d'erreur -->
               <div class="invalid-feedback" *ngIf="f['email'].touched && f['email'].errors">
                 <span *ngIf="f['email'].errors['required']">{{ 'contact.emailRequired' | translate }}</span>
                 <span *ngIf="f['email'].errors['email']">{{ 'contact.emailInvalid' | translate }}</span>
               </div>
             </div>
 
-            <!-- Champ Téléphone (optionnel) -->
+            <!-- --------------------------------------------------------
+                 Champ Téléphone (optionnel)
+                 Pas de validation obligatoire
+                 -------------------------------------------------------- -->
             <div class="mb-3">
               <label for="phone" class="form-label">{{ 'contact.phone' | translate }}</label>
-              <input 
-                type="tel" 
-                class="form-control" 
-                id="phone" 
-                formControlName="phone"
+              <input type="tel" class="form-control" id="phone" formControlName="phone"
                 [placeholder]="'contact.phonePlaceholder' | translate">
             </div>
 
-            <!-- Champ Sujet (obligatoire, select) -->
+            <!-- --------------------------------------------------------
+                 Champ Sujet (obligatoire)
+                 Select avec options prédéfinies
+                 -------------------------------------------------------- -->
             <div class="mb-3">
               <label for="subject" class="form-label">
                 {{ 'contact.subject' | translate }} <span class="text-danger">*</span>
               </label>
-              <select 
-                class="form-select" 
-                id="subject" 
-                formControlName="subject"
+              <select class="form-select" id="subject" formControlName="subject"
                 [class.is-invalid]="f['subject'].touched && f['subject'].invalid"
-                [class.is-valid]="f['subject'].touched && f['subject'].valid"
-                aria-required="true">
+                [class.is-valid]="f['subject'].touched && f['subject'].valid" aria-required="true">
                 <option value="">{{ 'contact.subjectPlaceholder' | translate }}</option>
                 <option value="reservation">{{ 'contact.subjectReservation' | translate }}</option>
                 <option value="information">{{ 'contact.subjectInfo' | translate }}</option>
                 <option value="reclamation">{{ 'contact.subjectComplaint' | translate }}</option>
                 <option value="autre">{{ 'contact.subjectOther' | translate }}</option>
               </select>
+              <!-- Message d'erreur -->
               <div class="invalid-feedback" *ngIf="f['subject'].touched && f['subject'].errors">
                 <span *ngIf="f['subject'].errors['required']">{{ 'contact.subjectRequired' | translate }}</span>
               </div>
             </div>
 
-            <!-- Champ Message (obligatoire, textarea) -->
+            <!-- --------------------------------------------------------
+                 Champ Message (obligatoire)
+                 Textarea avec validation minLength(10)
+                 -------------------------------------------------------- -->
             <div class="mb-3">
               <label for="message" class="form-label">
                 {{ 'contact.message' | translate }} <span class="text-danger">*</span>
               </label>
-              <textarea 
-                class="form-control" 
-                id="message" 
-                rows="5" 
-                formControlName="message"
+              <textarea class="form-control" id="message" rows="5" formControlName="message"
                 [class.is-invalid]="f['message'].touched && f['message'].invalid"
-                [class.is-valid]="f['message'].touched && f['message'].valid"
-                aria-required="true">
+                [class.is-valid]="f['message'].touched && f['message'].valid" aria-required="true">
               </textarea>
+              <!-- Messages d'erreur -->
               <div class="invalid-feedback" *ngIf="f['message'].touched && f['message'].errors">
                 <span *ngIf="f['message'].errors['required']">{{ 'contact.messageRequired' | translate }}</span>
                 <span *ngIf="f['message'].errors['minlength']">{{ 'contact.messageMinLength' | translate }}</span>
               </div>
             </div>
 
-            <!-- Bouton soumission -->
-            <button 
-              type="submit" 
-              class="btn btn-primary w-100"
-              [disabled]="isSubmitting">
+            <!-- --------------------------------------------------------
+                 Bouton de soumission
+                 Désactivé pendant l'envoi avec spinner
+                 -------------------------------------------------------- -->
+            <button type="submit" class="btn btn-primary w-100" [disabled]="isSubmitting">
+              <!-- État normal -->
               <span *ngIf="!isSubmitting">
                 <i class="bi bi-send-fill me-2"></i>
                 {{ 'contact.send' | translate }}
               </span>
+              <!-- État en cours d'envoi -->
               <span *ngIf="isSubmitting">
                 <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                 {{ 'contact.sending' | translate }}
               </span>
             </button>
 
-            <!-- Message de succès -->
+            <!-- --------------------------------------------------------
+                 Message de succès
+                 Affiché après envoi réussi (disparaît après 5s)
+                 -------------------------------------------------------- -->
             <div class="alert alert-success mt-3" *ngIf="showSuccess" role="alert">
               <i class="bi bi-check-circle-fill me-2"></i>
               {{ 'contact.successMessage' | translate }}
             </div>
 
-            <!-- Message d'erreur -->
+            <!-- --------------------------------------------------------
+                 Message d'erreur
+                 Affiché en cas d'échec de l'envoi (disparaît après 5s)
+                 -------------------------------------------------------- -->
             <div class="alert alert-danger mt-3" *ngIf="showError" role="alert">
               <i class="bi bi-exclamation-triangle-fill me-2"></i>
               {{ 'contact.errorMessage' | translate }}
             </div>
 
           </form>
-          <!-- FIN : Formulaire contact -->
         </div>
-        <!-- FIN : Contact form wrapper -->
 
       </div>
-      <!-- FIN : Colonne droite (5/12) -->
+      <!-- FIN : Colonne droite -->
 
     </div>
-    <!-- FIN : Row principale (2 colonnes) -->
+    <!-- FIN : Layout 2 colonnes -->
 
   </div>
-  <!-- FIN : Container -->
 </main>
-<!-- FIN : Main - Contenu principal page contact -->

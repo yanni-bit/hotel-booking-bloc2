@@ -1,19 +1,57 @@
+// ============================================================================
+// FICHIER : hotel-amenities.component.scss
+// DESCRIPTION : Styles pour l'affichage des équipements d'un hôtel
+//               Cartes avec icônes et effets hover
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Container principal (.hotel-amenities)
+//   - Titre de section (h2)
+//   - Contenu des équipements (.amenities-content)
+//   - Sections par catégorie (.amenities-section)
+//   - Items d'équipement (.amenity-item)
+//   - Alertes personnalisées
+// VARIABLES CSS UTILISÉES :
+//   --gris-moyen (textes)
+//   --turquoise, --turquoise-light (couleurs d'accent)
+//   --gris-clair (fond alerte)
+// EFFETS :
+//   - Hover sur les items : élévation + fond turquoise clair
+// ============================================================================
+
 .hotel-amenities {
-  
+  // ==========================================================================
+  // TITRE DE SECTION
+  // ==========================================================================
+
   h2 {
     color: var(--gris-moyen);
     font-weight: 600;
   }
-  
+
+  // ==========================================================================
+  // CONTENU DES ÉQUIPEMENTS
+  // ==========================================================================
+
   .amenities-content {
-    
+    // ========================================================================
+    // SECTIONS PAR CATÉGORIE
+    // Général, Sport & Loisirs, Services
+    // ========================================================================
+
     .amenities-section {
-      
+      // Titre de sous-section (turquoise)
       h3 {
         color: var(--turquoise);
         font-weight: 600;
       }
-      
+
+      // ======================================================================
+      // ITEMS D'ÉQUIPEMENT
+      // Cartes avec icône et nom
+      // ======================================================================
+
       .amenity-item {
         color: var(--gris-moyen);
         background-color: white;
@@ -21,19 +59,22 @@
         border-radius: 0.375rem;
         border: 1px solid #e0e0e0;
         transition: all 0.2s ease;
-        
+
+        // Icône turquoise
         i {
           color: var(--turquoise);
           font-size: 1.25rem;
           vertical-align: middle;
         }
-        
+
+        // Texte de l'équipement
         span {
           color: var(--gris-moyen);
           font-weight: 500;
           vertical-align: middle;
         }
-        
+
+        // Effet hover : élévation + fond turquoise clair
         &:hover {
           background-color: var(--turquoise-light);
           border-color: var(--turquoise);
@@ -43,13 +84,19 @@
       }
     }
   }
-  
+
+  // ==========================================================================
+  // ALERTES PERSONNALISÉES
+  // ==========================================================================
+
+  // Alerte info (nom de l'hôtel) - fond turquoise clair
   .alert-info {
     background-color: var(--turquoise-light);
     border-color: var(--turquoise);
     color: var(--gris-moyen);
   }
-  
+
+  // Alerte note - fond gris clair sans bordure
   .alert-light {
     background-color: var(--gris-clair);
     border: none;

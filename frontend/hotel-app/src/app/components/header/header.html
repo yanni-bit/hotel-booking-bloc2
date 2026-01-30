@@ -1,12 +1,46 @@
-<!-- LIEN D'ÉVITEMENT (SKIP LINK) -->
+<!-- ============================================================================
+     FICHIER : header.component.html
+     DESCRIPTION : En-tête du site avec logo, contact, recherche,
+                   ruban latéral et navigation principale
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     STRUCTURE :
+       1. Lien d'évitement (skip link) pour l'accessibilité
+       2. Header principal :
+          - Logo (col-lg-5)
+          - Bouton dyslexie (col-lg-1)
+          - Bloc contact 24/7 (col-lg-3)
+          - Barre de recherche (col-lg-3)
+          - Ruban latéral turquoise (Mon compte, Langue, Devise)
+       3. Navigation principale (Home, Hotels, Contact)
+     ACCESSIBILITÉ (Critère C1.c) :
+       - Skip link pour accéder au contenu principal
+       - role="banner" sur le header
+       - role="search" sur la barre de recherche
+       - role="navigation" sur la navbar
+       - aria-label sur les boutons et inputs
+       - aria-pressed sur le bouton dyslexie
+       - Bouton dyslexie pour police adaptée (OpenDyslexic)
+     ============================================================================ -->
+
+<!-- ========================================================================
+     LIEN D'ÉVITEMENT (SKIP LINK)
+     Permet aux utilisateurs de clavier de sauter la navigation (C1.c.4)
+     ======================================================================== -->
 <a href="#main-content" class="skip-link">{{ 'common.skipLink' | translate }}</a>
 
-<!-- HEADER - EN-TÊTE DU SITE -->
+<!-- ========================================================================
+     HEADER - EN-TÊTE DU SITE
+     ======================================================================== -->
 <header class="base-header position-relative" role="banner">
   <div class="container-fluid">
     <div class="row header-top g-3">
 
-      <!-- BLOC LOGO -->
+      <!-- ============================================================
+           BLOC LOGO
+           Lien vers la page d'accueil
+           ============================================================ -->
       <div class="col-12 col-lg-5 order-0">
         <div class="header_logo">
           <a routerLink="/" class="my-logo d-block">
@@ -15,7 +49,10 @@
         </div>
       </div>
 
-      <!-- BOUTON DYSLEXIE -->
+      <!-- ============================================================
+           BOUTON DYSLEXIE (Accessibilité C1.c.2)
+           Active la police OpenDyslexic pour les personnes dyslexiques
+           ============================================================ -->
       <div class="col-12 col-lg-1 order-1 d-flex align-items-center justify-content-center">
         <button id="toggle-dyslexie" class="btn btn-outline-secondary btn-sm"
           aria-label="Activer la police adaptée aux personnes dyslexiques" aria-pressed="false"
@@ -25,13 +62,18 @@
         </button>
       </div>
 
-      <!-- BLOC CONTACT 24/7 -->
+      <!-- ============================================================
+           BLOC CONTACT 24/7
+           Numéro de téléphone du support client
+           ============================================================ -->
       <div class="col-12 col-lg-3 order-2">
         <div class="header_contact">
           <div class="bloc-contact">
+            <!-- Icône téléphone -->
             <div class="bloc-contact-ico">
               <i class="bi bi-telephone"></i>
             </div>
+            <!-- Texte contact -->
             <div class="text-contact">
               <div class="bloc-contact-label">{{ 'header.support' | translate }}</div>
               <div class="bloc-contact-number">1-555-555-555</div>
@@ -40,18 +82,17 @@
         </div>
       </div>
 
-      <!-- BLOC RECHERCHE -->
+      <!-- ============================================================
+           BLOC RECHERCHE
+           Barre de recherche avec navigation vers /search
+           ============================================================ -->
       <div class="col-12 col-lg-3 order-3">
         <div class="header_search">
           <div class="bloc-search" role="search" aria-label="Recherche rapide">
             <div class="position-relative">
-              <input 
-                type="search" 
-                class="form-control bloc-search-input"
-                [placeholder]="'header.search' | translate" 
-                aria-label="Rechercher sur le site"
-                [(ngModel)]="searchQuery" 
-                (keyup)="onSearchKeyup($event)">
+              <input type="search" class="form-control bloc-search-input" [placeholder]="'header.search' | translate"
+                aria-label="Rechercher sur le site" [(ngModel)]="searchQuery" (keyup)="onSearchKeyup($event)">
+              <!-- Bouton loupe -->
               <button type="button" class="bloc-search-btn" (click)="onSearch()" aria-label="Lancer la recherche">
                 <i class="bi bi-search bloc-search-ico"></i>
               </button>
@@ -60,39 +101,47 @@
         </div>
       </div>
 
-      <!-- RUBAN LATÉRAL (Mon compte, Langue, Monnaie) -->
+      <!-- ============================================================
+           RUBAN LATÉRAL TURQUOISE
+           Mon compte, Langue, Devise
+           ============================================================ -->
       <div class="mt-0 ribbon">
         <nav class="d-flex gap-2 flex-column align-items-stretch">
 
-          <!-- Mon Compte - Non connecté -->
+          <!-- --------------------------------------------------------
+               MON COMPTE - Non connecté
+               Bouton de connexion
+               -------------------------------------------------------- -->
           <div class="dropdown" *ngIf="!authService.isAuthenticated()">
             <a class="btn btn-outline-dark w-100 pb-2 ribbon-btn" [routerLink]="['/login']" role="button">
               <i class="bi bi-box-arrow-in-right me-1"></i> {{ 'header.login' | translate }}
             </a>
           </div>
 
-          <!-- Mon Compte - Connecté -->
+          <!-- --------------------------------------------------------
+               MON COMPTE - Connecté
+               Dropdown avec profil, réservations, admin, déconnexion
+               -------------------------------------------------------- -->
           <div class="dropdown" *ngIf="authService.isAuthenticated()">
-            <button 
-              class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" 
-              type="button" 
-              id="userDropdown"
-              data-bs-toggle="dropdown" 
-              aria-expanded="false">
+            <button class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" type="button" id="userDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-person-circle me-1"></i>
               {{ authService.currentUser()?.prenom }}
             </button>
             <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="userDropdown">
+              <!-- Lien Profil -->
               <li>
                 <a class="dropdown-item" [routerLink]="['/profil']">
                   <i class="bi bi-person me-2"></i>{{ 'header.profile' | translate }}
                 </a>
               </li>
+              <!-- Lien Mes réservations -->
               <li>
                 <a class="dropdown-item" [routerLink]="['/reservations']">
                   <i class="bi bi-clock-history me-2"></i>{{ 'header.myReservations' | translate }}
                 </a>
               </li>
+              <!-- Lien Admin (visible si admin) -->
               <li *ngIf="authService.isAdmin()">
                 <hr class="dropdown-divider">
                 <a class="dropdown-item" [routerLink]="['/admin']">
@@ -100,6 +149,7 @@
                 </a>
               </li>
               <hr class="dropdown-divider">
+              <!-- Bouton Déconnexion -->
               <li>
                 <a class="dropdown-item text-danger" (click)="logout()" style="cursor: pointer;">
                   <i class="bi bi-box-arrow-right me-2"></i>{{ 'header.logout' | translate }}
@@ -108,22 +158,18 @@
             </ul>
           </div>
 
-          <!-- Langue -->
+          <!-- --------------------------------------------------------
+               SÉLECTEUR DE LANGUE
+               Dropdown FR/EN/IT
+               -------------------------------------------------------- -->
           <div class="dropdown">
-            <button 
-              class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" 
-              type="button"
-              id="langDropdown"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
+            <button class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" type="button" id="langDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
               {{ getCurrentLanguageLabel() }}
             </button>
             <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="langDropdown">
               <li *ngFor="let lang of languages">
-                <a 
-                  class="dropdown-item" 
-                  [class.active]="currentLang === lang.code"
-                  (click)="switchLanguage(lang.code)"
+                <a class="dropdown-item" [class.active]="currentLang === lang.code" (click)="switchLanguage(lang.code)"
                   style="cursor: pointer;">
                   {{ lang.flag }} {{ lang.label }}
                 </a>
@@ -131,23 +177,19 @@
             </ul>
           </div>
 
-          <!-- Devise -->
+          <!-- --------------------------------------------------------
+               SÉLECTEUR DE DEVISE
+               Dropdown EUR/USD/GBP
+               -------------------------------------------------------- -->
           <div class="dropdown">
-            <button 
-              class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" 
-              type="button"
-              id="currencyDropdown"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
+            <button class="btn btn-outline-dark w-100 pb-2 ribbon-btn dropdown-toggle" type="button"
+              id="currencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
               {{ getCurrentCurrencySymbol() }}
             </button>
             <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="currencyDropdown">
               <li *ngFor="let currency of currencies">
-                <a 
-                  class="dropdown-item"
-                  [class.active]="currentCurrency === currency.code"
-                  (click)="switchCurrency(currency.code)"
-                  style="cursor: pointer;">
+                <a class="dropdown-item" [class.active]="currentCurrency === currency.code"
+                  (click)="switchCurrency(currency.code)" style="cursor: pointer;">
                   {{ currency.symbol }} {{ currency.label }}
                 </a>
               </li>
@@ -156,18 +198,26 @@
 
         </nav>
       </div>
+      <!-- FIN : Ruban latéral -->
 
     </div>
   </div>
 </header>
 
-<!-- NAVIGATION PRINCIPALE -->
+<!-- ========================================================================
+     NAVIGATION PRINCIPALE
+     Menu avec liens vers Home, Hotels, Contact
+     ======================================================================== -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-brown" role="navigation">
+  <!-- Texte "Menu" visible sur mobile -->
   <span class="navbar-brand d-lg-none">Menu</span>
+
+  <!-- Bouton hamburger (mobile) -->
   <button class="navbar-toggler" type="button" (click)="toggleMenu()">
     <span class="navbar-toggler-icon"></span>
   </button>
 
+  <!-- Menu de navigation (collapse sur mobile) -->
   <div class="collapse navbar-collapse" [class.show]="menuOpen" id="menuPrincipal">
     <ul class="navbar-nav mx-auto">
       <li class="nav-item">

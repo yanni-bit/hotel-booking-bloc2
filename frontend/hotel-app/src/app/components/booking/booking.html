@@ -1,4 +1,28 @@
-<!-- LOADING -->
+<!-- ============================================================================
+     FICHIER : booking.component.html
+     DESCRIPTION : Interface de réservation - Formulaire complet avec sélection
+                   de dates, informations client, services additionnels et résumé
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - État de chargement
+       - État d'erreur
+       - Page de confirmation de succès
+       - Formulaire principal :
+         * Breadcrumb navigation
+         * Dates et voyageurs
+         * Informations client
+         * Services additionnels
+       - Résumé (sidebar sticky) :
+         * Détails hôtel et offre
+         * Récapitulatif prix
+         * Bouton de confirmation
+     ============================================================================ -->
+
+<!-- ========================================================================
+     ÉTAT DE CHARGEMENT
+     ======================================================================== -->
 <div *ngIf="loading" class="text-center py-5">
   <div class="spinner-border text-turquoise" role="status">
     <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
@@ -6,21 +30,28 @@
   <p class="mt-3">{{ 'common.loading' | translate }}</p>
 </div>
 
-<!-- ERROR -->
+<!-- ========================================================================
+     ÉTAT D'ERREUR
+     ======================================================================== -->
 <div *ngIf="error && !loading" class="alert alert-danger m-4">
   {{ error }}
 </div>
 
-<!-- CONFIRMATION SUCCESS -->
+<!-- ========================================================================
+     PAGE DE CONFIRMATION DE SUCCÈS
+     Affichée après une réservation réussie
+     ======================================================================== -->
 <main *ngIf="bookingSuccess && !loading" class="booking-page py-5">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="card border-0 shadow-lg p-5 text-center success-card">
+          <!-- Icône de succès avec animation -->
           <i class="bi bi-check-circle-fill text-success mb-4" style="font-size: 5rem;"></i>
           <h1 class="h3 mb-3">{{ 'booking.confirmationTitle' | translate }}</h1>
           <p class="lead mb-4">{{ 'booking.confirmationText' | translate }}</p>
 
+          <!-- Numéro de confirmation -->
           <div class="alert alert-info mb-4">
             <strong>{{ 'booking.confirmationNumber' | translate }}</strong><br>
             <span class="h4 text-turquoise">{{ confirmationNumber }}</span>
@@ -30,6 +61,7 @@
             {{ 'booking.emailConfirmation' | translate }} <strong>{{ email }}</strong>
           </p>
 
+          <!-- Boutons de navigation -->
           <div class="d-flex gap-3 justify-content-center">
             <a [routerLink]="['/']" class="btn btn-primary">
               <i class="bi bi-house me-2"></i>{{ 'booking.backHome' | translate }}
@@ -44,11 +76,15 @@
   </div>
 </main>
 
-<!-- FORMULAIRE DE RÉSERVATION -->
+<!-- ========================================================================
+     FORMULAIRE DE RÉSERVATION PRINCIPAL
+     ======================================================================== -->
 <main *ngIf="!loading && !error && offre && !bookingSuccess" class="booking-page py-5">
   <div class="container">
 
-    <!-- BREADCRUMB -->
+    <!-- ====================================================================
+         BREADCRUMB - FIL D'ARIANE
+         ==================================================================== -->
     <nav aria-label="breadcrumb" class="mb-4">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a [routerLink]="['/']">{{ 'nav.home' | translate }}</a></li>
@@ -59,29 +95,37 @@
       </ol>
     </nav>
 
+    <!-- Titre de la page -->
     <h1 class="h3 mb-4 text-turquoise">
       <i class="bi bi-calendar-check me-2"></i>{{ 'booking.bookYourStay' | translate }}
     </h1>
 
     <div class="row">
 
-      <!-- FORMULAIRE -->
+      <!-- ============================================================
+           COLONNE GAUCHE - FORMULAIRE
+           ============================================================ -->
       <div class="col-lg-8">
 
-        <!-- INFORMATIONS SÉJOUR -->
+        <!-- ----------------------------------------
+             SECTION : DATES ET VOYAGEURS
+             ---------------------------------------- -->
         <div class="card border-0 shadow-sm mb-4">
           <div class="card-body p-4">
             <h2 class="h5 mb-4 text-turquoise">
               <i class="bi bi-calendar3 me-2"></i>{{ 'booking.datesAndGuests' | translate }}
             </h2>
 
+            <!-- Dates check-in / check-out -->
             <div class="row mb-3">
+              <!-- Date d'arrivée -->
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">{{ 'booking.checkInDate' | translate }} *</label>
                 <input type="date" class="form-control form-control-lg" [(ngModel)]="checkIn" [min]="minCheckIn"
                   (change)="onCheckInChange()" required>
               </div>
 
+              <!-- Date de départ -->
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">{{ 'booking.checkOutDate' | translate }} *</label>
                 <input type="date" class="form-control form-control-lg" [(ngModel)]="checkOut" [min]="minCheckOut"
@@ -89,12 +133,15 @@
               </div>
             </div>
 
+            <!-- Affichage du nombre de nuits -->
             <div class="alert bg-turquoise-light mb-3">
               <i class="bi bi-info-circle me-2"></i>
               <strong>{{ nbreNuits }}</strong> {{ 'booking.nights' | translate }}
             </div>
 
+            <!-- Nombre de voyageurs -->
             <div class="row">
+              <!-- Adultes -->
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">{{ 'booking.numberOfAdults' | translate }} *</label>
                 <select class="form-select form-select-lg" [(ngModel)]="nbreAdults" (change)="calculatePrixServices()">
@@ -105,6 +152,7 @@
                 </select>
               </div>
 
+              <!-- Enfants -->
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">{{ 'booking.numberOfChildren' | translate }}</label>
                 <select class="form-select form-select-lg" [(ngModel)]="nbreChildren">
@@ -118,27 +166,31 @@
           </div>
         </div>
 
-        <!-- INFORMATIONS CLIENT -->
+        <!-- ----------------------------------------
+             SECTION : INFORMATIONS CLIENT
+             ---------------------------------------- -->
         <div class="card border-0 shadow-sm mb-4">
           <div class="card-body p-4">
             <h2 class="h5 mb-4 text-turquoise">
               <i class="bi bi-person me-2"></i>{{ 'booking.yourInfo' | translate }}
             </h2>
 
+            <!-- Prénom et Nom -->
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">{{ 'booking.firstName' | translate }} *</label>
-                <input type="text" class="form-control form-control-lg" [(ngModel)]="prenom" [placeholder]="'booking.firstNamePlaceholder' | translate"
-                  required>
+                <input type="text" class="form-control form-control-lg" [(ngModel)]="prenom"
+                  [placeholder]="'booking.firstNamePlaceholder' | translate" required>
               </div>
 
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">{{ 'booking.lastName' | translate }} *</label>
-                <input type="text" class="form-control form-control-lg" [(ngModel)]="nom" [placeholder]="'booking.lastNamePlaceholder' | translate"
-                  required>
+                <input type="text" class="form-control form-control-lg" [(ngModel)]="nom"
+                  [placeholder]="'booking.lastNamePlaceholder' | translate" required>
               </div>
             </div>
 
+            <!-- Email et Téléphone -->
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">{{ 'booking.email' | translate }} *</label>
@@ -153,6 +205,7 @@
               </div>
             </div>
 
+            <!-- Demandes spéciales (optionnel) -->
             <div class="mb-0">
               <label class="form-label fw-bold">{{ 'booking.specialRequests' | translate }}</label>
               <textarea class="form-control" rows="3" [(ngModel)]="specialRequests"
@@ -162,7 +215,10 @@
           </div>
         </div>
 
-        <!-- SERVICES ADDITIONNELS -->
+        <!-- ----------------------------------------
+             SECTION : SERVICES ADDITIONNELS
+             (affichée uniquement si des services sont disponibles)
+             ---------------------------------------- -->
         <div class="card border-0 shadow-sm mb-4" *ngIf="servicesDisponibles.length > 0">
           <div class="card-body p-4">
             <h2 class="h5 mb-4 text-turquoise">
@@ -170,26 +226,32 @@
             </h2>
 
             <div class="row">
+              <!-- Boucle sur les services disponibles -->
               <div class="col-md-6 mb-3" *ngFor="let service of servicesDisponibles">
                 <div class="service-option" [class.service-inclus]="service.inclus">
                   <div class="form-check">
+                    <!-- Checkbox de sélection (désactivée si service inclus) -->
                     <input class="form-check-input" type="checkbox" [id]="'service-' + service.id_service"
                       (change)="onServiceChange(service, $event)" [disabled]="service.inclus">
                     <label class="form-check-label w-100" [for]="'service-' + service.id_service">
                       <div class="d-flex justify-content-between align-items-start">
+                        <!-- Informations du service -->
                         <div class="flex-grow-1">
                           <div class="d-flex align-items-center mb-1">
                             <i [class]="service.icone_service + ' text-turquoise me-2'"></i>
                             <strong>{{ service.nom_service }}</strong>
+                            <!-- Badge "Inclus" si le service est inclus dans l'offre -->
                             <span *ngIf="service.inclus" class="badge bg-success ms-2">
                               <i class="bi bi-check-circle-fill me-1"></i>{{ 'booking.included' | translate }}
                             </span>
                           </div>
                           <small class="text-muted d-block">{{ service.description_service }}</small>
                         </div>
+                        <!-- Prix du service (si non inclus) -->
                         <div class="text-end ms-3" *ngIf="!service.inclus">
                           <span class="fw-bold text-turquoise">{{ service.prix_service | appCurrency }}</span>
                           <small class="d-block text-muted">
+                            <!-- Type de tarification -->
                             <ng-container [ngSwitch]="service.type_service">
                               <span *ngSwitchCase="'journalier'">{{ 'booking.perDay' | translate }}</span>
                               <span *ngSwitchCase="'par_personne'">{{ 'booking.perPersonPerDay' | translate }}</span>
@@ -198,6 +260,7 @@
                             </ng-container>
                           </small>
                         </div>
+                        <!-- Badge "Gratuit" si service inclus -->
                         <div class="text-end ms-3" *ngIf="service.inclus">
                           <span class="text-success fw-bold">
                             <i class="bi bi-gift"></i> {{ 'booking.free' | translate }}
@@ -214,13 +277,17 @@
 
       </div>
 
-      <!-- RÉSUMÉ -->
+      <!-- ============================================================
+           COLONNE DROITE - RÉSUMÉ (SIDEBAR STICKY)
+           ============================================================ -->
       <div class="col-lg-4">
         <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
           <div class="card-body p-4">
             <h2 class="h5 mb-3">{{ 'booking.summary' | translate }}</h2>
 
-            <!-- Hôtel -->
+            <!-- ----------------------------------------
+                 Image et informations hôtel
+                 ---------------------------------------- -->
             <div class="mb-3">
               <img [src]="offre.img_hotel" [alt]="offre.nom_hotel" class="img-fluid rounded mb-2">
               <h3 class="h6 mb-1">{{ offre.nom_hotel }}</h3>
@@ -243,7 +310,7 @@
               <p class="text-muted mb-0">{{ offre.nom_offre }}</p>
             </div>
 
-            <!-- Dates -->
+            <!-- Dates du séjour -->
             <div class="mb-3">
               <p class="mb-1"><strong>{{ 'booking.stay' | translate }}</strong></p>
               <p class="text-muted mb-0">
@@ -252,25 +319,29 @@
               <p class="text-muted mb-0">{{ nbreNuits }} {{ 'booking.nights' | translate }}</p>
             </div>
 
-            <!-- Personnes -->
+            <!-- Voyageurs -->
             <div class="mb-3">
               <p class="mb-1"><strong>{{ 'booking.travelers' | translate }}</strong></p>
               <p class="text-muted mb-0">
                 {{ nbreAdults }} {{ nbreAdults > 1 ? ('booking.adults' | translate) : ('booking.adult' | translate) }}
-                <span *ngIf="nbreChildren > 0">, {{ nbreChildren }} {{ nbreChildren > 1 ? ('booking.children' | translate) : ('booking.child' | translate) }}</span>
+                <span *ngIf="nbreChildren > 0">, {{ nbreChildren }} {{ nbreChildren > 1 ? ('booking.children' |
+                  translate) : ('booking.child' | translate) }}</span>
               </p>
             </div>
 
             <hr>
 
-            <!-- Prix -->
+            <!-- ----------------------------------------
+                 Récapitulatif des prix
+                 ---------------------------------------- -->
             <div class="mb-3">
+              <!-- Prix de la chambre -->
               <div class="d-flex justify-content-between mb-2">
                 <span>{{ 'booking.room' | translate }} ({{ nbreNuits }} {{ 'booking.nights' | translate }})</span>
                 <span>{{ offre.prix_nuit * nbreNuits | appCurrency }}</span>
               </div>
 
-              <!-- Services additionnels -->
+              <!-- Services additionnels sélectionnés -->
               <div *ngIf="servicesSelectionnes.length > 0" class="mt-2 pt-2 border-top">
                 <p class="small mb-2"><strong>{{ 'booking.additionalServices' | translate }}</strong></p>
                 <div *ngFor="let service of servicesSelectionnes" class="d-flex justify-content-between small mb-1">
@@ -283,17 +354,21 @@
               </div>
             </div>
 
+            <!-- Prix total -->
             <div class="alert alert-success mb-3">
               <div class="d-flex justify-content-between align-items-center">
                 <strong>{{ 'booking.total' | translate }}</strong>
                 <span class="h4 mb-0">{{ prixTotal | appCurrency }}</span>
               </div>
+              <!-- Détail des services si présents -->
               <small class="text-muted d-block mt-1" *ngIf="servicesSelectionnes.length > 0">
                 ({{ 'booking.includingServices' | translate }} {{ prixServices | appCurrency }})
               </small>
             </div>
 
-            <!-- Bouton réserver -->
+            <!-- ----------------------------------------
+                 Bouton de confirmation
+                 ---------------------------------------- -->
             <button class="btn btn-primary btn-lg w-100" (click)="confirmBooking()" [disabled]="submitting">
               <span *ngIf="!submitting">
                 <i class="bi bi-check-circle me-2"></i>{{ 'booking.confirmBooking' | translate }}
@@ -303,6 +378,7 @@
               </span>
             </button>
 
+            <!-- Mention paiement sécurisé -->
             <p class="small text-muted text-center mt-3 mb-0">
               <i class="bi bi-shield-check me-1"></i>{{ 'booking.securePayment' | translate }}
             </p>

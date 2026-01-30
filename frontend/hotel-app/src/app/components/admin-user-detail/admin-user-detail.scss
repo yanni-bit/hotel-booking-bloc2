@@ -1,13 +1,45 @@
+// ============================================================================
+// FICHIER : admin-user-detail.component.scss
+// DESCRIPTION : Styles de l'interface de détail utilisateur avec profil,
+//               statistiques et modal de réservation
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Container principal (.admin-user-detail-page)
+//   - Utilitaires de couleur (.text-turquoise)
+//   - Avatar large (.avatar-large)
+//   - Informations profil (.profile-info)
+//   - Formulaire d'édition (.edit-form)
+//   - Tableau (.table)
+//   - Boutons (.btn-primary, .btn-outline-primary)
+//   - Modal (.modal, .modal-content)
+//   - Cartes dans le modal
+//   - Responsive
+// ============================================================================
+
+// ============================================================================
+// CONTAINER PRINCIPAL
+// ============================================================================
+
 .admin-user-detail-page {
   min-height: 80vh;
   background-color: var(--marron-clair);
 }
 
+// ============================================================================
+// UTILITAIRES DE COULEUR
+// ============================================================================
+
 .text-turquoise {
   color: var(--turquoise) !important;
 }
 
-// Avatar large
+// ============================================================================
+// AVATAR LARGE
+// Cercle avec initiales de l'utilisateur
+// ============================================================================
+
 .avatar-large {
   width: 80px;
   height: 80px;
@@ -21,7 +53,11 @@
   font-size: 1.5rem;
 }
 
-// Infos profil
+// ============================================================================
+// INFORMATIONS PROFIL
+// Liste des champs en mode lecture
+// ============================================================================
+
 .profile-info {
   .info-row {
     display: flex;
@@ -29,16 +65,19 @@
     align-items: center;
     padding: 0.75rem 0;
     border-bottom: 1px solid #eee;
-    
+
+    // Dernière ligne sans bordure
     &:last-child {
       border-bottom: none;
     }
-    
+
+    // Label (côté gauche)
     .label {
       color: #6c757d;
       font-size: 0.9rem;
     }
-    
+
+    // Valeur (côté droit)
     .value {
       font-weight: 500;
       text-align: right;
@@ -46,7 +85,10 @@
   }
 }
 
-// Formulaire édition
+// ============================================================================
+// FORMULAIRE D'ÉDITION
+// ============================================================================
+
 .edit-form {
   .form-label {
     font-weight: 500;
@@ -55,8 +97,12 @@
   }
 }
 
-// Table
+// ============================================================================
+// TABLEAU
+// ============================================================================
+
 .table {
+  // En-têtes de colonnes
   th {
     font-weight: 600;
     font-size: 0.8rem;
@@ -64,27 +110,33 @@
     letter-spacing: 0.5px;
     border-bottom: 2px solid #dee2e6;
   }
-  
+
+  // Cellules - alignement vertical centré
   td {
     vertical-align: middle;
   }
 }
 
-// Boutons
+// ============================================================================
+// BOUTONS
+// ============================================================================
+
+// Bouton primary avec couleur turquoise
 .btn-primary {
   background-color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover {
     background-color: var(--turquoise-hover);
     border-color: var(--turquoise-hover);
   }
 }
 
+// Bouton outline avec couleur turquoise
 .btn-outline-primary {
   color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover {
     background-color: var(--turquoise);
     border-color: var(--turquoise);
@@ -92,7 +144,11 @@
   }
 }
 
-// Modal
+// ============================================================================
+// MODAL
+// ============================================================================
+
+// Fond semi-transparent
 .modal-backdrop {
   background-color: rgba(0, 0, 0, 0.5);
 }
@@ -101,6 +157,7 @@
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+// Contenu du modal avec coins arrondis et ombre
 .modal-content {
   border: none;
   border-radius: 12px;
@@ -116,40 +173,52 @@
   border-top: 1px solid #eee;
 }
 
+// ============================================================================
+// CARTES DANS LE MODAL
+// Style des cartes d'information (hôtel, séjour, prix, services)
+// ============================================================================
+
 .modal-body .card {
   border-radius: 8px;
   border: 1px solid #eee;
-  
+
   .card-header {
     border-bottom: 1px solid #eee;
     font-size: 0.9rem;
   }
-  
+
   .card-body {
     font-size: 0.9rem;
   }
 }
 
+// Carte de modification du statut (bordure turquoise)
 .modal-body .card.border-primary {
   border: 2px solid var(--turquoise) !important;
-  
+
   .card-header {
     background-color: var(--turquoise) !important;
   }
 }
 
-// Responsive
+// ============================================================================
+// RESPONSIVE
+// ============================================================================
+
 @media (max-width: 768px) {
+  // Avatar plus petit sur mobile
   .avatar-large {
     width: 60px;
     height: 60px;
     font-size: 1.2rem;
   }
-  
+
+  // Tableau plus compact
   .table-responsive {
     font-size: 0.85rem;
   }
-  
+
+  // Modal avec marges réduites
   .modal-dialog {
     margin: 10px;
   }

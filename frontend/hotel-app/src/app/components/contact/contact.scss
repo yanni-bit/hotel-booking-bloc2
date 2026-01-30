@@ -1,10 +1,30 @@
-/* ==========================================================
-   CONTACT.SCSS - Styles du composant Contact
-   Projet : Hôtel Booking (Angular)
-   ========================================================== */
+// ============================================================================
+// FICHIER : contact.component.scss
+// DESCRIPTION : Styles de la page Contact avec carte Google Maps,
+//               cartes d'informations et formulaire de contact
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Layout général (.contact-main)
+//   - Fil d'Ariane (.breadcrumb)
+//   - En-tête de page (.contact-header)
+//   - Carte Google Maps (.map-container)
+//   - Cartes d'informations (.info-card-phone-new, .info-card-email-new)
+//   - Formulaire de contact (.contact-form-wrapper, .contact-form)
+//   - Validation des champs (is-valid, is-invalid)
+//   - Bouton d'envoi (.btn-primary)
+//   - Alertes (alert-success, alert-danger)
+//   - Responsive (tablettes, mobiles)
+// VARIABLES CSS UTILISÉES :
+//   --gris-clair, --gris-fonce, --gris-moyen
+//   --blanc, --turquoise, --turquoise-hover, --turquoise-light
+//   --vert-validation, --rouge-erreur
+// ============================================================================
 
 /* ==========================================================
    LAYOUT GÉNÉRAL
+   Container principal avec fond gris clair
    ========================================================== */
 
 .contact-main {
@@ -16,6 +36,7 @@
 
 /* ==========================================================
    FIL D'ARIANE
+   Navigation hiérarchique : Accueil > Contact
    ========================================================== */
 
 .breadcrumb {
@@ -27,7 +48,7 @@
 .breadcrumb-item a {
   color: var(--turquoise);
   text-decoration: none;
-  
+
   &:hover {
     color: var(--turquoise-hover);
     text-decoration: underline;
@@ -40,18 +61,19 @@
 
 /* ==========================================================
    EN-TÊTE DE PAGE
+   Titre et sous-titre centrés
    ========================================================== */
 
 .contact-header {
   margin-bottom: 2rem;
-  
+
   h1 {
     color: var(--gris-fonce);
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
   }
-  
+
   .lead {
     color: var(--gris-moyen);
     font-size: 1.1rem;
@@ -60,6 +82,7 @@
 
 /* ==========================================================
    CARTE GOOGLE MAPS
+   Container avec bordures arrondies et ombre
    ========================================================== */
 
 .map-container {
@@ -67,7 +90,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  
+
   iframe {
     display: block;
     width: 100%;
@@ -77,12 +100,14 @@
 
 /* ==========================================================
    CARTES D'INFORMATIONS (Téléphone / Email)
+   Cartes avec effet hover (élévation)
    ========================================================== */
 
 .contact-info-cards {
   margin-top: 1.5rem;
 }
 
+// Styles communs aux deux cartes
 .info-card-phone-new,
 .info-card-email-new {
   background: var(--blanc);
@@ -91,25 +116,28 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   height: 100%;
-  
+
+  // Effet hover : élévation et ombre turquoise
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 6px 16px rgba(95, 200, 194, 0.2);
   }
 }
 
+// Contenu des cartes
 .info-content-phone,
 .info-content-email {
   width: 100%;
 }
 
+// En-tête des cartes (icône + titre)
 .phone-header-line,
 .email-header-line {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-bottom: 0.5rem;
-  
+
   h6 {
     margin-bottom: 0;
     color: var(--gris-fonce);
@@ -118,6 +146,7 @@
   }
 }
 
+// Icône ronde avec fond turquoise clair
 .info-icon {
   width: 50px;
   height: 50px;
@@ -127,13 +156,14 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  
+
   i {
     font-size: 1.5rem;
     color: var(--turquoise);
   }
 }
 
+// Texte descriptif
 .info-content-phone p,
 .info-content-email p {
   color: var(--gris-moyen);
@@ -141,6 +171,7 @@
   margin-bottom: 0.25rem;
 }
 
+// Liens téléphone/email
 .info-content-phone a,
 .info-content-email a {
   color: var(--turquoise);
@@ -148,7 +179,7 @@
   font-weight: 600;
   font-size: 1.1rem;
   transition: color 0.2s;
-  
+
   &:hover {
     color: var(--turquoise-hover);
     text-decoration: underline;
@@ -157,6 +188,7 @@
 
 /* ==========================================================
    FORMULAIRE DE CONTACT
+   Carte blanche avec position sticky sur desktop
    ========================================================== */
 
 .contact-form-wrapper {
@@ -166,7 +198,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 2rem;
-  
+
   h3 {
     color: var(--gris-fonce);
     font-weight: 600;
@@ -175,13 +207,21 @@
   }
 }
 
+/* ==========================================================
+   CHAMPS DU FORMULAIRE
+   Styles des inputs, selects et textarea
+   Validation visuelle (Critère C2.b)
+   ========================================================== */
+
 .contact-form {
+  // Labels des champs
   .form-label {
     font-weight: 500;
     color: var(--gris-fonce);
     margin-bottom: 0.5rem;
   }
-  
+
+  // Inputs et selects
   .form-control,
   .form-select {
     border: 2px solid #e0e0e0;
@@ -189,34 +229,39 @@
     padding: 0.75rem;
     font-size: 1rem;
     transition: all 0.2s;
-    
+
+    // État focus
     &:focus {
       border-color: var(--turquoise);
       box-shadow: 0 0 0 3px var(--turquoise-light);
     }
-    
+
+    // État valide (Critère C2.b)
     &.is-valid {
       border-color: var(--vert-validation);
-      
+
       &:focus {
         box-shadow: 0 0 0 3px rgba(60, 184, 120, 0.15);
       }
     }
-    
+
+    // État invalide (Critère C2.b)
     &.is-invalid {
       border-color: var(--rouge-erreur);
-      
+
       &:focus {
         box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15);
       }
     }
   }
-  
+
+  // Textarea spécifique
   textarea.form-control {
     resize: vertical;
     min-height: 120px;
   }
-  
+
+  // Bouton d'envoi
   .btn-primary {
     background-color: var(--turquoise);
     border-color: var(--turquoise);
@@ -226,26 +271,30 @@
     padding: 0.75rem 2rem;
     border-radius: 8px;
     transition: all 0.2s;
-    
+
+    // État hover (non désactivé)
     &:hover:not(:disabled) {
       background-color: var(--turquoise-hover);
       border-color: var(--turquoise-hover);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(95, 200, 194, 0.3);
     }
-    
+
+    // État désactivé (pendant envoi)
     &:disabled {
       opacity: 0.7;
       cursor: not-allowed;
     }
   }
-  
+
+  // Alerte succès
   .alert-success {
     border-radius: 8px;
     border-left: 4px solid #28a745;
     background-color: rgba(40, 167, 69, 0.1);
   }
-  
+
+  // Alerte erreur
   .alert-danger {
     border-radius: 8px;
     border-left: 4px solid #dc3545;
@@ -254,7 +303,8 @@
 }
 
 /* ==========================================================
-   RESPONSIVE
+   RESPONSIVE - TABLETTES (≤ 991px)
+   Le formulaire passe en position statique
    ========================================================== */
 
 @media (max-width: 991px) {
@@ -264,37 +314,49 @@
   }
 }
 
+/* ==========================================================
+   RESPONSIVE - MOBILES (≤ 767px)
+   Réduction des tailles de police et de la carte
+   ========================================================== */
+
 @media (max-width: 767px) {
   .contact-header {
     h1 {
       font-size: 2rem;
     }
-    
+
     .lead {
       font-size: 1rem;
     }
   }
-  
+
+  // Carte plus petite
   .map-container iframe {
     height: 300px;
   }
-  
+
   .contact-form-wrapper {
     padding: 1.5rem;
   }
 }
 
+/* ==========================================================
+   RESPONSIVE - PETITS MOBILES (≤ 575px)
+   Ajustements supplémentaires
+   ========================================================== */
+
 @media (max-width: 575px) {
   .contact-main {
     padding: 1rem 0 2rem;
   }
-  
+
   .contact-form-wrapper {
     h3 {
       font-size: 1.25rem;
     }
   }
-  
+
+  // Carte encore plus petite
   .map-container iframe {
     height: 250px;
   }

@@ -1,14 +1,47 @@
-<!-- CARROUSEL -->
+<!-- ============================================================================
+     FICHIER : home.component.html
+     DESCRIPTION : Page d'accueil (landing page) assemblant les sections principales
+                   Composition à base de composants enfants réutilisables
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     STRUCTURE DE LA PAGE :
+       1. Carousel - Carrousel d'images avec formulaire de recherche
+       2. Offres - Section "Nos dernières offres" promotionnelles
+       3. Destinations - Section "Meilleures destinations" (12 destinations)
+       4. Criteres - Section critères de sélection des hôtels
+     ARCHITECTURE :
+       Cette page suit le pattern de composition Angular :
+       - Chaque section est un composant indépendant
+       - Les composants sont réutilisables sur d'autres pages
+       - Le composant Home sert de conteneur/assembleur
+     ============================================================================ -->
+
+<!-- ========================================================================
+     SECTION 1 : CARROUSEL
+     Carrousel d'images avec formulaire de recherche intégré
+     Permet la recherche par ville, dates et nombre de voyageurs
+     ======================================================================== -->
 <app-carousel></app-carousel>
 
-<!-- SECTION NOS DERNIÈRES OFFRES -->
+<!-- ========================================================================
+     SECTION 2 : NOS DERNIÈRES OFFRES
+     Affichage des offres promotionnelles et deals du moment
+     Cartes avec images, prix barrés et badges (PROMO, HOT DEAL, etc.)
+     ======================================================================== -->
 <app-offres></app-offres>
 
-<!-- SECTION MEILLEURS DESTINATIONS -->
+<!-- ========================================================================
+     SECTION 3 : MEILLEURES DESTINATIONS
+     Grille de 12 destinations populaires dans le monde
+     Paris, Amsterdam, Prague, Tokyo, Maldives, etc.
+     Chaque carte affiche : image, nom, pays, nombre d'hôtels, prix
+     ======================================================================== -->
 <app-destinations></app-destinations>
 
-<!-- SECTION MEILLEURS DESTINATIONS -->
+<!-- ========================================================================
+     SECTION 4 : CRITÈRES DE SÉLECTION
+     8 critères expliquant pourquoi choisir Book Your Travel
+     Hôtels sélectionnés, meilleur prix garanti, réservation sécurisée, etc.
+     ======================================================================== -->
 <app-criteres></app-criteres>
-
-<!-- SECTION FOOTER COPYRIGHT ET LIENS -->
-<!-- <app-footer></app-footer> -->

@@ -1,7 +1,24 @@
+<!-- ============================================================================
+     FICHIER : admin-hotels.component.html
+     DESCRIPTION : Liste des hôtels en tableau avec actions CRUD
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - En-tête avec navigation et bouton d'ajout
+       - État de chargement (spinner)
+       - État d'erreur (alert)
+       - Tableau des hôtels (ID, Image, Nom, Ville, Pays, Étoiles, Actions)
+       - Message si liste vide
+       - Compteur total
+     ============================================================================ -->
+
 <main class="admin-hotels-page py-5">
   <div class="container">
-    
-    <!-- En-tête -->
+
+    <!-- ====================================================================
+         EN-TÊTE AVEC NAVIGATION ET BOUTON D'AJOUT
+         ==================================================================== -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <a [routerLink]="['/admin']" class="text-muted me-3">
@@ -15,26 +32,37 @@
         <i class="bi bi-plus-circle me-2"></i>Ajouter un hôtel
       </a>
     </div>
-    
-    <!-- LOADING -->
+
+    <!-- ====================================================================
+         ÉTAT DE CHARGEMENT
+         ==================================================================== -->
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-turquoise" role="status">
         <span class="visually-hidden">Chargement...</span>
       </div>
       <p class="mt-3">Chargement des hôtels...</p>
     </div>
-    
-    <!-- ERROR -->
+
+    <!-- ====================================================================
+         ÉTAT D'ERREUR
+         ==================================================================== -->
     <div *ngIf="error && !loading" class="alert alert-danger">
       <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
     </div>
-    
-    <!-- TABLEAU DES HÔTELS -->
+
+    <!-- ====================================================================
+         TABLEAU DES HÔTELS
+         Colonnes : ID | Image | Nom | Ville | Pays | Étoiles | Actions
+         ==================================================================== -->
     <div *ngIf="!loading && !error" class="card border-0 shadow-sm">
       <div class="card-body p-0">
-        
+
         <div class="table-responsive">
           <table class="table table-hover mb-0">
+
+            <!-- ----------------------------------------
+                 En-tête du tableau
+                 ---------------------------------------- -->
             <thead class="table-light">
               <tr>
                 <th width="80">ID</th>
@@ -46,48 +74,54 @@
                 <th width="200" class="text-end">Actions</th>
               </tr>
             </thead>
+
+            <!-- ----------------------------------------
+                 Corps du tableau - Liste des hôtels
+                 ---------------------------------------- -->
             <tbody>
               <tr *ngFor="let hotel of hotels">
+                <!-- Colonne : ID -->
                 <td class="align-middle">{{ hotel.id_hotel }}</td>
+
+                <!-- Colonne : Image miniature -->
                 <td class="align-middle">
-                  <img 
-                    [src]="hotel.img_hotel" 
-                    [alt]="hotel.nom_hotel"
-                    class="img-thumbnail"
-                    style="width: 80px; height: 60px; object-fit: cover;"
-                  >
+                  <img [src]="hotel.img_hotel" [alt]="hotel.nom_hotel" class="img-thumbnail"
+                    style="width: 80px; height: 60px; object-fit: cover;">
                 </td>
+
+                <!-- Colonne : Nom de l'hôtel -->
                 <td class="align-middle">
                   <strong>{{ hotel.nom_hotel }}</strong>
                 </td>
+
+                <!-- Colonne : Ville -->
                 <td class="align-middle">{{ hotel.ville_hotel }}</td>
+
+                <!-- Colonne : Pays -->
                 <td class="align-middle">{{ hotel.pays_hotel }}</td>
+
+                <!-- Colonne : Nombre d'étoiles -->
                 <td class="align-middle text-center">
                   <span class="badge bg-warning text-dark">
                     <i class="bi bi-star-fill"></i> {{ hotel.nbre_etoile_hotel }}
                   </span>
                 </td>
+
+                <!-- Colonne : Actions (Voir / Modifier / Supprimer) -->
                 <td class="align-middle text-end">
                   <div class="btn-group" role="group">
-                    <a 
-                      [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]"
-                      class="btn btn-sm btn-outline-info"
-                      title="Voir"
-                    >
+                    <!-- Bouton Voir (page publique) -->
+                    <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="btn btn-sm btn-outline-info"
+                      title="Voir">
                       <i class="bi bi-eye"></i>
                     </a>
-                    <a 
-                      [routerLink]="['/admin/hotels/edit', hotel.id_hotel]"
-                      class="btn btn-sm btn-outline-primary"
-                      title="Modifier"
-                    >
+                    <!-- Bouton Modifier -->
+                    <a [routerLink]="['/admin/hotels/edit', hotel.id_hotel]" class="btn btn-sm btn-outline-primary"
+                      title="Modifier">
                       <i class="bi bi-pencil"></i>
                     </a>
-                    <button 
-                      (click)="deleteHotel(hotel)"
-                      class="btn btn-sm btn-outline-danger"
-                      title="Supprimer"
-                    >
+                    <!-- Bouton Supprimer -->
+                    <button (click)="deleteHotel(hotel)" class="btn btn-sm btn-outline-danger" title="Supprimer">
                       <i class="bi bi-trash"></i>
                     </button>
                   </div>
@@ -95,22 +129,26 @@
               </tr>
             </tbody>
           </table>
-          
-          <!-- Message si aucun hôtel -->
+
+          <!-- ----------------------------------------
+               Message si aucun hôtel
+               ---------------------------------------- -->
           <div *ngIf="hotels.length === 0" class="text-center py-5">
             <i class="bi bi-inbox" style="font-size: 3rem; color: var(--turquoise);"></i>
             <p class="text-muted mt-3">Aucun hôtel trouvé</p>
           </div>
-          
+
         </div>
-        
+
       </div>
     </div>
-    
-    <!-- Stats -->
+
+    <!-- ====================================================================
+         COMPTEUR TOTAL
+         ==================================================================== -->
     <div *ngIf="!loading && !error" class="mt-3 text-muted">
       Total : {{ hotels.length }} hôtel(s)
     </div>
-    
+
   </div>
 </main>

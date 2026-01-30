@@ -1,20 +1,64 @@
-// Variables
+// ============================================================================
+// FICHIER : home.component.scss
+// DESCRIPTION : Styles de la page d'accueil
+//               Styles additionnels pour la section hôtels (si utilisée)
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Variables SCSS
+//   - Section hôtels (.hotels-section)
+//   - Container
+//   - En-tête de section (.section-header)
+//   - Grille d'hôtels (.hotels-grid)
+//   - Cartes hôtel (.hotel-card)
+//   - Image hôtel (.hotel-image)
+//   - Informations hôtel (.hotel-info)
+//   - Footer de carte (.hotel-footer)
+//   - Note et prix (.hotel-rating, .hotel-price)
+//   - Bouton réserver (.btn-reserve)
+//   - Responsive
+// NOTE :
+//   Ce fichier contient des styles pour une section hôtels qui pourrait
+//   être ajoutée à la page d'accueil. Les sections principales (carousel,
+//   offres, destinations, criteres) ont leurs propres fichiers SCSS.
+// ============================================================================
+
+// ==========================================================================
+// VARIABLES SCSS
+// ==========================================================================
+
 $turquoise: #5fc8c2;
 $turquoise-hover: #3db3aa;
 $gris-fonce: #333333;
 $gris-clair: #f7f7f7;
 $blanc: #ffffff;
 
+// ==========================================================================
+// SECTION HÔTELS
+// Container avec fond gris clair
+// ==========================================================================
+
 .hotels-section {
   padding: 3rem 0;
   background-color: $gris-clair;
 }
+
+// ==========================================================================
+// CONTAINER
+// Largeur maximale et centrage
+// ==========================================================================
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 15px;
 }
+
+// ==========================================================================
+// EN-TÊTE DE SECTION
+// Titre centré avec sous-titre turquoise
+// ==========================================================================
 
 .section-header {
   text-align: center;
@@ -32,24 +76,42 @@ $blanc: #ffffff;
   }
 }
 
+// ==========================================================================
+// GRILLE D'HÔTELS
+// Grid responsive avec colonnes de 350px minimum
+// ==========================================================================
+
 .hotels-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 2rem;
 }
 
+// ==========================================================================
+// CARTES HÔTEL
+// Carte avec ombre et effet hover
+// ==========================================================================
+
 .hotel-card {
   background: $blanc;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
+  // Effet hover : élévation et ombre plus prononcée
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
 }
+
+// ==========================================================================
+// IMAGE HÔTEL
+// Image avec effet zoom et badge étoiles
+// ==========================================================================
 
 .hotel-image {
   position: relative;
@@ -63,31 +125,40 @@ $blanc: #ffffff;
     transition: transform 0.3s ease;
   }
 
+  // Effet zoom au hover
   &:hover img {
     transform: scale(1.05);
   }
 
+  // Badge étoiles positionné en haut à droite
   .hotel-stars {
     position: absolute;
     top: 10px;
     right: 10px;
     background: rgba(0, 0, 0, 0.7);
-    color: #ffd700;
+    color: #ffd700; // Or pour les étoiles
     padding: 0.3rem 0.8rem;
     border-radius: 20px;
     font-weight: 600;
   }
 }
 
+// ==========================================================================
+// INFORMATIONS HÔTEL
+// Nom, localisation, footer avec note et prix
+// ==========================================================================
+
 .hotel-info {
   padding: 1.5rem;
 
+  // Nom de l'hôtel
   h3 {
     font-size: 1.4rem;
     color: $gris-fonce;
     margin-bottom: 0.5rem;
   }
 
+  // Localisation avec icône
   .hotel-location {
     color: $turquoise;
     font-size: 0.95rem;
@@ -98,6 +169,7 @@ $blanc: #ffffff;
     }
   }
 
+  // Footer de la carte (note + prix)
   .hotel-footer {
     display: flex;
     justify-content: space-between;
@@ -107,11 +179,17 @@ $blanc: #ffffff;
     border-top: 1px solid #eeeeee;
   }
 
+  // ==========================================================================
+  // NOTE DE L'HÔTEL
+  // Badge turquoise avec texte descriptif
+  // ==========================================================================
+
   .hotel-rating {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 
+    // Badge avec la note numérique
     .rating-badge {
       background: $turquoise;
       color: $blanc;
@@ -120,32 +198,46 @@ $blanc: #ffffff;
       font-weight: 700;
     }
 
+    // Texte descriptif (ex: "Excellent")
     .rating-text {
       font-size: 0.9rem;
       color: $gris-fonce;
     }
   }
 
+  // ==========================================================================
+  // PRIX DE L'HÔTEL
+  // Prix par nuit avec label
+  // ==========================================================================
+
   .hotel-price {
     text-align: right;
 
+    // Label "À partir de"
     .price-label {
       display: block;
       font-size: 0.8rem;
       color: #999;
     }
 
+    // Prix en grand
     .price-value {
       font-size: 1.8rem;
       font-weight: 700;
       color: $turquoise;
     }
 
+    // Mention "/nuit"
     .price-night {
       font-size: 0.9rem;
       color: #999;
     }
   }
+
+  // ==========================================================================
+  // BOUTON RÉSERVER
+  // Bouton pleine largeur turquoise
+  // ==========================================================================
 
   .btn-reserve {
     width: 100%;
@@ -159,18 +251,24 @@ $blanc: #ffffff;
     cursor: pointer;
     transition: background 0.3s ease;
 
+    // Hover : couleur plus foncée
     &:hover {
       background: $turquoise-hover;
     }
   }
 }
 
-// Responsive
+// ==========================================================================
+// RESPONSIVE - MOBILES (≤ 768px)
+// ==========================================================================
+
 @media (max-width: 768px) {
+  // Grille en une seule colonne
   .hotels-grid {
     grid-template-columns: 1fr;
   }
 
+  // Titre plus petit
   .section-header h1 {
     font-size: 2rem;
   }

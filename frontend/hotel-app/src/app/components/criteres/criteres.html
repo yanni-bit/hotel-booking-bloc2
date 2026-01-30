@@ -1,95 +1,140 @@
-<!-- ========================================
-       SECTION NOS CRITÈRES DE SÉLECTION
-       8 cartes informatives sur les engagements
-       ======================================== -->
-  <section class="criteres-section">
-    <div class="container">
+<!-- ============================================================================
+     FICHIER : criteres.component.html
+     DESCRIPTION : Section affichant les 8 critères de sélection des hôtels
+                   Cartes informatives présentant les engagements qualité
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     STRUCTURE :
+       - Section avec fond marron clair
+       - Container Bootstrap avec grid 4 colonnes (lg) / 2 colonnes (md) / 1 colonne (sm)
+       - 8 cartes info-card avec titre et texte traduits
+     CRITÈRES PRÉSENTÉS :
+       1. Hôtels Sélectionnés
+       2. Descriptions Détaillées
+       3. Connaissance Exclusive
+       4. Service Passionné
+       5. Meilleur Prix Garanti
+       6. Réservation Sécurisée
+       7. Avantages Hôteliers
+       8. Des Questions ?
+     INTERNATIONALISATION :
+       - Tous les textes sont traduits via ngx-translate
+       - [innerHTML] utilisé pour supporter le formatage HTML dans les traductions
+     ============================================================================ -->
 
-      <div class="row g-4">
+<!-- ========================================================================
+     SECTION NOS CRITÈRES DE SÉLECTION
+     8 cartes informatives sur les engagements qualité
+     ======================================================================== -->
+<section class="criteres-section">
+  <div class="container">
 
-        <!-- === CRITÈRE 1 : Hôtels Sélectionnés === -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <div class="info-card h-100">
-            <div class="info-card-body">
-              <h3 class="info-card-title">{{ criteres[0].titleKey | translate }}</h3>
-              <p class="info-card-text" [innerHTML]="criteres[0].textKey | translate"></p>
-            </div>
+    <!-- ====================================================================
+         GRILLE DES CARTES DE CRITÈRES
+         Layout Bootstrap : 4 colonnes (lg) / 2 colonnes (md) / 1 colonne (sm)
+         ==================================================================== -->
+    <div class="row g-4">
+
+      <!-- ============================================================
+           CRITÈRE 1 : Hôtels Sélectionnés
+           ============================================================ -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="info-card h-100">
+          <div class="info-card-body">
+            <h3 class="info-card-title">{{ criteres[0].titleKey | translate }}</h3>
+            <p class="info-card-text" [innerHTML]="criteres[0].textKey | translate"></p>
           </div>
         </div>
-
-        <!-- === CRITÈRE 2 : Descriptions Détaillées === -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <div class="info-card h-100">
-            <div class="info-card-body">
-              <h3 class="info-card-title">{{ criteres[1].titleKey | translate }}</h3>
-              <p class="info-card-text" [innerHTML]="criteres[1].textKey | translate"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- === CRITÈRE 3 : Connaissance Exclusive === -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <div class="info-card h-100">
-            <div class="info-card-body">
-              <h3 class="info-card-title">{{ criteres[2].titleKey | translate }}</h3>
-              <p class="info-card-text" [innerHTML]="criteres[2].textKey | translate"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- === CRITÈRE 4 : Service Passionné === -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <div class="info-card h-100">
-            <div class="info-card-body">
-              <h3 class="info-card-title">{{ criteres[3].titleKey | translate }}</h3>
-              <p class="info-card-text" [innerHTML]="criteres[3].textKey | translate"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- === CRITÈRE 5 : Meilleur Prix Garanti === -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <div class="info-card h-100">
-            <div class="info-card-body">
-              <h3 class="info-card-title">{{ criteres[4].titleKey | translate }}</h3>
-              <p class="info-card-text" [innerHTML]="criteres[4].textKey | translate"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- === CRITÈRE 6 : Réservation Sécurisée === -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <div class="info-card h-100">
-            <div class="info-card-body">
-              <h3 class="info-card-title">{{ criteres[5].titleKey | translate }}</h3>
-              <p class="info-card-text" [innerHTML]="criteres[5].textKey | translate"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- === CRITÈRE 7 : Avantages Hôteliers === -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <div class="info-card h-100">
-            <div class="info-card-body">
-              <h3 class="info-card-title">{{ criteres[6].titleKey | translate }}</h3>
-              <p class="info-card-text" [innerHTML]="criteres[6].textKey | translate"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- === CRITÈRE 8 : Des Questions ? === -->
-        <div class="col-12 col-md-6 col-lg-3">
-          <div class="info-card h-100">
-            <div class="info-card-body">
-             <h3 class="info-card-title">{{ criteres[7].titleKey | translate }}</h3>
-              <p class="info-card-text" [innerHTML]="criteres[7].textKey | translate"></p>
-            </div>
-          </div>
-        </div>
-
       </div>
-      <!-- FIN : Row critères -->
+
+      <!-- ============================================================
+           CRITÈRE 2 : Descriptions Détaillées
+           ============================================================ -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="info-card h-100">
+          <div class="info-card-body">
+            <h3 class="info-card-title">{{ criteres[1].titleKey | translate }}</h3>
+            <p class="info-card-text" [innerHTML]="criteres[1].textKey | translate"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           CRITÈRE 3 : Connaissance Exclusive
+           ============================================================ -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="info-card h-100">
+          <div class="info-card-body">
+            <h3 class="info-card-title">{{ criteres[2].titleKey | translate }}</h3>
+            <p class="info-card-text" [innerHTML]="criteres[2].textKey | translate"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           CRITÈRE 4 : Service Passionné
+           ============================================================ -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="info-card h-100">
+          <div class="info-card-body">
+            <h3 class="info-card-title">{{ criteres[3].titleKey | translate }}</h3>
+            <p class="info-card-text" [innerHTML]="criteres[3].textKey | translate"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           CRITÈRE 5 : Meilleur Prix Garanti
+           ============================================================ -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="info-card h-100">
+          <div class="info-card-body">
+            <h3 class="info-card-title">{{ criteres[4].titleKey | translate }}</h3>
+            <p class="info-card-text" [innerHTML]="criteres[4].textKey | translate"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           CRITÈRE 6 : Réservation Sécurisée
+           ============================================================ -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="info-card h-100">
+          <div class="info-card-body">
+            <h3 class="info-card-title">{{ criteres[5].titleKey | translate }}</h3>
+            <p class="info-card-text" [innerHTML]="criteres[5].textKey | translate"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           CRITÈRE 7 : Avantages Hôteliers
+           ============================================================ -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="info-card h-100">
+          <div class="info-card-body">
+            <h3 class="info-card-title">{{ criteres[6].titleKey | translate }}</h3>
+            <p class="info-card-text" [innerHTML]="criteres[6].textKey | translate"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           CRITÈRE 8 : Des Questions ?
+           ============================================================ -->
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="info-card h-100">
+          <div class="info-card-body">
+            <h3 class="info-card-title">{{ criteres[7].titleKey | translate }}</h3>
+            <p class="info-card-text" [innerHTML]="criteres[7].textKey | translate"></p>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <!-- FIN : Container section critères -->
-  </section>
-  <!-- FIN : Section nos critères de sélection -->
+    <!-- FIN : Grille des cartes -->
+
+  </div>
+</section>
+<!-- FIN : Section critères de sélection -->

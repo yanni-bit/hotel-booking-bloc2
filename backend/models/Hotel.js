@@ -1,14 +1,23 @@
 // ============================================================================
-// HOTEL.JS - MODEL HOTEL (POO)
-// Classe pour gérer les opérations sur les hôtels
+// HOTEL.JS - MODÈLE HOTEL
+// ============================================================================
+// Ce modèle gère toutes les opérations CRUD sur les hôtels.
+// Pattern utilisé : Classe statique (méthodes sans instanciation)
+// Sécurité : Requêtes préparées (?) pour prévenir les injections SQL
 // ============================================================================
 
 const db = require("../config/database");
 
 class Hotel {
-  // ========================================
-  // RÉCUPÉRER TOUS LES HÔTELS
-  // ========================================
+  // ==========================================================================
+  // MÉTHODES DE LECTURE (READ)
+  // ==========================================================================
+
+  /**
+   * Récupère tous les hôtels
+   * @param {function} callback - Fonction de rappel (err, results)
+   * @description Retourne les hôtels triés par note moyenne décroissante
+   */
   static getAll(callback) {
     const query = `
       SELECT 
@@ -32,9 +41,12 @@ class Hotel {
     });
   }
 
-  // ========================================
-  // RÉCUPÉRER UN HÔTEL PAR ID
-  // ========================================
+  /**
+   * Récupère un hôtel par son ID avec ses équipements
+   * @param {number} id - ID de l'hôtel
+   * @param {function} callback - Fonction de rappel (err, result)
+   * @description Inclut les amenities (parking, wifi, piscine, etc.)
+   */
   static getById(id, callback) {
     const query = `
       SELECT 
@@ -58,9 +70,39 @@ class Hotel {
     });
   }
 
-  // ========================================
-  // RECHERCHER DES HÔTELS PAR VILLE
-  // ========================================
+  /**
+   * Récupère un hôtel avec tous ses détails (statistiques)
+   * @param {number} id - ID de l'hôtel
+   * @param {function} callback - Fonction de rappel (err, result)
+   * @description Inclut le nombre de chambres, d'avis et la note moyenne calculée
+   */
+  static getByIdWithDetails(id, callback) {
+    const query = `
+      SELECT 
+        h.*,
+        COUNT(DISTINCT c.id_chambre) as nombre_chambres,
+        COUNT(DISTINCT a.id_avis) as nombre_avis,
+        AVG(a.note) as note_moyenne
+      FROM HOTEL h
+      LEFT JOIN CHAMBRE c ON h.id_hotel = c.id_hotel
+      LEFT JOIN AVIS a ON h.id_hotel = a.id_hotel
+      WHERE h.id_hotel = ?
+      GROUP BY h.id_hotel
+    `;
+
+    db.query(query, [id], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, results[0]);
+    });
+  }
+
+  /**
+   * Recherche des hôtels par ville
+   * @param {string} city - Nom de la ville (recherche partielle)
+   * @param {function} callback - Fonction de rappel (err, results)
+   */
   static getByCity(city, callback) {
     const query = `
       SELECT 
@@ -86,17 +128,19 @@ class Hotel {
 
   /**
    * Compte le nombre d'hôtels par ville (pour les destinations)
+   * @param {function} callback - Fonction de rappel (err, results)
+   * @description Utilisé pour afficher les destinations avec leur nombre d'hôtels
    */
   static getDestinationsCount(callback) {
     const query = `
-    SELECT 
-      ville_hotel,
-      pays_hotel,
-      COUNT(*) as nombre_hotels
-    FROM HOTEL
-    GROUP BY ville_hotel, pays_hotel
-    ORDER BY ville_hotel
-  `;
+      SELECT 
+        ville_hotel,
+        pays_hotel,
+        COUNT(*) as nombre_hotels
+      FROM HOTEL
+      GROUP BY ville_hotel, pays_hotel
+      ORDER BY ville_hotel
+    `;
 
     db.query(query, (err, results) => {
       if (err) {
@@ -107,45 +151,23 @@ class Hotel {
   }
 
   /**
-   * Récupère un hôtel avec tous ses détails (chambres, offres, avis)
-   */
-  static getByIdWithDetails(id, callback) {
-    const query = `
-    SELECT 
-      h.*,
-      COUNT(DISTINCT c.id_chambre) as nombre_chambres,
-      COUNT(DISTINCT a.id_avis) as nombre_avis,
-      AVG(a.note) as note_moyenne
-    FROM HOTEL h
-    LEFT JOIN CHAMBRE c ON h.id_hotel = c.id_hotel
-    LEFT JOIN AVIS a ON h.id_hotel = a.id_hotel
-    WHERE h.id_hotel = ?
-    GROUP BY h.id_hotel
-  `;
-
-    db.query(query, [id], (err, results) => {
-      if (err) {
-        return callback(err, null);
-      }
-      callback(null, results[0]);
-    });
-  }
-
-  /**
    * Récupère les hôtels populaires d'une même ville
+   * @param {string} city - Nom de la ville
+   * @param {number} limit - Nombre maximum de résultats
+   * @param {function} callback - Fonction de rappel (err, results)
    */
   static getPopularByCity(city, limit, callback) {
     const query = `
-    SELECT 
-      h.*,
-      AVG(a.note) as note_moyenne
-    FROM HOTEL h
-    LEFT JOIN AVIS a ON h.id_hotel = a.id_hotel
-    WHERE h.ville_hotel = ?
-    GROUP BY h.id_hotel
-    ORDER BY note_moyenne DESC, h.nbre_etoile_hotel DESC
-    LIMIT ?
-  `;
+      SELECT 
+        h.*,
+        AVG(a.note) as note_moyenne
+      FROM HOTEL h
+      LEFT JOIN AVIS a ON h.id_hotel = a.id_hotel
+      WHERE h.ville_hotel = ?
+      GROUP BY h.id_hotel
+      ORDER BY note_moyenne DESC, h.nbre_etoile_hotel DESC
+      LIMIT ?
+    `;
 
     db.query(query, [city, limit], (err, results) => {
       if (err) {
@@ -156,27 +178,32 @@ class Hotel {
   }
 
   /**
-   * Récupère les hôtels populaires d'un même pays (exclut l'hôtel courant)
+   * Récupère les hôtels populaires d'un même pays
+   * @param {string} country - Nom du pays
+   * @param {number} excludeHotelId - ID de l'hôtel à exclure des résultats
+   * @param {number} limit - Nombre maximum de résultats
+   * @param {function} callback - Fonction de rappel (err, results)
+   * @description Utilisé pour la section "Hôtels populaires dans la région"
    */
   static getPopularByCountry(country, excludeHotelId, limit, callback) {
     const query = `
-    SELECT 
-      h.id_hotel,
-      h.nom_hotel,
-      h.ville_hotel,
-      h.pays_hotel,
-      h.nbre_etoile_hotel,
-      h.note_moy_hotel,
-      h.img_hotel,
-      MIN(o.prix_nuit) as prix_min
-    FROM HOTEL h
-    LEFT JOIN CHAMBRE c ON h.id_hotel = c.id_hotel
-    LEFT JOIN OFFRE o ON c.id_chambre = o.id_chambre
-    WHERE h.pays_hotel = ? AND h.id_hotel != ?
-    GROUP BY h.id_hotel
-    ORDER BY h.note_moy_hotel DESC, h.nbre_etoile_hotel DESC
-    LIMIT ?
-  `;
+      SELECT 
+        h.id_hotel,
+        h.nom_hotel,
+        h.ville_hotel,
+        h.pays_hotel,
+        h.nbre_etoile_hotel,
+        h.note_moy_hotel,
+        h.img_hotel,
+        MIN(o.prix_nuit) as prix_min
+      FROM HOTEL h
+      LEFT JOIN CHAMBRE c ON h.id_hotel = c.id_hotel
+      LEFT JOIN OFFRE o ON c.id_chambre = o.id_chambre
+      WHERE h.pays_hotel = ? AND h.id_hotel != ?
+      GROUP BY h.id_hotel
+      ORDER BY h.note_moy_hotel DESC, h.nbre_etoile_hotel DESC
+      LIMIT ?
+    `;
 
     db.query(query, [country, excludeHotelId, limit], (err, results) => {
       if (err) {
@@ -187,28 +214,32 @@ class Hotel {
   }
 
   /**
-   * Récupère l'offre du jour (meilleur rapport qualité/prix d'un pays)
+   * Récupère l'offre du jour (meilleur rapport qualité/prix)
+   * @param {string} country - Nom du pays
+   * @param {number} excludeHotelId - ID de l'hôtel à exclure
+   * @param {function} callback - Fonction de rappel (err, result)
+   * @description Calcule le rapport qualité/prix : (note / prix) * 100
    */
   static getDealOfDay(country, excludeHotelId, callback) {
     const query = `
-    SELECT 
-      h.id_hotel,
-      h.nom_hotel,
-      h.ville_hotel,
-      h.pays_hotel,
-      h.nbre_etoile_hotel,
-      h.note_moy_hotel,
-      h.img_hotel,
-      MIN(o.prix_nuit) as prix_min,
-      (h.note_moy_hotel / MIN(o.prix_nuit)) * 100 as rapport_qualite_prix
-    FROM HOTEL h
-    LEFT JOIN CHAMBRE c ON h.id_hotel = c.id_hotel
-    LEFT JOIN OFFRE o ON c.id_chambre = o.id_chambre
-    WHERE h.pays_hotel = ? AND h.id_hotel != ? AND o.prix_nuit IS NOT NULL
-    GROUP BY h.id_hotel
-    ORDER BY rapport_qualite_prix DESC
-    LIMIT 1
-  `;
+      SELECT 
+        h.id_hotel,
+        h.nom_hotel,
+        h.ville_hotel,
+        h.pays_hotel,
+        h.nbre_etoile_hotel,
+        h.note_moy_hotel,
+        h.img_hotel,
+        MIN(o.prix_nuit) as prix_min,
+        (h.note_moy_hotel / MIN(o.prix_nuit)) * 100 as rapport_qualite_prix
+      FROM HOTEL h
+      LEFT JOIN CHAMBRE c ON h.id_hotel = c.id_hotel
+      LEFT JOIN OFFRE o ON c.id_chambre = o.id_chambre
+      WHERE h.pays_hotel = ? AND h.id_hotel != ? AND o.prix_nuit IS NOT NULL
+      GROUP BY h.id_hotel
+      ORDER BY rapport_qualite_prix DESC
+      LIMIT 1
+    `;
 
     db.query(query, [country, excludeHotelId], (err, results) => {
       if (err) {
@@ -218,27 +249,39 @@ class Hotel {
     });
   }
 
+  // ==========================================================================
+  // MÉTHODE DE CRÉATION (CREATE)
+  // ==========================================================================
+
   /**
    * Crée un nouvel hôtel
+   * @param {Object} hotelData - Données de l'hôtel
+   * @param {string} hotelData.nom_hotel - Nom de l'hôtel (requis)
+   * @param {string} hotelData.description_hotel - Description (requis)
+   * @param {string} hotelData.ville_hotel - Ville (requis)
+   * @param {string} hotelData.pays_hotel - Pays (requis)
+   * @param {number} [hotelData.nbre_etoile_hotel] - Nombre d'étoiles (défaut: 3)
+   * @param {string} [hotelData.img_hotel] - Image (défaut: image par défaut)
+   * @param {function} callback - Fonction de rappel (err, result)
    */
   static create(hotelData, callback) {
     const query = `
-    INSERT INTO HOTEL (
-      nom_hotel,
-      description_hotel,
-      rue_hotel,
-      code_postal_hotel,
-      ville_hotel,
-      pays_hotel,
-      tel_hotel,
-      email_hotel,
-      site_web_hotel,
-      img_hotel,
-      nbre_etoile_hotel,
-      latitude,
-      longitude
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+      INSERT INTO HOTEL (
+        nom_hotel,
+        description_hotel,
+        rue_hotel,
+        code_postal_hotel,
+        ville_hotel,
+        pays_hotel,
+        tel_hotel,
+        email_hotel,
+        site_web_hotel,
+        img_hotel,
+        nbre_etoile_hotel,
+        latitude,
+        longitude
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
     const values = [
       hotelData.nom_hotel,
@@ -264,27 +307,34 @@ class Hotel {
     });
   }
 
+  // ==========================================================================
+  // MÉTHODE DE MISE À JOUR (UPDATE)
+  // ==========================================================================
+
   /**
-   * Met à jour un hôtel
+   * Met à jour un hôtel existant
+   * @param {number} hotelId - ID de l'hôtel à modifier
+   * @param {Object} hotelData - Nouvelles données de l'hôtel
+   * @param {function} callback - Fonction de rappel (err, result)
    */
   static update(hotelId, hotelData, callback) {
     const query = `
-    UPDATE HOTEL SET
-      nom_hotel = ?,
-      description_hotel = ?,
-      rue_hotel = ?,
-      code_postal_hotel = ?,
-      ville_hotel = ?,
-      pays_hotel = ?,
-      tel_hotel = ?,
-      email_hotel = ?,
-      site_web_hotel = ?,
-      img_hotel = ?,
-      nbre_etoile_hotel = ?,
-      latitude = ?,
-      longitude = ?
-    WHERE id_hotel = ?
-  `;
+      UPDATE HOTEL SET
+        nom_hotel = ?,
+        description_hotel = ?,
+        rue_hotel = ?,
+        code_postal_hotel = ?,
+        ville_hotel = ?,
+        pays_hotel = ?,
+        tel_hotel = ?,
+        email_hotel = ?,
+        site_web_hotel = ?,
+        img_hotel = ?,
+        nbre_etoile_hotel = ?,
+        latitude = ?,
+        longitude = ?
+      WHERE id_hotel = ?
+    `;
 
     const values = [
       hotelData.nom_hotel,
@@ -311,8 +361,14 @@ class Hotel {
     });
   }
 
+  // ==========================================================================
+  // MÉTHODE DE SUPPRESSION (DELETE)
+  // ==========================================================================
+
   /**
    * Supprime un hôtel
+   * @param {number} hotelId - ID de l'hôtel à supprimer
+   * @param {function} callback - Fonction de rappel (err, result)
    */
   static delete(hotelId, callback) {
     const query = "DELETE FROM HOTEL WHERE id_hotel = ?";
@@ -326,5 +382,4 @@ class Hotel {
   }
 }
 
-// Exporter la classe
 module.exports = Hotel;

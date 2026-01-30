@@ -1,7 +1,24 @@
+<!-- ============================================================================
+     FICHIER : admin-avis.component.html
+     DESCRIPTION : Interface de gestion des avis clients - Liste filtrable
+                   avec modal de détail et actions de modération
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - En-tête avec navigation et compteurs
+       - Filtres (période, note, recherche)
+       - États de chargement et erreur
+       - Tableau des avis
+       - Modal de détail d'un avis
+     ============================================================================ -->
+
 <main class="admin-avis-page py-5">
   <div class="container-fluid">
 
-    <!-- En-tête -->
+    <!-- ====================================================================
+         EN-TÊTE AVEC NAVIGATION ET COMPTEURS
+         ==================================================================== -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <a [routerLink]="['/admin']" class="text-muted me-3">
@@ -19,12 +36,17 @@
       </div>
     </div>
 
-    <!-- FILTRES -->
+    <!-- ====================================================================
+         SECTION FILTRES
+         Période | Note | Recherche | Rafraîchir
+         ==================================================================== -->
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body p-3">
         <div class="row g-3">
 
-          <!-- Filtre par période -->
+          <!-- ----------------------------------------
+               Filtre par période
+               ---------------------------------------- -->
           <div class="col-md-2">
             <label class="form-label small fw-bold">Période</label>
             <select class="form-select form-select-sm" [(ngModel)]="filterPeriod" (change)="onFilterChange()">
@@ -34,7 +56,9 @@
             </select>
           </div>
 
-          <!-- Filtre par note -->
+          <!-- ----------------------------------------
+               Filtre par note
+               ---------------------------------------- -->
           <div class="col-md-2">
             <label class="form-label small fw-bold">Note</label>
             <select class="form-select form-select-sm" [(ngModel)]="filterNote" (change)="onFilterChange()">
@@ -45,18 +69,18 @@
             </select>
           </div>
 
-          <!-- Recherche -->
+          <!-- ----------------------------------------
+               Recherche textuelle
+               ---------------------------------------- -->
           <div class="col-md-6">
             <label class="form-label small fw-bold">Recherche</label>
-            <input 
-              type="text" 
-              class="form-control form-control-sm" 
-              [(ngModel)]="searchTerm"
-              (input)="onFilterChange()"
+            <input type="text" class="form-control form-control-sm" [(ngModel)]="searchTerm" (input)="onFilterChange()"
               placeholder="Rechercher par pseudo, hôtel, commentaire...">
           </div>
 
-          <!-- Bouton rafraîchir -->
+          <!-- ----------------------------------------
+               Bouton rafraîchir
+               ---------------------------------------- -->
           <div class="col-md-2 d-flex align-items-end">
             <button class="btn btn-sm btn-outline-primary w-100" (click)="loadAvis()">
               <i class="bi bi-arrow-clockwise me-1"></i>Rafraîchir
@@ -67,7 +91,9 @@
       </div>
     </div>
 
-    <!-- LOADING -->
+    <!-- ====================================================================
+         ÉTAT DE CHARGEMENT
+         ==================================================================== -->
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-turquoise" role="status">
         <span class="visually-hidden">Chargement...</span>
@@ -75,17 +101,26 @@
       <p class="mt-3">Chargement des avis...</p>
     </div>
 
-    <!-- ERROR -->
+    <!-- ====================================================================
+         ÉTAT D'ERREUR
+         ==================================================================== -->
     <div *ngIf="error && !loading" class="alert alert-danger">
       <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
     </div>
 
-    <!-- TABLEAU -->
+    <!-- ====================================================================
+         TABLEAU DES AVIS
+         Colonnes : Note | Auteur | Hôtel | Titre | Type | Date | Source | Actions
+         ==================================================================== -->
     <div *ngIf="!loading && !error" class="card border-0 shadow-sm">
       <div class="card-body p-0">
 
         <div class="table-responsive">
           <table class="table table-hover mb-0">
+
+            <!-- ----------------------------------------
+                 En-tête du tableau
+                 ---------------------------------------- -->
             <thead class="table-light">
               <tr>
                 <th width="80">Note</th>
@@ -98,21 +133,22 @@
                 <th width="100" class="text-end">Actions</th>
               </tr>
             </thead>
+
+            <!-- ----------------------------------------
+                 Corps du tableau - Liste des avis
+                 ---------------------------------------- -->
             <tbody>
-              <tr 
-                *ngFor="let avis of filteredAvis" 
-                [class.table-success]="isUserAvis(avis)"
-                style="cursor: pointer;"
+              <tr *ngFor="let avis of filteredAvis" [class.table-success]="isUserAvis(avis)" style="cursor: pointer;"
                 (click)="viewAvis(avis)">
 
-                <!-- Note -->
+                <!-- Colonne : Note -->
                 <td class="align-middle">
                   <span class="badge fs-6" [ngClass]="getNoteClass(avis.note)">
                     {{ avis.note }}/10
                   </span>
                 </td>
 
-                <!-- Auteur -->
+                <!-- Colonne : Auteur -->
                 <td class="align-middle">
                   <div><strong>{{ avis.pseudo_user }}</strong></div>
                   <small class="text-muted" *ngIf="avis.prenom_user">
@@ -123,54 +159,47 @@
                   </small>
                 </td>
 
-                <!-- Hôtel -->
+                <!-- Colonne : Hôtel -->
                 <td class="align-middle">
                   <div>{{ avis.nom_hotel }}</div>
                   <small class="text-muted">{{ avis.ville_hotel }}</small>
                 </td>
 
-                <!-- Titre / Commentaire -->
+                <!-- Colonne : Titre / Commentaire (tronqué) -->
                 <td class="align-middle">
                   <div class="fw-bold" *ngIf="avis.titre_avis">{{ avis.titre_avis }}</div>
                   <div class="text-muted small">
-                    {{ avis.commentaire && avis.commentaire.length > 60 ? (avis.commentaire | slice:0:60) + '...' : avis.commentaire }}
+                    {{ avis.commentaire && avis.commentaire.length > 60 ? (avis.commentaire | slice:0:60) + '...' :
+                    avis.commentaire }}
                   </div>
                 </td>
 
-                <!-- Type voyageur -->
+                <!-- Colonne : Type de voyageur -->
                 <td class="align-middle">
                   <span class="badge bg-secondary">
                     {{ getTypeVoyageurLabel(avis.type_voyageur) }}
                   </span>
                 </td>
 
-                <!-- Date -->
+                <!-- Colonne : Date -->
                 <td class="align-middle">
                   <small>{{ avis.date_formatted || formatDate(avis.date_avis) }}</small>
                 </td>
 
-                <!-- Source -->
+                <!-- Colonne : Source (Client inscrit ou Import) -->
                 <td class="align-middle text-center">
-                  <span 
-                    class="badge" 
-                    [ngClass]="isUserAvis(avis) ? 'bg-success' : 'bg-info'">
+                  <span class="badge" [ngClass]="isUserAvis(avis) ? 'bg-success' : 'bg-info'">
                     {{ isUserAvis(avis) ? 'Client' : 'Import' }}
                   </span>
                 </td>
 
-                <!-- Actions -->
+                <!-- Colonne : Actions (Voir / Supprimer) -->
                 <td class="align-middle text-end" (click)="$event.stopPropagation()">
                   <div class="btn-group" role="group">
-                    <button 
-                      class="btn btn-sm btn-outline-info"
-                      title="Voir"
-                      (click)="viewAvis(avis)">
+                    <button class="btn btn-sm btn-outline-info" title="Voir" (click)="viewAvis(avis)">
                       <i class="bi bi-eye"></i>
                     </button>
-                    <button 
-                      class="btn btn-sm btn-outline-danger"
-                      title="Supprimer"
-                      (click)="deleteAvis(avis)">
+                    <button class="btn btn-sm btn-outline-danger" title="Supprimer" (click)="deleteAvis(avis)">
                       <i class="bi bi-trash"></i>
                     </button>
                   </div>
@@ -180,7 +209,9 @@
             </tbody>
           </table>
 
-          <!-- Message si aucun avis -->
+          <!-- ----------------------------------------
+               Message si aucun résultat
+               ---------------------------------------- -->
           <div *ngIf="filteredAvis.length === 0" class="text-center py-5">
             <i class="bi bi-star" style="font-size: 3rem; color: var(--turquoise);"></i>
             <p class="text-muted mt-3">Aucun avis trouvé</p>
@@ -194,18 +225,19 @@
   </div>
 </main>
 
-<!-- MODAL DÉTAIL AVIS -->
-<div 
-  class="modal fade show" 
-  [class.d-block]="selectedAvis" 
-  [style.background]="selectedAvis ? 'rgba(0,0,0,0.5)' : 'transparent'"
-  *ngIf="selectedAvis"
-  (click)="closeModal()">
-  
+<!-- ========================================================================
+     MODAL DÉTAIL D'UN AVIS
+     Affiche les informations complètes d'un avis sélectionné
+     ======================================================================== -->
+<div class="modal fade show" [class.d-block]="selectedAvis"
+  [style.background]="selectedAvis ? 'rgba(0,0,0,0.5)' : 'transparent'" *ngIf="selectedAvis" (click)="closeModal()">
+
   <div class="modal-dialog modal-lg modal-dialog-centered" (click)="$event.stopPropagation()">
     <div class="modal-content">
-      
-      <!-- Header -->
+
+      <!-- ----------------------------------------
+           Header du modal
+           ---------------------------------------- -->
       <div class="modal-header bg-turquoise text-white">
         <h5 class="modal-title">
           <i class="bi bi-star-fill me-2"></i>
@@ -213,11 +245,13 @@
         </h5>
         <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
       </div>
-      
-      <!-- Body -->
+
+      <!-- ----------------------------------------
+           Corps du modal - Détails de l'avis
+           ---------------------------------------- -->
       <div class="modal-body">
-        
-        <!-- Infos -->
+
+        <!-- Informations auteur et hôtel -->
         <div class="row mb-4">
           <div class="col-md-6">
             <p class="mb-1"><strong>Pseudo :</strong> {{ selectedAvis.pseudo_user }}</p>
@@ -248,40 +282,38 @@
             </p>
           </div>
         </div>
-        
+
         <hr>
-        
-        <!-- Titre -->
+
+        <!-- Titre de l'avis -->
         <h5 *ngIf="selectedAvis.titre_avis" class="mb-3">
           "{{ selectedAvis.titre_avis }}"
         </h5>
-        
-        <!-- Commentaire -->
+
+        <!-- Commentaire complet -->
         <div class="p-3 bg-light rounded">
           <p class="mb-0" style="white-space: pre-wrap;">{{ selectedAvis.commentaire }}</p>
         </div>
-        
-        <!-- Source -->
+
+        <!-- Badge source -->
         <div class="mt-3 text-end">
-          <span 
-            class="badge" 
-            [ngClass]="isUserAvis(selectedAvis) ? 'bg-success' : 'bg-info'">
+          <span class="badge" [ngClass]="isUserAvis(selectedAvis) ? 'bg-success' : 'bg-info'">
             {{ isUserAvis(selectedAvis) ? 'Avis client du site' : 'Avis importé' }}
           </span>
         </div>
-        
+
       </div>
-      
-      <!-- Footer -->
+
+      <!-- ----------------------------------------
+           Footer du modal - Actions
+           ---------------------------------------- -->
       <div class="modal-footer">
-        <button 
-          class="btn btn-outline-danger"
-          (click)="deleteAvis(selectedAvis)">
+        <button class="btn btn-outline-danger" (click)="deleteAvis(selectedAvis)">
           <i class="bi bi-trash me-2"></i>Supprimer
         </button>
         <button class="btn btn-secondary" (click)="closeModal()">Fermer</button>
       </div>
-      
+
     </div>
   </div>
 </div>

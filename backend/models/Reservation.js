@@ -1,36 +1,73 @@
 // ============================================================================
 // RESERVATION.JS - MODÈLE RESERVATION
-// Gère les opérations sur les réservations
+// ============================================================================
+// Ce modèle gère les opérations CRUD sur les réservations.
+// Une réservation est liée à : un utilisateur, une offre, un hôtel, une chambre.
+// Pattern utilisé : Classe statique (méthodes sans instanciation)
+// Sécurité : Requêtes préparées (?) pour prévenir les injections SQL
 // ============================================================================
 
 const db = require("../config/database");
 
 class Reservation {
+  // ==========================================================================
+  // MÉTHODES UTILITAIRES
+  // ==========================================================================
+
+  /**
+   * Génère un numéro de confirmation unique
+   * @returns {string} Numéro de confirmation au format BYT-[timestamp]-[random]
+   * @description Utilise timestamp base36 + chaîne aléatoire pour unicité
+   */
+  static generateConfirmationNumber() {
+    const timestamp = Date.now().toString(36);
+    const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+    return `BYT-${timestamp}-${random}`;
+  }
+
+  // ==========================================================================
+  // MÉTHODE DE CRÉATION (CREATE)
+  // ==========================================================================
+
   /**
    * Crée une nouvelle réservation avec ses services
+   * @param {Object} reservationData - Données de la réservation
+   * @param {number} reservationData.id_offre - ID de l'offre choisie
+   * @param {number} reservationData.id_hotel - ID de l'hôtel
+   * @param {number} reservationData.id_chambre - ID de la chambre
+   * @param {string} reservationData.check_in - Date d'arrivée (YYYY-MM-DD)
+   * @param {string} reservationData.check_out - Date de départ (YYYY-MM-DD)
+   * @param {number} reservationData.nbre_nuits - Nombre de nuits
+   * @param {number} reservationData.nbre_adults - Nombre d'adultes
+   * @param {number} reservationData.nbre_children - Nombre d'enfants
+   * @param {number} reservationData.prix_nuit - Prix par nuit
+   * @param {number} reservationData.total_price - Prix total
+   * @param {string} reservationData.devise - Devise (EUR, USD, etc.)
+   * @param {Array} [reservationData.services] - Services additionnels
+   * @param {function} callback - Fonction de rappel (err, result)
    */
   static create(reservationData, callback) {
     const numConfirmation = this.generateConfirmationNumber();
 
     const query = `
-    INSERT INTO RESERVATION (
-      id_user,
-      id_offre,
-      id_hotel,
-      id_chambre,
-      check_in,
-      check_out,
-      nbre_nuits,
-      nbre_adults,
-      nbre_children,
-      prix_nuit,
-      total_price,
-      devise,
-      special_requests,
-      num_confirmation,
-      id_statut
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+      INSERT INTO RESERVATION (
+        id_user,
+        id_offre,
+        id_hotel,
+        id_chambre,
+        check_in,
+        check_out,
+        nbre_nuits,
+        nbre_adults,
+        nbre_children,
+        prix_nuit,
+        total_price,
+        devise,
+        special_requests,
+        num_confirmation,
+        id_statut
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
     const values = [
       reservationData.id_user || null,
@@ -69,7 +106,7 @@ class Reservation {
             if (errServices) {
               console.error(
                 "Erreur lors de l'ajout des services:",
-                errServices
+                errServices,
               );
               // On continue quand même, la réservation est créée
             }
@@ -78,7 +115,7 @@ class Reservation {
               id_reservation: reservationId,
               num_confirmation: numConfirmation,
             });
-          }
+          },
         );
       } else {
         callback(null, {
@@ -90,24 +127,33 @@ class Reservation {
   }
 
   /**
-   * Ajoute les services à une réservation
+   * Ajoute les services additionnels à une réservation
+   * @param {number} reservationId - ID de la réservation
+   * @param {Array} services - Liste des services à ajouter
+   * @param {number} nbreNuits - Nombre de nuits (pour calcul)
+   * @param {number} nbreAdults - Nombre d'adultes (pour calcul)
+   * @param {function} callback - Fonction de rappel (err, result)
+   * @description Calcule le prix selon le type de service :
+   *              - journalier : prix × nombre de nuits
+   *              - par_personne : prix × nuits × adultes
+   *              - sejour/unitaire : prix fixe
    */
   static addServicesToReservation(
     reservationId,
     services,
     nbreNuits,
     nbreAdults,
-    callback
+    callback,
   ) {
     if (!services || services.length === 0) {
       return callback(null);
     }
 
     const insertQuery = `
-    INSERT INTO RESERVATION_SERVICES 
-    (id_reservation, id_hotel_service, quantite, prix_unitaire, sous_total) 
-    VALUES ?
-  `;
+      INSERT INTO RESERVATION_SERVICES 
+      (id_reservation, id_hotel_service, quantite, prix_unitaire, sous_total) 
+      VALUES ?
+    `;
 
     const values = services.map((service) => {
       let quantite = service.quantite || 1;
@@ -141,8 +187,16 @@ class Reservation {
     });
   }
 
+  // ==========================================================================
+  // MÉTHODES DE LECTURE (READ)
+  // ==========================================================================
+
   /**
    * Récupère une réservation par son ID (avec vérification de propriété)
+   * @param {number} reservationId - ID de la réservation
+   * @param {number} userId - ID de l'utilisateur (pour vérification)
+   * @param {function} callback - Fonction de rappel (err, result)
+   * @description Sécurité : vérifie que l'utilisateur est bien le propriétaire
    */
   static getById(reservationId, userId, callback) {
     const query = `
@@ -174,7 +228,7 @@ class Reservation {
       if (!results || results.length === 0) {
         return callback(
           new Error("Réservation non trouvée ou accès refusé"),
-          null
+          null,
         );
       }
 
@@ -184,6 +238,9 @@ class Reservation {
 
   /**
    * Récupère toutes les réservations d'un utilisateur
+   * @param {number} userId - ID de l'utilisateur
+   * @param {function} callback - Fonction de rappel (err, results)
+   * @description Triées par date de réservation décroissante (plus récentes en premier)
    */
   static getByUserId(userId, callback) {
     const query = `
@@ -216,7 +273,9 @@ class Reservation {
   }
 
   /**
-   * Récupère TOUTES les réservations (pour admin)
+   * Récupère toutes les réservations (administration)
+   * @param {function} callback - Fonction de rappel (err, results)
+   * @description Inclut les informations utilisateur pour l'admin
    */
   static getAll(callback) {
     const query = `
@@ -253,66 +312,9 @@ class Reservation {
   }
 
   /**
-   * Met à jour le statut d'une réservation (pour admin)
-   */
-  static updateStatus(reservationId, newStatusId, callback) {
-    const query = `
-      UPDATE RESERVATION 
-      SET id_statut = ? 
-      WHERE id_reservation = ?
-    `;
-
-    db.query(query, [newStatusId, reservationId], (err, result) => {
-      if (err) {
-        return callback(err, null);
-      }
-      callback(null, result);
-    });
-  }
-
-  /**
-   * Annule une réservation (change le statut)
-   */
-  static cancel(reservationId, userId, callback) {
-    const checkQuery = `
-      SELECT id_reservation, id_statut 
-      FROM RESERVATION 
-      WHERE id_reservation = ? AND id_user = ?
-    `;
-
-    db.query(checkQuery, [reservationId, userId], (err, results) => {
-      if (err) {
-        return callback(err, null);
-      }
-
-      if (!results || results.length === 0) {
-        return callback(
-          new Error("Réservation non trouvée ou accès refusé"),
-          null
-        );
-      }
-
-      if (results[0].id_statut === 3) {
-        return callback(new Error("Cette réservation est déjà annulée"), null);
-      }
-
-      const updateQuery = `
-        UPDATE RESERVATION 
-        SET id_statut = 3 
-        WHERE id_reservation = ?
-      `;
-
-      db.query(updateQuery, [reservationId], (err, result) => {
-        if (err) {
-          return callback(err, null);
-        }
-        callback(null, result);
-      });
-    });
-  }
-
-  /**
    * Récupère les services additionnels d'une réservation
+   * @param {number} reservationId - ID de la réservation
+   * @param {function} callback - Fonction de rappel (err, results)
    */
   static getServicesByReservationId(reservationId, callback) {
     const query = `
@@ -340,13 +342,76 @@ class Reservation {
     });
   }
 
+  // ==========================================================================
+  // MÉTHODES DE MISE À JOUR (UPDATE)
+  // ==========================================================================
+
   /**
-   * Génère un numéro de confirmation unique
+   * Met à jour le statut d'une réservation (administration)
+   * @param {number} reservationId - ID de la réservation
+   * @param {number} newStatusId - Nouvel ID de statut
+   * @param {function} callback - Fonction de rappel (err, result)
    */
-  static generateConfirmationNumber() {
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substring(2, 7).toUpperCase();
-    return `BYT-${timestamp}-${random}`;
+  static updateStatus(reservationId, newStatusId, callback) {
+    const query = `
+      UPDATE RESERVATION 
+      SET id_statut = ? 
+      WHERE id_reservation = ?
+    `;
+
+    db.query(query, [newStatusId, reservationId], (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, result);
+    });
+  }
+
+  /**
+   * Annule une réservation (change le statut à 3 = annulé)
+   * @param {number} reservationId - ID de la réservation
+   * @param {number} userId - ID de l'utilisateur (pour vérification)
+   * @param {function} callback - Fonction de rappel (err, result)
+   * @description Vérifie la propriété et que la réservation n'est pas déjà annulée
+   */
+  static cancel(reservationId, userId, callback) {
+    // Étape 1 : Vérifier la propriété et le statut actuel
+    const checkQuery = `
+      SELECT id_reservation, id_statut 
+      FROM RESERVATION 
+      WHERE id_reservation = ? AND id_user = ?
+    `;
+
+    db.query(checkQuery, [reservationId, userId], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+
+      if (!results || results.length === 0) {
+        return callback(
+          new Error("Réservation non trouvée ou accès refusé"),
+          null,
+        );
+      }
+
+      if (results[0].id_statut === 3) {
+        return callback(new Error("Cette réservation est déjà annulée"), null);
+      }
+
+      // Étape 2 : Mettre à jour le statut
+      const updateQuery = `
+        UPDATE RESERVATION 
+        SET id_statut = 3 
+        WHERE id_reservation = ?
+      `;
+
+      db.query(updateQuery, [reservationId], (err, result) => {
+        if (err) {
+          return callback(err, null);
+        }
+        callback(null, result);
+      });
+    });
   }
 }
 

@@ -1,8 +1,41 @@
-// Variables
+// ============================================================================
+// FICHIER : header.component.scss
+// DESCRIPTION : Styles de l'en-tête du site avec logo, contact, recherche,
+//               ruban latéral turquoise et navigation principale
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Variables SCSS
+//   - Container header (.base-header)
+//   - Structure flex (logo, contact, recherche)
+//   - Logo (.my-logo-img)
+//   - Bloc contact (.bloc-contact)
+//   - Bloc recherche (.bloc-search)
+//   - Ruban latéral (.ribbon)
+//   - Dropdowns du ruban
+//   - Triangle décoratif (::before, ::after)
+//   - Navigation principale (.navbar)
+//   - Responsive (tablettes, mobiles, très petits écrans)
+// VARIABLES CSS UTILISÉES :
+//   --turquoise, --turquoise-hover (couleurs principales)
+//   --marron (fond navbar)
+//   --gris-moyen (textes)
+//   --blanc (textes clairs)
+// ============================================================================
+
+// ==========================================================================
+// VARIABLES SCSS
+// ==========================================================================
+
 $turquoise: #5fc8c2;
 $turquoise-hover: #3db3aa;
 $gris-fonce: #333333;
 $blanc: #ffffff;
+
+// ==========================================================================
+// CONTAINER HEADER
+// ==========================================================================
 
 .base-header {
   background-color: #fff;
@@ -13,7 +46,7 @@ $blanc: #ffffff;
   margin-right: auto;
 }
 
-/* Espace réservé au ruban turquoise à droite */
+// Espace réservé au ruban turquoise à droite
 .header-top {
   padding-right: 160px;
 }
@@ -30,7 +63,10 @@ $blanc: #ffffff;
   align-items: center;
 }
 
-/* === Structure Flex du header === */
+// ==========================================================================
+// STRUCTURE FLEX DU HEADER
+// Alignement des 3 blocs principaux (logo, contact, recherche)
+// ==========================================================================
 
 .header_logo {
   display: flex;
@@ -50,16 +86,19 @@ $blanc: #ffffff;
   justify-content: flex-end;
 }
 
-/* === Logo === */
+// ==========================================================================
+// LOGO
+// ==========================================================================
 
 .my-logo-img {
   display: block;
   height: auto;
 }
 
-/* ==========================================================
-   BLOC CONTACT (index.html, room.html, booking.html, contact.html)
-   ---------------------------------------------------------- */
+// ==========================================================================
+// BLOC CONTACT
+// Icône téléphone + texte support 24/7
+// ==========================================================================
 
 .bloc-contact {
   display: flex;
@@ -70,7 +109,7 @@ $blanc: #ffffff;
   flex-shrink: 0;
 }
 
-/* Icône du contact */
+// Icône ronde turquoise avec téléphone
 .bloc-contact-ico {
   width: 46px;
   height: 46px;
@@ -86,7 +125,7 @@ $blanc: #ffffff;
   aspect-ratio: 1 / 1;
 }
 
-/* Texte du contact */
+// Texte du contact (label + numéro)
 .text-contact {
   text-align: left;
 }
@@ -102,17 +141,19 @@ $blanc: #ffffff;
   color: var(--gris-moyen);
 }
 
-/* ==========================================================
-   BLOC RECHERCHE HEADER (index.html, room.html, booking.html, contact.html)
-   ---------------------------------------------------------- */
+// ==========================================================================
+// BLOC RECHERCHE
+// Barre de recherche avec icône loupe
+// ==========================================================================
 
 .bloc-search {
   position: relative;
   width: 100%;
 }
 
+// Input de recherche arrondi
 .bloc-search-input {
-  /* !important ajouté pour forcer l'override de Bootstrap */
+  // !important pour override Bootstrap
   border-radius: 25px !important;
   padding-left: 20px !important;
   padding-right: 45px !important;
@@ -120,8 +161,10 @@ $blanc: #ffffff;
   font-size: 14px;
   height: 40px;
   width: 100% !important;
+  padding-right: 40px; // Place pour la loupe
 }
 
+// Icône loupe positionnée à droite
 .bloc-search-ico {
   position: absolute;
   right: 14px;
@@ -129,12 +172,39 @@ $blanc: #ffffff;
   transform: translateY(-50%);
   color: #999;
   font-size: 18px;
-  pointer-events: none; /* Permet de cliquer sur l'input sous l'icône */
+  pointer-events: none; // Permet de cliquer sur l'input sous l'icône
 }
 
-/* ==========================================================
-   RUBAN TURQUOISE (index.html, room.html, booking.html, contact.html)
-   ---------------------------------------------------------- */
+// Bouton loupe cliquable
+.bloc-search-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background: transparent;
+  border: none;
+  padding: 0 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    .bloc-search-ico {
+      color: var(--turquoise);
+    }
+  }
+
+  &:focus {
+    outline: 2px solid var(--turquoise);
+    outline-offset: -2px;
+  }
+}
+
+// ==========================================================================
+// RUBAN LATÉRAL TURQUOISE
+// Positionné en absolu à droite du header
+// ==========================================================================
 
 .ribbon {
   position: absolute;
@@ -168,7 +238,7 @@ $blanc: #ffffff;
   font-weight: 600;
 }
 
-/* Boutons du ruban */
+// Boutons du ruban (Mon compte, Langue, Devise)
 .ribbon-btn {
   color: #fff;
   font-size: 12px;
@@ -182,34 +252,41 @@ $blanc: #ffffff;
 
 .ribbon-btn:hover {
   background-color: var(--turquoise);
-  /* Utilise la variable CSS du hover de lien définie dans base.css, mais moins visible ici, conservé. */
   color: var(--link-hover);
 }
 
-/* Dropdown du ruban */
+// ==========================================================================
+// DROPDOWNS DU RUBAN
+// Menus déroulants pour compte, langue, devise
+// ==========================================================================
+
 .ribbon .dropdown {
   position: relative;
 }
 
+// Affichage du menu au hover
 .ribbon .dropdown:hover .dropdown-menu {
   display: block;
 }
 
+// Style du menu dropdown
 .ribbon .dropdown-menu {
   padding: 0;
   margin: 0;
-  margin-top: -2px !important; /* Colle le menu au bouton - AUCUN ESPACE */
+  margin-top: -2px !important; // Colle le menu au bouton
   background-color: var(--turquoise);
   min-width: 200px;
   border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
-  /* Menu aligné à gauche */
+  // Alignement à gauche
   position: absolute !important;
   left: -60px !important;
   right: auto !important;
   transform: none !important;
 }
 
+// Items du dropdown
 .ribbon .dropdown-item {
   padding: 0.75rem 1rem;
   font-size: 0.9rem;
@@ -229,6 +306,7 @@ $blanc: #ffffff;
     }
   }
 
+  // Style pour le bouton déconnexion (danger)
   &.text-danger {
     color: $blanc;
     font-weight: 600;
@@ -249,38 +327,45 @@ $blanc: #ffffff;
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Triangle décoratif sous le ruban (Pseudo-éléments ::before et ::after) */
+// ==========================================================================
+// TRIANGLE DÉCORATIF SOUS LE RUBAN
+// Pseudo-éléments ::before et ::after
+// ==========================================================================
+
+// Triangle gauche
 .ribbon::before {
   content: '';
   position: absolute;
-  bottom: -20px; /* distance sous le ruban */
-  left: 0; /* aligné à gauche */
+  bottom: -20px;
+  left: 0;
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 20px 65px 0 0; /* hauteur / largeur du triangle */
+  border-width: 20px 65px 0 0;
   border-color: var(--turquoise) transparent transparent transparent;
   z-index: 2;
   box-shadow: -1px 0 0 rgba(0, 0, 0, 0.1);
 }
 
+// Triangle droit
 .ribbon::after {
   content: '';
   position: absolute;
-  bottom: -20px; /* même hauteur que le before */
-  right: 0; /* aligné à droite */
+  bottom: -20px;
+  right: 0;
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 20px 0 0 65px; /* inverse les côtés du triangle */
+  border-width: 20px 0 0 65px;
   border-color: var(--turquoise) transparent transparent transparent;
   z-index: 2;
   box-shadow: 1px 0 0 rgba(0, 0, 0, 0.1);
 }
 
-/* ==========================================================
-   NAVIGATION PRINCIPALE (index.html, room.html, booking.html, contact.html)
-   ---------------------------------------------------------- */
+// ==========================================================================
+// NAVIGATION PRINCIPALE
+// Barre marron avec liens en majuscules
+// ==========================================================================
 
 .navbar {
   background-color: var(--marron);
@@ -303,39 +388,11 @@ $blanc: #ffffff;
   font-family: var(--font-principale);
 }
 
-// Bouton loupe cliquable
-.bloc-search-btn {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  background: transparent;
-  border: none;
-  padding: 0 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    .bloc-search-ico {
-      color: var(--turquoise);
-    }
-  }
-
-  &:focus {
-    outline: 2px solid var(--turquoise);
-    outline-offset: -2px;
-  }
-}
-
-.bloc-search-input {
-  padding-right: 40px; // Place pour la loupe
-}
+// ==========================================================================
+// RESPONSIVE - TABLETTES (≤ 991px)
+// ==========================================================================
 
 @media (max-width: 991px) {
-  /* === HEADER GLOBAL (index.html, room.html, booking.html, contact.html) === */
-
   .base-header {
     padding: 15px 0;
     max-width: 100%;
@@ -347,7 +404,7 @@ $blanc: #ffffff;
     margin-right: -10px;
   }
 
-  /* Alignement des blocs à gauche sur mobile/tablette */
+  // Alignement des blocs à gauche sur mobile/tablette
   .header_logo,
   .header_contact,
   .header_search {
@@ -367,16 +424,14 @@ $blanc: #ffffff;
     padding-top: 0 !important;
   }
 
-  /* === RUBAN (index.html, etc.) === */
-
+  // Ruban : position ajustée
   .ribbon {
     right: 5px;
     top: 0;
     padding: 12px 10px;
   }
 
-  /* === BLOC CONTACT HEADER (index.html, etc.) === */
-
+  // Bloc contact : alignement et tailles réduites
   .bloc-contact {
     justify-content: flex-start;
     gap: 10px;
@@ -392,8 +447,7 @@ $blanc: #ffffff;
     font-size: 18px;
   }
 
-  /* === BLOC RECHERCHE HEADER (index.html, etc.) === */
-
+  // Bloc recherche : pleine largeur
   .bloc-search {
     width: 100%;
     justify-content: flex-start;
@@ -401,17 +455,23 @@ $blanc: #ffffff;
   }
 }
 
+// ==========================================================================
+// RESPONSIVE - MOBILES MOYENS (391px - 575px)
+// ==========================================================================
+
 @media (min-width: 391px) and (max-width: 575px) {
-  /* [Header] BLOC RECHERCHE HEADER - Réduction de la largeur */
+  // Réduction de la largeur du bloc recherche
   .bloc-search {
     width: 63%;
   }
 }
 
-@media (max-width: 390px) {
-  /* === HEADER - Réorganisation pour très petit écran === */
+// ==========================================================================
+// RESPONSIVE - PETITS MOBILES (≤ 390px)
+// Ruban passe en mode full-width en haut
+// ==========================================================================
 
-  /* Réorganisation de l'ordre des blocs du header (Ruban passe en haut du flux) */
+@media (max-width: 390px) {
   .base-header {
     padding-top: 0%;
   }
@@ -421,13 +481,14 @@ $blanc: #ffffff;
     flex-direction: column;
   }
 
-  /* Retrait des pointes du ruban en mode full width (fix) */
+  // Retrait des triangles décoratifs du ruban
   .base-header .ribbon::before,
   .base-header .ribbon::after {
     content: none !important;
     border-width: 0 !important;
   }
 
+  // Ruban : position statique, pleine largeur, en haut
   .base-header .ribbon {
     position: static !important;
     order: -1;
@@ -442,6 +503,7 @@ $blanc: #ffffff;
     order: 0;
   }
 
+  // Navigation du ruban en flex horizontal
   .base-header .ribbon nav {
     display: flex;
     flex-wrap: wrap;
@@ -459,7 +521,7 @@ $blanc: #ffffff;
     border-radius: 0;
   }
 
-  /* Ajustement de la taille des éléments du bloc contact */
+  // Textes du bloc contact réduits
   .bloc-contact-label,
   .bloc-contact-number {
     font-size: 11px;
@@ -472,11 +534,21 @@ $blanc: #ffffff;
     min-height: 36px;
     font-size: 16px;
   }
+
+  // Dropdown en mode mobile
+  .ribbon {
+    .dropdown-menu {
+      position: static !important;
+      width: 100%;
+      margin-top: 5px;
+      transform: none !important;
+    }
+  }
 }
 
-/* ==========================================================
-   DROPDOWN MENU DU RUBAN - AUTHENTIFICATION
-   ---------------------------------------------------------- */
+// ==========================================================================
+// DROPDOWN AUTHENTIFICATION - STYLES ADDITIONNELS
+// ==========================================================================
 
 .ribbon {
   .dropdown-menu {
@@ -526,17 +598,5 @@ $blanc: #ffffff;
   // Override du dropdown toggle pour le ruban
   .dropdown-toggle::after {
     margin-left: 0.5rem;
-  }
-}
-
-// Responsive - Dropdown sur mobile
-@media (max-width: 390px) {
-  .ribbon {
-    .dropdown-menu {
-      position: static !important;
-      width: 100%;
-      margin-top: 5px;
-      transform: none !important;
-    }
   }
 }

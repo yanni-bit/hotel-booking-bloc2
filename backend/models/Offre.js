@@ -1,14 +1,25 @@
 // ============================================================================
 // OFFRE.JS - MODÈLE OFFRE
-// Gère les opérations sur les offres
+// ============================================================================
+// Ce modèle gère les opérations de lecture sur les offres tarifaires.
+// Une offre est liée à une chambre, elle-même liée à un hôtel.
+// Pattern utilisé : Classe statique (méthodes sans instanciation)
+// Sécurité : Requêtes préparées (?) pour prévenir les injections SQL
 // ============================================================================
 
-const db = require('../config/database');
+const db = require("../config/database");
 
 class Offre {
-  
+  // ==========================================================================
+  // MÉTHODES DE LECTURE (READ)
+  // ==========================================================================
+
   /**
    * Récupère une offre avec les détails de la chambre et de l'hôtel
+   * @param {number} offreId - ID de l'offre
+   * @param {function} callback - Fonction de rappel (err, result)
+   * @description Utilise INNER JOIN car une offre doit obligatoirement
+   *              être rattachée à une chambre et un hôtel existants
    */
   static getByIdWithDetails(offreId, callback) {
     const query = `
@@ -31,7 +42,7 @@ class Offre {
       INNER JOIN HOTEL h ON c.id_hotel = h.id_hotel
       WHERE o.id_offre = ?
     `;
-    
+
     db.query(query, [offreId], (err, results) => {
       if (err) {
         return callback(err, null);

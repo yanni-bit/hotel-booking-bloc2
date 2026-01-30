@@ -1,13 +1,43 @@
+// ============================================================================
+// FICHIER : admin-reservations.component.scss
+// DESCRIPTION : Styles de l'interface de gestion des réservations
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Container principal (.admin-reservations-page)
+//   - Utilitaires de couleur (.text-turquoise)
+//   - Tableau des réservations (.table)
+//   - Boutons (.btn-outline-primary, .btn-primary)
+//   - Modal de détail (.modal, .modal-content)
+//   - Cartes dans le modal (.modal-body .card)
+//   - Badges de statut (.badge)
+//   - Responsive
+// ============================================================================
+
+// ============================================================================
+// CONTAINER PRINCIPAL
+// ============================================================================
+
 .admin-reservations-page {
   min-height: 80vh;
   background-color: var(--marron-clair);
 }
 
+// ============================================================================
+// UTILITAIRES DE COULEUR
+// ============================================================================
+
 .text-turquoise {
   color: var(--turquoise) !important;
 }
 
+// ============================================================================
+// TABLEAU DES RÉSERVATIONS
+// ============================================================================
+
 .table {
+  // En-têtes de colonnes
   th {
     font-weight: 600;
     font-size: 0.85rem;
@@ -15,16 +45,22 @@
     letter-spacing: 0.5px;
     border-bottom: 2px solid #dee2e6;
   }
-  
+
+  // Cellules - alignement vertical centré
   td {
     vertical-align: middle;
   }
 }
 
+// ============================================================================
+// BOUTONS
+// ============================================================================
+
+// Bouton outline avec couleur turquoise
 .btn-outline-primary {
   color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover {
     background-color: var(--turquoise);
     border-color: var(--turquoise);
@@ -32,17 +68,22 @@
   }
 }
 
+// Bouton primary avec couleur turquoise
 .btn-primary {
   background-color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover {
     background-color: var(--turquoise-hover);
     border-color: var(--turquoise-hover);
   }
 }
 
-// Modal
+// ============================================================================
+// MODAL DE DÉTAIL
+// ============================================================================
+
+// Fond semi-transparent
 .modal-backdrop {
   background-color: rgba(0, 0, 0, 0.5);
 }
@@ -51,6 +92,7 @@
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+// Contenu du modal avec coins arrondis et ombre
 .modal-content {
   border: none;
   border-radius: 12px;
@@ -66,44 +108,58 @@
   border-top: 1px solid #eee;
 }
 
-// Cards dans le modal
+// ============================================================================
+// CARTES DANS LE MODAL
+// Style des cartes d'information (client, hôtel, séjour, prix)
+// ============================================================================
+
 .modal-body .card {
   border-radius: 8px;
   border: 1px solid #eee;
-  
+
   .card-header {
     border-bottom: 1px solid #eee;
     font-size: 0.9rem;
   }
-  
+
   .card-body {
     font-size: 0.9rem;
   }
 }
 
+// Carte de modification du statut (bordure turquoise)
 .modal-body .card.border-primary {
   border: 2px solid var(--turquoise) !important;
-  
+
   .card-header {
     background-color: var(--turquoise) !important;
   }
 }
 
-// Badge statut
+// ============================================================================
+// BADGES DE STATUT
+// ============================================================================
+
 .badge {
   font-weight: 500;
 }
 
-// Responsive
+// ============================================================================
+// RESPONSIVE
+// ============================================================================
+
 @media (max-width: 768px) {
+  // Tableau plus compact sur mobile
   .table-responsive {
     font-size: 0.85rem;
   }
-  
+
+  // Modal avec marges réduites
   .modal-dialog {
     margin: 10px;
   }
-  
+
+  // Espacement des colonnes dans le modal
   .modal-body .row > div {
     margin-bottom: 1rem;
   }

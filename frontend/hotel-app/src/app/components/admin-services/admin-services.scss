@@ -1,14 +1,41 @@
+// ============================================================================
+// FICHIER : admin-services.component.scss
+// DESCRIPTION : Styles de l'interface de gestion des services additionnels
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Container principal (.admin-services-page)
+//   - Utilitaires de couleur (.text-turquoise)
+//   - Tableau des services (.table)
+//   - Boutons (.btn-primary, .btn-outline-primary)
+//   - Modal (.modal, .modal-content)
+//   - Responsive
+// ============================================================================
+
+// ============================================================================
+// CONTAINER PRINCIPAL
+// ============================================================================
+
 .admin-services-page {
   min-height: 80vh;
   background-color: var(--marron-clair);
 }
 
+// ============================================================================
+// UTILITAIRES DE COULEUR
+// ============================================================================
+
 .text-turquoise {
   color: var(--turquoise) !important;
 }
 
-// Table
+// ============================================================================
+// TABLEAU DES SERVICES
+// ============================================================================
+
 .table {
+  // En-têtes de colonnes
   th {
     font-weight: 600;
     font-size: 0.8rem;
@@ -16,31 +43,38 @@
     letter-spacing: 0.5px;
     border-bottom: 2px solid #dee2e6;
   }
-  
+
+  // Cellules - alignement vertical centré
   td {
     vertical-align: middle;
   }
-  
+
+  // Lignes inactives - style atténué
   .table-secondary {
     opacity: 0.7;
   }
 }
 
-// Boutons
+// ============================================================================
+// BOUTONS
+// ============================================================================
+
+// Bouton primary avec couleur turquoise
 .btn-primary {
   background-color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover {
     background-color: var(--turquoise-hover);
     border-color: var(--turquoise-hover);
   }
 }
 
+// Bouton outline avec couleur turquoise
 .btn-outline-primary {
   color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover {
     background-color: var(--turquoise);
     border-color: var(--turquoise);
@@ -48,7 +82,11 @@
   }
 }
 
-// Modal
+// ============================================================================
+// MODAL
+// ============================================================================
+
+// Fond semi-transparent
 .modal-backdrop {
   background-color: rgba(0, 0, 0, 0.5);
 }
@@ -57,6 +95,7 @@
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+// Contenu du modal avec coins arrondis et ombre
 .modal-content {
   border: none;
   border-radius: 12px;
@@ -72,12 +111,17 @@
   border-top: 1px solid #eee;
 }
 
-// Responsive
+// ============================================================================
+// RESPONSIVE
+// ============================================================================
+
 @media (max-width: 768px) {
+  // Tableau plus compact sur mobile
   .table-responsive {
     font-size: 0.85rem;
   }
-  
+
+  // Boutons plus petits
   .btn-sm {
     padding: 0.2rem 0.4rem;
   }

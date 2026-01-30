@@ -1,41 +1,79 @@
+<!-- ============================================================================
+     FICHIER : carousel.component.html
+     DESCRIPTION : Carrousel d'images avec formulaire de recherche d'hôtels
+                   en overlay - Page d'accueil
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - Carrousel d'images avec slides
+       - Boutons de navigation (précédent/suivant)
+       - Indicateurs (dots) pour navigation directe
+       - Formulaire de recherche en overlay :
+         * Colonne 1 : Type de réservation (Quoi?)
+         * Colonne 2 : Destination (Où?)
+         * Colonne 3 : Dates (Quand?)
+         * Colonne 4 : Voyageurs (Qui?)
+         * Bouton de recherche
+     ACCESSIBILITÉ :
+       - Attributs ARIA pour navigation
+       - role="tablist" et role="tab" pour les dots
+       - aria-describedby pour les messages d'erreur
+       - visually-hidden pour les légendes de fieldset
+     ============================================================================ -->
+
 <!-- CARROUSEL D'IMAGES avec Formulaire de recherche -->
 <div class="hotel-carousel">
 
-  <!-- Slides -->
+  <!-- ========================================================================
+       SLIDES - IMAGES DU CARROUSEL
+       ======================================================================== -->
   <div class="slides-container">
-    <div class="hotel-slide" *ngFor="let slide of slides; let i = index" 
-         [class.active]="currentSlide === i">
+    <!-- Boucle sur les slides, affichage conditionnel avec classe .active -->
+    <div class="hotel-slide" *ngFor="let slide of slides; let i = index" [class.active]="currentSlide === i">
       <img [src]="slide.image" [alt]="slide.alt">
     </div>
   </div>
 
-  <!-- Boutons de navigation -->
-  <a class="prev" (click)="previousSlide()" [attr.aria-label]="'carousel.previousImage' | translate" role="button" tabindex="0">&#10094;</a>
-  <a class="next" (click)="nextSlide()" [attr.aria-label]="'carousel.nextImage' | translate" role="button" tabindex="0">&#10095;</a>
+  <!-- ========================================================================
+       BOUTONS DE NAVIGATION (FLÈCHES)
+       Accessibilité : role="button", aria-label, tabindex
+       ======================================================================== -->
+  <a class="prev" (click)="previousSlide()" [attr.aria-label]="'carousel.previousImage' | translate" role="button"
+    tabindex="0">&#10094;</a>
+  <a class="next" (click)="nextSlide()" [attr.aria-label]="'carousel.nextImage' | translate" role="button"
+    tabindex="0">&#10095;</a>
 
-  <!-- Indicateurs (dots) -->
+  <!-- ========================================================================
+       INDICATEURS (DOTS)
+       Accessibilité : role="tablist", role="tab", aria-selected
+       ======================================================================== -->
   <div class="dots" role="tablist" [attr.aria-label]="'carousel.navigation' | translate">
-    <span class="dot" *ngFor="let slide of slides; let i = index" 
-          [class.active]="currentSlide === i"
-          (click)="goToSlide(i)"
-          role="tab"
-          [attr.aria-selected]="currentSlide === i"
-          [attr.aria-label]="('carousel.goToImage' | translate) + ' ' + (i + 1)"
-          tabindex="0"></span>
+    <span class="dot" *ngFor="let slide of slides; let i = index" [class.active]="currentSlide === i"
+      (click)="goToSlide(i)" role="tab" [attr.aria-selected]="currentSlide === i"
+      [attr.aria-label]="('carousel.goToImage' | translate) + ' ' + (i + 1)" tabindex="0"></span>
   </div>
 
-  <!-- FORMULAIRE DE RECHERCHE (OVERLAY) -->
+  <!-- ========================================================================
+       FORMULAIRE DE RECHERCHE (OVERLAY)
+       Formulaire en 4 colonnes superposé au carrousel
+       ======================================================================== -->
   <div class="search-overlay-container">
     <div class="search-overlay-content" role="search" [attr.aria-label]="'carousel.searchHotel' | translate">
       <div class="row g-0">
 
-        <!-- COLONNE 1 : QUOI? -->
+        <!-- ============================================================
+             COLONNE 1 : QUOI? (Type de réservation)
+             Options : Hôtel (actif), autres désactivés
+             ============================================================ -->
         <div class="col-12 col-lg-3 d-flex flex-column">
           <h5 class="search-field-box-title"><em>01</em> {{ 'search.what' | translate }}</h5>
           <div class="search-field-box">
             <fieldset>
+              <!-- Légende cachée visuellement mais accessible aux lecteurs d'écran -->
               <legend class="visually-hidden">{{ 'search.bookingType' | translate }}</legend>
               <div class="row-buttons">
+                <!-- Colonne gauche des options -->
                 <div class="search-col-button">
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="type" id="hotel" checked>
@@ -43,25 +81,31 @@
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="type" id="vol" disabled>
-                    <label class="form-check-label text-muted" for="vol" [title]="'search.notAvailable' | translate">{{ 'search.flight' | translate }}</label>
+                    <label class="form-check-label text-muted" for="vol" [title]="'search.notAvailable' | translate">{{
+                      'search.flight' | translate }}</label>
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="type" id="vol-hotel" disabled>
-                    <label class="form-check-label text-muted" for="vol-hotel" [title]="'search.notAvailable' | translate">{{ 'search.flightHotel' | translate }}</label>
+                    <label class="form-check-label text-muted" for="vol-hotel"
+                      [title]="'search.notAvailable' | translate">{{ 'search.flightHotel' | translate }}</label>
                   </div>
                 </div>
+                <!-- Colonne droite des options -->
                 <div class="search-col-button">
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="type" id="studio" disabled>
-                    <label class="form-check-label text-muted" for="studio" [title]="'search.notAvailable' | translate">{{ 'search.studio' | translate }}</label>
+                    <label class="form-check-label text-muted" for="studio"
+                      [title]="'search.notAvailable' | translate">{{ 'search.studio' | translate }}</label>
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="type" id="croisiere" disabled>
-                    <label class="form-check-label text-muted" for="croisiere" [title]="'search.notAvailable' | translate">{{ 'search.cruise' | translate }}</label>
+                    <label class="form-check-label text-muted" for="croisiere"
+                      [title]="'search.notAvailable' | translate">{{ 'search.cruise' | translate }}</label>
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="type" id="voiture" disabled>
-                    <label class="form-check-label text-muted" for="voiture" [title]="'search.notAvailable' | translate">{{ 'search.carRental' | translate }}</label>
+                    <label class="form-check-label text-muted" for="voiture"
+                      [title]="'search.notAvailable' | translate">{{ 'search.carRental' | translate }}</label>
                   </div>
                 </div>
               </div>
@@ -69,130 +113,134 @@
           </div>
         </div>
 
-        <!-- COLONNE 2 : OÙ? -->
+        <!-- ============================================================
+             COLONNE 2 : OÙ? (Destination)
+             Select avec validation temps réel (Critère C2.b)
+             ============================================================ -->
         <div class="col-12 col-lg-3 d-flex flex-column">
           <h5 class="search-field-box-title"><em>02</em> {{ 'search.where' | translate }}</h5>
           <div class="search-field-box">
-            <label for="destination"><h5>{{ 'search.yourDestination' | translate }}</h5></label>
-            <select class="form-control" 
-                    id="destination" 
-                    [(ngModel)]="selectedCity"
-                    (change)="validateCity()"
-                    (blur)="validateCity()"
-                    [class.is-invalid]="touched.city && errors.city"
-                    [class.is-valid]="touched.city && !errors.city && selectedCity"
-                    aria-describedby="destinationError"
-                    aria-required="true">
+            <label for="destination">
+              <h5>{{ 'search.yourDestination' | translate }}</h5>
+            </label>
+            <!-- Select avec classes de validation Bootstrap -->
+            <select class="form-control" id="destination" [(ngModel)]="selectedCity" (change)="validateCity()"
+              (blur)="validateCity()" [class.is-invalid]="touched.city && errors.city"
+              [class.is-valid]="touched.city && !errors.city && selectedCity" aria-describedby="destinationError"
+              aria-required="true">
               <option value="">{{ 'search.selectCity' | translate }}</option>
               <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
             </select>
+            <!-- Message d'erreur (visible si champ touché et invalide) -->
             <div class="invalid-feedback" id="destinationError" *ngIf="touched.city && errors.city" role="alert">
               {{ errors.city }}
             </div>
           </div>
         </div>
 
-        <!-- COLONNE 3 : QUAND? -->
+        <!-- ============================================================
+             COLONNE 3 : QUAND? (Dates)
+             Inputs date avec validation temps réel (Critère C2.b)
+             ============================================================ -->
         <div class="col-12 col-lg-3 d-flex flex-column">
           <h5 class="search-field-box-title"><em>03</em> {{ 'search.when' | translate }}</h5>
           <div class="search-field-box">
             <div class="search-col-date d-flex flex-row">
+
+              <!-- Date d'arrivée -->
               <div class="mb-3">
-                <label for="checkin"><h5>{{ 'search.checkIn' | translate }}</h5></label>
-                <input type="date" 
-                       class="form-control" 
-                       id="checkin" 
-                       [(ngModel)]="checkinDate" 
-                       [min]="minDate"
-                       (change)="validateCheckin()"
-                       (blur)="validateCheckin()"
-                       [class.is-invalid]="touched.checkin && errors.checkin"
-                       [class.is-valid]="touched.checkin && !errors.checkin && checkinDate"
-                       aria-describedby="checkinError"
-                       aria-required="true">
+                <label for="checkin">
+                  <h5>{{ 'search.checkIn' | translate }}</h5>
+                </label>
+                <input type="date" class="form-control" id="checkin" [(ngModel)]="checkinDate" [min]="minDate"
+                  (change)="validateCheckin()" (blur)="validateCheckin()"
+                  [class.is-invalid]="touched.checkin && errors.checkin"
+                  [class.is-valid]="touched.checkin && !errors.checkin && checkinDate" aria-describedby="checkinError"
+                  aria-required="true">
+                <!-- Message d'erreur check-in -->
                 <div class="invalid-feedback" id="checkinError" *ngIf="touched.checkin && errors.checkin" role="alert">
                   {{ errors.checkin }}
                 </div>
               </div>
+
+              <!-- Date de départ -->
               <div class="mb-3">
-                <label for="checkout"><h5>{{ 'search.checkOut' | translate }}</h5></label>
-                <input type="date" 
-                       class="form-control" 
-                       id="checkout" 
-                       [(ngModel)]="checkoutDate" 
-                       [min]="checkinDate || minDate"
-                       (change)="validateCheckout()"
-                       (blur)="validateCheckout()"
-                       [class.is-invalid]="touched.checkout && errors.checkout"
-                       [class.is-valid]="touched.checkout && !errors.checkout && checkoutDate"
-                       aria-describedby="checkoutError"
-                       aria-required="true">
-                <div class="invalid-feedback" id="checkoutError" *ngIf="touched.checkout && errors.checkout" role="alert">
+                <label for="checkout">
+                  <h5>{{ 'search.checkOut' | translate }}</h5>
+                </label>
+                <input type="date" class="form-control" id="checkout" [(ngModel)]="checkoutDate"
+                  [min]="checkinDate || minDate" (change)="validateCheckout()" (blur)="validateCheckout()"
+                  [class.is-invalid]="touched.checkout && errors.checkout"
+                  [class.is-valid]="touched.checkout && !errors.checkout && checkoutDate"
+                  aria-describedby="checkoutError" aria-required="true">
+                <!-- Message d'erreur check-out -->
+                <div class="invalid-feedback" id="checkoutError" *ngIf="touched.checkout && errors.checkout"
+                  role="alert">
                   {{ errors.checkout }}
                 </div>
               </div>
+
             </div>
           </div>
         </div>
 
-        <!-- COLONNE 4 : QUI? -->
+        <!-- ============================================================
+             COLONNE 4 : QUI? (Voyageurs)
+             Inputs number avec validation (Critère C2.b)
+             ============================================================ -->
         <div class="col-12 col-lg-3 d-flex flex-column">
           <h5 class="search-field-box-title"><em>04</em> {{ 'search.who' | translate }}</h5>
           <div class="search-field-box">
             <div class="search-col-who d-flex flex-row">
+
+              <!-- Nombre de chambres -->
               <div class="mb-3">
-                <label for="rooms"><h5>{{ 'search.rooms' | translate }}</h5></label>
-                <input type="number" 
-                       class="form-control" 
-                       id="rooms" 
-                       min="1" 
-                       max="10"
-                       [(ngModel)]="rooms"
-                       (change)="validateRooms()"
-                       [attr.aria-label]="'search.numberOfRooms' | translate">
+                <label for="rooms">
+                  <h5>{{ 'search.rooms' | translate }}</h5>
+                </label>
+                <input type="number" class="form-control" id="rooms" min="1" max="10" [(ngModel)]="rooms"
+                  (change)="validateRooms()" [attr.aria-label]="'search.numberOfRooms' | translate">
               </div>
+
+              <!-- Nombre d'adultes -->
               <div class="mb-3">
-                <label for="adults"><h5>{{ 'search.adults' | translate }}</h5></label>
-                <input type="number" 
-                       class="form-control" 
-                       id="adults" 
-                       min="1" 
-                       max="20"
-                       [(ngModel)]="adults"
-                       (change)="validateAdults()"
-                       (blur)="validateAdults()"
-                       [class.is-invalid]="touched.adults && errors.adults"
-                       [class.is-valid]="touched.adults && !errors.adults"
-                       aria-describedby="adultsError"
-                       aria-required="true">
+                <label for="adults">
+                  <h5>{{ 'search.adults' | translate }}</h5>
+                </label>
+                <input type="number" class="form-control" id="adults" min="1" max="20" [(ngModel)]="adults"
+                  (change)="validateAdults()" (blur)="validateAdults()"
+                  [class.is-invalid]="touched.adults && errors.adults"
+                  [class.is-valid]="touched.adults && !errors.adults" aria-describedby="adultsError"
+                  aria-required="true">
+                <!-- Message d'erreur adultes -->
                 <div class="invalid-feedback" id="adultsError" *ngIf="touched.adults && errors.adults" role="alert">
                   {{ errors.adults }}
                 </div>
               </div>
+
+              <!-- Nombre d'enfants -->
               <div class="mb-3">
-                <label for="children"><h5>{{ 'search.children' | translate }}</h5></label>
-                <input type="number" 
-                       class="form-control" 
-                       id="children" 
-                       min="0" 
-                       max="10"
-                       [(ngModel)]="children"
-                       (change)="validateChildren()"
-                       [attr.aria-label]="'search.numberOfChildren' | translate">
+                <label for="children">
+                  <h5>{{ 'search.children' | translate }}</h5>
+                </label>
+                <input type="number" class="form-control" id="children" min="0" max="10" [(ngModel)]="children"
+                  (change)="validateChildren()" [attr.aria-label]="'search.numberOfChildren' | translate">
               </div>
+
             </div>
           </div>
         </div>
 
       </div>
 
-      <!-- BOUTON RECHERCHER -->
+      <!-- ============================================================
+           BOUTON RECHERCHER
+           Déclenche la validation et la navigation
+           ============================================================ -->
       <div class="row mt-3 mx-0 searchProcess">
         <div class="col-12 mb-0 text-center">
-          <button type="button" 
-                  class="btn px-3 pt-2 pb-1 btn-custom w-20" 
-                  (click)="onSearch()"
-                  [attr.aria-label]="'search.searchHotels' | translate">
+          <button type="button" class="btn px-3 pt-2 pb-1 btn-custom w-20" (click)="onSearch()"
+            [attr.aria-label]="'search.searchHotels' | translate">
             {{ 'search.search' | translate }}
           </button>
         </div>

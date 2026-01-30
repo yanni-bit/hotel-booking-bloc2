@@ -27,15 +27,239 @@
     color: var(--gris-moyen);
     border-bottom: 2px solid #dee2e6;
   }
-  
+
   td {
     vertical-align: middle;
   }
-  
+
   tbody tr {
     transition: background-color 0.2s ease;
-    
+
     &:hover {
+      // ============================================================================
+      // FICHIER : admin-messages.component.scss
+      // DESCRIPTION : Styles de l'interface de gestion des messages de contact
+      // AUTEUR : Yannick
+      // DATE : 2025
+      // ============================================================================
+      // SECTIONS :
+      //   - Container principal (.admin-messages-page)
+      //   - Utilitaires de couleur (.text-turquoise, .bg-turquoise)
+      //   - Tableau des messages (.table)
+      //   - Ligne non lue (.table-warning)
+      //   - Aperçu message (.message-preview)
+      //   - Badges sujets (.badge)
+      //   - Modal de détail (.modal)
+      //   - Boutons (.btn-group, .btn-outline-info, .btn-primary)
+      //   - Filtres (.form-select-sm, .form-control-sm)
+      //   - Responsive (tablette et mobile)
+      // ============================================================================
+
+      // ============================================================================
+      // CONTAINER PRINCIPAL
+      // ============================================================================
+
+      .admin-messages-page {
+        min-height: calc(100vh - 200px);
+        background-color: var(--gris-clair);
+      }
+
+      // ============================================================================
+      // UTILITAIRES DE COULEUR
+      // ============================================================================
+
+      .text-turquoise {
+        color: var(--turquoise) !important;
+      }
+
+      .bg-turquoise {
+        background-color: var(--turquoise) !important;
+      }
+
+      // ============================================================================
+      // TABLEAU DES MESSAGES
+      // ============================================================================
+
+      .table {
+        // En-têtes de colonnes
+        th {
+          font-size: 0.85rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: var(--gris-moyen);
+          border-bottom: 2px solid #dee2e6;
+        }
+
+        // Cellules - alignement vertical centré
+        td {
+          vertical-align: middle;
+        }
+
+        // Lignes avec effet hover turquoise
+        tbody tr {
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background-color: rgba(95, 200, 194, 0.1) !important;
+          }
+        }
+      }
+
+      // ============================================================================
+      // LIGNE MESSAGE NON LU
+      // Fond jaune pâle pour mettre en évidence
+      // ============================================================================
+
+      .table-warning {
+        background-color: rgba(255, 193, 7, 0.15) !important;
+      }
+
+      // ============================================================================
+      // APERÇU DU MESSAGE
+      // Texte tronqué dans le tableau
+      // ============================================================================
+
+      .message-preview {
+        color: var(--gris-moyen);
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      // ============================================================================
+      // BADGES SUJETS
+      // ============================================================================
+
+      .badge {
+        font-weight: 500;
+        padding: 0.4em 0.8em;
+      }
+
+      // ============================================================================
+      // MODAL DE DÉTAIL
+      // ============================================================================
+
+      .modal {
+        z-index: 1050;
+      }
+
+      .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .modal-header {
+        border-radius: 12px 12px 0 0;
+        padding: 1.25rem 1.5rem;
+
+        .modal-title {
+          font-weight: 600;
+        }
+      }
+
+      .modal-body {
+        padding: 1.5rem;
+      }
+
+      .modal-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e0e0e0;
+        gap: 0.5rem;
+      }
+
+      // Contenu du message avec scroll si trop long
+      .message-content {
+        min-height: 150px;
+        max-height: 400px;
+        overflow-y: auto;
+
+        p {
+          font-size: 1rem;
+          line-height: 1.6;
+          color: var(--gris-fonce);
+        }
+      }
+
+      // ============================================================================
+      // BOUTONS
+      // ============================================================================
+
+      .btn-group {
+        .btn {
+          padding: 0.25rem 0.5rem;
+        }
+      }
+
+      // Bouton outline info avec couleur turquoise
+      .btn-outline-info {
+        color: var(--turquoise);
+        border-color: var(--turquoise);
+
+        &:hover {
+          background-color: var(--turquoise);
+          border-color: var(--turquoise);
+          color: white;
+        }
+      }
+
+      // Bouton primary avec couleur turquoise
+      .btn-primary {
+        background-color: var(--turquoise);
+        border-color: var(--turquoise);
+
+        &:hover {
+          background-color: var(--turquoise-hover);
+          border-color: var(--turquoise-hover);
+        }
+      }
+
+      // ============================================================================
+      // FILTRES
+      // ============================================================================
+
+      .form-select-sm,
+      .form-control-sm {
+        font-size: 0.875rem;
+      }
+
+      // ============================================================================
+      // RESPONSIVE - TABLETTE
+      // ============================================================================
+
+      @media (max-width: 991px) {
+        .admin-messages-page {
+          .container-fluid {
+            padding-left: 1rem;
+            padding-right: 1rem;
+          }
+        }
+
+        .table {
+          font-size: 0.85rem;
+        }
+
+        .message-preview {
+          max-width: 200px;
+        }
+      }
+
+      // ============================================================================
+      // RESPONSIVE - MOBILE
+      // ============================================================================
+
+      @media (max-width: 767px) {
+        .modal-dialog {
+          margin: 1rem;
+        }
+
+        .modal-footer {
+          flex-direction: column;
+
+          .btn {
+            width: 100%;
+          }
+        }
+      }
       background-color: rgba(95, 200, 194, 0.1) !important;
     }
   }
@@ -79,7 +303,7 @@
 .modal-header {
   border-radius: 12px 12px 0 0;
   padding: 1.25rem 1.5rem;
-  
+
   .modal-title {
     font-weight: 600;
   }
@@ -99,7 +323,7 @@
   min-height: 150px;
   max-height: 400px;
   overflow-y: auto;
-  
+
   p {
     font-size: 1rem;
     line-height: 1.6;
@@ -120,7 +344,7 @@
 .btn-outline-info {
   color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover {
     background-color: var(--turquoise);
     border-color: var(--turquoise);
@@ -131,7 +355,7 @@
 .btn-primary {
   background-color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover {
     background-color: var(--turquoise-hover);
     border-color: var(--turquoise-hover);
@@ -158,11 +382,11 @@
       padding-right: 1rem;
     }
   }
-  
+
   .table {
     font-size: 0.85rem;
   }
-  
+
   .message-preview {
     max-width: 200px;
   }
@@ -172,10 +396,10 @@
   .modal-dialog {
     margin: 1rem;
   }
-  
+
   .modal-footer {
     flex-direction: column;
-    
+
     .btn {
       width: 100%;
     }

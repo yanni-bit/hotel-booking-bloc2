@@ -1,3 +1,24 @@
+// ============================================================================
+// FICHIER : carousel.component.ts
+// DESCRIPTION : Composant carrousel d'images avec formulaire de recherche
+//               d'hôtels en overlay - Page d'accueil
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SERVICES INJECTÉS :
+//   - HotelService : Récupération des villes disponibles
+// FONCTIONNALITÉS :
+//   - Carrousel d'images avec défilement automatique (5s)
+//   - Navigation manuelle (flèches, dots)
+//   - Formulaire de recherche avec validation temps réel (Critère C2.b)
+//   - Chargement dynamique des villes
+//   - Redirection vers la page des hôtels avec filtres
+// ACCESSIBILITÉ :
+//   - Attributs ARIA pour la navigation
+//   - Focus visible pour navigation clavier
+//   - Messages d'erreur avec role="alert"
+// ============================================================================
+
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,75 +31,148 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './carousel.html',
-  styleUrl: './carousel.scss'
+  styleUrl: './carousel.scss',
 })
 export class Carousel implements OnInit, OnDestroy {
+  // ==========================================================================
+  // PROPRIÉTÉS - CARROUSEL
+  // ==========================================================================
 
+  /** Index de la slide actuellement affichée */
   currentSlide = 0;
+
+  /** Référence de l'intervalle pour le défilement automatique */
   autoSlideInterval: any;
 
-  // Liste des villes disponibles
+  // ==========================================================================
+  // PROPRIÉTÉS - DONNÉES
+  // ==========================================================================
+
+  /** Liste des villes disponibles (chargées depuis l'API) */
   cities: string[] = [];
 
-  // Champs du formulaire de recherche
+  // ==========================================================================
+  // PROPRIÉTÉS - FORMULAIRE DE RECHERCHE
+  // ==========================================================================
+
+  /** Ville sélectionnée */
   selectedCity: string = '';
+
+  /** Date d'arrivée */
   checkinDate: string = '';
+
+  /** Date de départ */
   checkoutDate: string = '';
+
+  /** Nombre de chambres */
   rooms: number = 1;
+
+  /** Nombre d'adultes */
   adults: number = 2;
+
+  /** Nombre d'enfants */
   children: number = 0;
 
-  // Date minimum (aujourd'hui)
+  /** Date minimum pour les inputs date (aujourd'hui) */
   minDate: string = '';
 
-  // États de validation (pour feedback visuel)
+  // ==========================================================================
+  // PROPRIÉTÉS - VALIDATION (Critère C2.b)
+  // ==========================================================================
+
+  /**
+   * Messages d'erreur pour chaque champ
+   * Affichés uniquement si le champ est "touched" et invalide
+   */
   errors = {
     city: '',
     checkin: '',
     checkout: '',
-    adults: ''
+    adults: '',
   };
 
-  // Champs touchés (pour afficher erreurs après interaction)
+  /**
+   * État "touched" des champs
+   * True après interaction utilisateur (change ou blur)
+   */
   touched = {
     city: false,
     checkin: false,
     checkout: false,
-    adults: false
+    adults: false,
   };
 
+  // ==========================================================================
+  // PROPRIÉTÉS - CONFIGURATION DES SLIDES
+  // ==========================================================================
+
+  /**
+   * Liste des slides du carrousel
+   * @property {string} image - Chemin de l'image
+   * @property {string} alt - Texte alternatif pour accessibilité
+   */
   slides = [
     {
       image: 'images/slide-1.jpg',
-      alt: 'Hotel de luxe 1'
+      alt: 'Hotel de luxe 1',
     },
     {
       image: 'images/slide-2.jpg',
-      alt: 'Hotel de luxe 2'
+      alt: 'Hotel de luxe 2',
     },
     {
       image: 'images/slide-3.jpg',
-      alt: 'Hotel de luxe 3'
-    }
+      alt: 'Hotel de luxe 3',
+    },
   ];
 
+  // ==========================================================================
+  // CONSTRUCTEUR
+  // ==========================================================================
+
+  /**
+   * Injection des dépendances
+   * @param {ChangeDetectorRef} cdr - Référence pour la détection de changements
+   * @param {HotelService} hotelService - Service de gestion des hôtels
+   * @param {Router} router - Service de navigation
+   */
   constructor(
     private cdr: ChangeDetectorRef,
     private hotelService: HotelService,
-    private router: Router
-  ) { }
+    private router: Router,
+  ) {}
 
+  // ==========================================================================
+  // CYCLE DE VIE
+  // ==========================================================================
+
+  /**
+   * Initialisation du composant
+   * - Démarre le défilement automatique
+   * - Charge la liste des villes
+   * - Définit la date minimum
+   */
   ngOnInit() {
     this.startAutoSlide();
     this.loadCities();
     this.setMinDate();
   }
 
+  /**
+   * Destruction du composant
+   * Arrête le défilement automatique pour éviter les fuites mémoire
+   */
   ngOnDestroy() {
     this.stopAutoSlide();
   }
 
-  // Charger les villes depuis l'API
+  // ==========================================================================
+  // MÉTHODES - CHARGEMENT DES DONNÉES
+  // ==========================================================================
+
+  /**
+   * Charge la liste des villes depuis l'API
+   */
   loadCities() {
     this.hotelService.getCities().subscribe({
       next: (response) => {
@@ -88,21 +182,27 @@ export class Carousel implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Erreur chargement villes:', err);
-      }
+      },
     });
   }
 
-  // Définir la date minimum (aujourd'hui)
+  /**
+   * Définit la date minimum (aujourd'hui) pour les inputs date
+   */
   setMinDate() {
     const today = new Date();
     this.minDate = today.toISOString().split('T')[0];
   }
 
-  // ========================================
-  // VALIDATION EN TEMPS RÉEL (Critère C2.b)
-  // ========================================
+  // ==========================================================================
+  // MÉTHODES - VALIDATION EN TEMPS RÉEL (Critère C2.b)
+  // Validation des saisies utilisateurs avec feedback visuel
+  // ==========================================================================
 
-  // Validation de la ville
+  /**
+   * Validation de la ville sélectionnée
+   * Erreur si aucune ville n'est sélectionnée
+   */
   validateCity() {
     this.touched.city = true;
     if (!this.selectedCity) {
@@ -112,35 +212,48 @@ export class Carousel implements OnInit, OnDestroy {
     }
   }
 
-  // Validation du check-in
+  /**
+   * Validation de la date d'arrivée
+   * Erreurs possibles :
+   * - Champ vide
+   * - Date dans le passé
+   */
   validateCheckin() {
     this.touched.checkin = true;
     if (!this.checkinDate) {
-      this.errors.checkin = 'Veuillez sélectionner une date d\'arrivée';
+      this.errors.checkin = "Veuillez sélectionner une date d'arrivée";
     } else if (this.checkinDate < this.minDate) {
       this.errors.checkin = 'La date ne peut pas être dans le passé';
     } else {
       this.errors.checkin = '';
     }
-    // Re-valider checkout si checkin change
+    // Re-valider checkout si checkin change (dépendance)
     if (this.checkoutDate) {
       this.validateCheckout();
     }
   }
 
-  // Validation du check-out
+  /**
+   * Validation de la date de départ
+   * Erreurs possibles :
+   * - Champ vide
+   * - Date antérieure ou égale à l'arrivée
+   */
   validateCheckout() {
     this.touched.checkout = true;
     if (!this.checkoutDate) {
       this.errors.checkout = 'Veuillez sélectionner une date de départ';
     } else if (this.checkinDate && this.checkoutDate <= this.checkinDate) {
-      this.errors.checkout = 'La date de départ doit être après l\'arrivée';
+      this.errors.checkout = "La date de départ doit être après l'arrivée";
     } else {
       this.errors.checkout = '';
     }
   }
 
-  // Validation du nombre d'adultes
+  /**
+   * Validation du nombre d'adultes
+   * Contraintes : minimum 1, maximum 20
+   */
   validateAdults() {
     this.touched.adults = true;
     if (!this.adults || this.adults < 1) {
@@ -154,7 +267,10 @@ export class Carousel implements OnInit, OnDestroy {
     }
   }
 
-  // Validation des chambres
+  /**
+   * Validation du nombre de chambres
+   * Contraintes : minimum 1, maximum 10
+   */
   validateRooms() {
     if (this.rooms < 1) {
       this.rooms = 1;
@@ -163,7 +279,10 @@ export class Carousel implements OnInit, OnDestroy {
     }
   }
 
-  // Validation des enfants
+  /**
+   * Validation du nombre d'enfants
+   * Contraintes : minimum 0, maximum 10
+   */
   validateChildren() {
     if (this.children < 0) {
       this.children = 0;
@@ -172,16 +291,30 @@ export class Carousel implements OnInit, OnDestroy {
     }
   }
 
-  // Vérifier si le formulaire est valide
+  /**
+   * Vérifie si le formulaire est valide
+   * @returns {boolean} True si tous les champs requis sont valides
+   */
   isFormValid(): boolean {
-    return !this.errors.city &&
+    return (
+      !this.errors.city &&
       !this.errors.checkin &&
       !this.errors.checkout &&
       !this.errors.adults &&
-      !!this.selectedCity;
+      !!this.selectedCity
+    );
   }
 
-  // Rechercher les hôtels
+  // ==========================================================================
+  // MÉTHODES - SOUMISSION DE LA RECHERCHE
+  // ==========================================================================
+
+  /**
+   * Lance la recherche d'hôtels
+   * - Valide tous les champs
+   * - Construit les query params
+   * - Redirige vers la page des hôtels
+   */
   onSearch() {
     console.log('🔍 onSearch() appelé');
     console.log('Valeurs:', {
@@ -190,16 +323,20 @@ export class Carousel implements OnInit, OnDestroy {
       checkout: this.checkoutDate,
       rooms: this.rooms,
       adults: this.adults,
-      children: this.children
+      children: this.children,
     });
 
-    // Marquer tous les champs comme touchés
+    // -------------------------------------------------------------------------
+    // Marquer tous les champs comme touchés (affiche les erreurs)
+    // -------------------------------------------------------------------------
     this.touched.city = true;
     this.touched.checkin = true;
     this.touched.checkout = true;
     this.touched.adults = true;
 
+    // -------------------------------------------------------------------------
     // Valider tous les champs
+    // -------------------------------------------------------------------------
     this.validateCity();
     this.validateCheckin();
     this.validateCheckout();
@@ -216,9 +353,11 @@ export class Carousel implements OnInit, OnDestroy {
 
     console.log('✅ Formulaire valide, redirection...');
 
-    // Construire les query params
+    // -------------------------------------------------------------------------
+    // Construire les query params pour la navigation
+    // -------------------------------------------------------------------------
     const queryParams: any = {
-      city: this.selectedCity
+      city: this.selectedCity,
     };
 
     if (this.checkinDate) {
@@ -241,32 +380,49 @@ export class Carousel implements OnInit, OnDestroy {
     this.router.navigate(['/hotels', this.selectedCity], { queryParams });
   }
 
-  // Défilement automatique
+  // ==========================================================================
+  // MÉTHODES - NAVIGATION DU CARROUSEL
+  // ==========================================================================
+
+  /**
+   * Démarre le défilement automatique (toutes les 5 secondes)
+   */
   startAutoSlide() {
     this.autoSlideInterval = setInterval(() => {
       this.nextSlide();
     }, 5000);
   }
 
+  /**
+   * Arrête le défilement automatique
+   */
   stopAutoSlide() {
     if (this.autoSlideInterval) {
       clearInterval(this.autoSlideInterval);
     }
   }
 
-  // Navigation
+  /**
+   * Passe à la slide suivante (cyclique)
+   */
   nextSlide() {
     this.currentSlide = (this.currentSlide + 1) % this.slides.length;
     this.cdr.detectChanges();
   }
 
+  /**
+   * Passe à la slide précédente (cyclique)
+   */
   previousSlide() {
-    this.currentSlide = this.currentSlide === 0
-      ? this.slides.length - 1
-      : this.currentSlide - 1;
+    this.currentSlide = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1;
     this.cdr.detectChanges();
   }
 
+  /**
+   * Navigue vers une slide spécifique
+   * Réinitialise le timer du défilement automatique
+   * @param {number} index - Index de la slide cible
+   */
   goToSlide(index: number) {
     this.currentSlide = index;
     this.stopAutoSlide();

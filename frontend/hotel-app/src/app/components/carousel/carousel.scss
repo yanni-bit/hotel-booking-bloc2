@@ -1,10 +1,41 @@
-// Variables
+// ============================================================================
+// FICHIER : carousel.component.scss
+// DESCRIPTION : Styles du carrousel d'images avec formulaire de recherche
+//               en overlay - Page d'accueil
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Variables de couleur
+//   - Carrousel principal (.hotel-carousel)
+//   - Slides (.hotel-slide)
+//   - Boutons de navigation (.prev, .next)
+//   - Indicateurs / Dots (.dots, .dot)
+//   - Formulaire de recherche (overlay)
+//   - Titres des champs (.search-field-box-title)
+//   - Champs de formulaire (.search-field-box)
+//   - Boutons radio (type de réservation)
+//   - Bouton de recherche (.btn-custom)
+//   - Colonnes dates et voyageurs
+//   - Styles de validation (Critère C2.b)
+//   - Accessibilité (visually-hidden, focus)
+//   - Responsive (tablettes, mobiles)
+// ============================================================================
+
+// ============================================================================
+// VARIABLES DE COULEUR
+// ============================================================================
+
 $turquoise: #5fc8c2;
 $turquoise-hover: #3db3aa;
 $gris-fonce: #333333;
 $blanc: #ffffff;
 
+// ============================================================================
 // CARROUSEL PRINCIPAL
+// Container avec positionnement relatif pour les overlays
+// ============================================================================
+
 .hotel-carousel {
   position: relative;
   width: 100%;
@@ -12,6 +43,10 @@ $blanc: #ffffff;
   overflow: hidden;
   background: #000;
 }
+
+// ============================================================================
+// SLIDES - CONTAINER ET IMAGES
+// ============================================================================
 
 .slides-container {
   position: relative;
@@ -24,10 +59,12 @@ $blanc: #ffffff;
   width: 100%;
   height: 100%;
 
+  // Slide active visible
   &.active {
     display: block;
   }
 
+  // Image en cover pour remplir l'espace
   img {
     width: 100%;
     height: 100%;
@@ -35,7 +72,11 @@ $blanc: #ffffff;
   }
 }
 
-// BOUTONS DE NAVIGATION
+// ============================================================================
+// BOUTONS DE NAVIGATION (FLÈCHES)
+// Positionnés à gauche et droite, centrés verticalement
+// ============================================================================
+
 .prev,
 .next {
   position: absolute;
@@ -64,10 +105,14 @@ $blanc: #ffffff;
   right: 20px;
 }
 
+// ============================================================================
 // INDICATEURS (DOTS)
+// Points de navigation en bas du carrousel
+// ============================================================================
+
 .dots {
   position: absolute;
-  bottom: 10px; // ← Plus bas que le formulaire
+  bottom: 10px; // En dessous du formulaire
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -87,12 +132,17 @@ $blanc: #ffffff;
     background: rgba(255, 255, 255, 0.8);
   }
 
+  // Dot actif (blanc plein)
   &.active {
     background: $blanc;
   }
 }
 
+// ============================================================================
 // FORMULAIRE DE RECHERCHE (OVERLAY)
+// Positionné en absolu au-dessus du carrousel
+// ============================================================================
+
 .search-overlay-container {
   position: absolute;
   bottom: 80px;
@@ -111,24 +161,27 @@ $blanc: #ffffff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Force les colonnes à avoir la même hauteur (Flexbox) */
+// Force les colonnes à avoir la même hauteur (Flexbox)
 .search-overlay-content .row {
   display: flex;
   align-items: stretch;
 }
 
-/* Chaque colonne est un conteneur vertical */
+// Chaque colonne est un conteneur vertical
 .search-overlay-content .row > div {
   display: flex;
   flex-direction: column;
 }
 
-/* Bordure gauche pour séparer les colonnes visuellement */
+// Bordure gauche pour séparer les colonnes visuellement
 .search-overlay-content .row > div:not(:first-child) .search-field-box {
   border-left: 1px solid #ebebeb;
 }
 
-/* Titre des champs (01, 02, 03, 04) */
+// ============================================================================
+// TITRES DES CHAMPS (01, 02, 03, 04)
+// ============================================================================
+
 .search-field-box-title {
   font-size: 15px;
   font-weight: 600;
@@ -136,6 +189,7 @@ $blanc: #ffffff;
   padding-left: 9px;
   text-align: left;
 
+  // Numéro en turquoise
   em {
     color: var(--turquoise);
   }
@@ -146,6 +200,11 @@ $blanc: #ffffff;
     color: var(--gris-fonce);
   }
 }
+
+// ============================================================================
+// CHAMPS DE FORMULAIRE (.search-field-box)
+// Container flex pour les inputs
+// ============================================================================
 
 .search-field-box {
   background-color: transparent;
@@ -159,7 +218,7 @@ $blanc: #ffffff;
   font-weight: 400;
 }
 
-/* Champs de formulaire (Input/Select) */
+// Style des inputs et selects
 .search-field-box .form-control {
   width: 100%;
   height: 38px;
@@ -173,7 +232,7 @@ $blanc: #ffffff;
   background-color: #fff;
 }
 
-/* Style spécifique pour le select */
+// Style spécifique pour le select (flèche personnalisée)
 .search-field-box select.form-control {
   padding-top: 0;
   padding-bottom: 0;
@@ -185,7 +244,10 @@ $blanc: #ffffff;
   padding-right: 35px;
 }
 
-/* === Colonnes de boutons radio === */
+// ============================================================================
+// BOUTONS RADIO (TYPE DE RÉSERVATION)
+// Colonne 1 : Quoi?
+// ============================================================================
 
 .row-buttons {
   display: flex;
@@ -204,6 +266,7 @@ $blanc: #ffffff;
   font-weight: 400;
   color: var(--gris-moyen);
   
+  // Conteneur de chaque radio
   .form-check {
     display: flex;
     align-items: center;
@@ -213,36 +276,44 @@ $blanc: #ffffff;
     min-height: auto;
   }
   
+  // Input radio personnalisé
   .form-check-input {
     margin: 0;
     width: 14px;
     height: 14px;
     cursor: pointer;
     
+    // État coché (turquoise)
     &:checked {
       background-color: var(--turquoise);
       border-color: var(--turquoise);
     }
     
+    // État désactivé
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
   }
   
+  // Label du radio
   .form-check-label {
     margin: 0;
     font-size: 13px;
     line-height: 1;
     cursor: pointer;
     
+    // Label désactivé
     &.text-muted {
       cursor: not-allowed;
     }
   }
 }
 
-/* === Bouton de validation de la recherche === */
+// ============================================================================
+// BOUTON DE RECHERCHE (.btn-custom)
+// Positionné en absolu en bas du formulaire
+// ============================================================================
 
 .searchProcess {
   position: absolute;
@@ -261,6 +332,11 @@ $blanc: #ffffff;
   text-transform: uppercase;
 }
 
+// ============================================================================
+// COLONNES DATES ET VOYAGEURS
+// Layout flex pour les champs côte à côte
+// ============================================================================
+
 .search-col-date,
 .search-col-who {
   display: flex;
@@ -274,11 +350,12 @@ $blanc: #ffffff;
   }
 }
 
-// ========================================
-// STYLES VALIDATION FORMULAIRE
-// ========================================
+// ============================================================================
+// STYLES DE VALIDATION (Critère C2.b)
+// Feedback visuel pour les champs valides/invalides
+// ============================================================================
 
-// Feedback visuel pour champs valides/invalides
+// Champ invalide (bordure rouge + icône erreur)
 .form-control.is-invalid {
   border-color: #dc3545;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
@@ -287,6 +364,7 @@ $blanc: #ffffff;
   background-size: 1rem 1rem;
 }
 
+// Champ valide (bordure verte + icône check)
 .form-control.is-valid {
   border-color: #198754;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
@@ -295,7 +373,7 @@ $blanc: #ffffff;
   background-size: 1rem 1rem;
 }
 
-// Message d'erreur
+// Message d'erreur avec fond rouge clair
 .invalid-feedback {
   display: block;
   width: 100%;
@@ -307,7 +385,11 @@ $blanc: #ffffff;
   border-radius: 0.25rem;
 }
 
-// Classe pour cacher visuellement (accessibilité)
+// ============================================================================
+// ACCESSIBILITÉ
+// ============================================================================
+
+// Classe pour cacher visuellement (accessible aux lecteurs d'écran)
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -333,6 +415,7 @@ $blanc: #ffffff;
   outline-offset: 2px;
 }
 
+// Focus visible pour les éléments du carrousel
 .dot:focus,
 .prev:focus,
 .next:focus {
@@ -340,16 +423,13 @@ $blanc: #ffffff;
   outline-offset: 2px;
 }
 
-/* ==========================================================
-   TABLETTES ET MOBILES (largeur ≤ 991px)
-   ----------------------------------------------------------
-   Ciblé:Carrousel/Formulaire de recherche
-   ========================================================== */
+// ============================================================================
+// RESPONSIVE - TABLETTES ET MOBILES (≤ 991px)
+// Le formulaire passe en position relative (dans le flux)
+// ============================================================================
 
 @media (max-width: 991px) {
-  /* === BLOC DE RECHERCHE PRINCIPAL (index.html) === */
-
-  /* Le bloc de recherche passe en position relative (dans le flux) */
+  // Le bloc de recherche passe en position relative
   .search-overlay-container {
     position: relative;
     bottom: auto;
@@ -379,41 +459,33 @@ $blanc: #ffffff;
     font-size: 14px;
   }
 
-  /* Retire la bordure gauche des colonnes empilées */
+  // Retire la bordure gauche des colonnes empilées
   .search-overlay-content .row > div:not(:first-child) .search-field-box {
     border-left: none;
   }
 
-  /* === CARROUSEL INDEX (index.html) === */
-
-  /* Permet au bloc de recherche (qui passe en position relative)
-     d'être visible en dessous du carrousel */
+  // Carrousel : hauteur automatique pour voir le formulaire en dessous
   .hotel-carousel {
     max-height: none;
     overflow: visible;
-    height: auto; // ← Laisse le carrousel s'adapter !
-    min-height: 400px; // ← Hauteur minimum pour l'image
+    height: auto;
+    min-height: 400px;
   }
 }
 
-/* ==========================================================
-   7. PETITS MOBILES (largeur ≤ 390px)
-   ----------------------------------------------------------
-   Ciblé: Header (changement de layout du Ruban), Formulaire recherche principal,
-          room.html (bascule calendrier -> inputs), Destinations
-   ========================================================== */
+// ============================================================================
+// RESPONSIVE - PETITS MOBILES (≤ 390px)
+// Empilement vertical des champs
+// ============================================================================
 
 @media (max-width: 390px) {
-  /* === CARROUSEL INDEX (index.html) === */
-
+  // Dots plus petits
   .dot {
     height: 8px;
     width: 8px;
   }
 
-  /* === FORMULAIRE DE RECHERCHE PRINCIPAL (index.html) === */
-
-  /* Empilement vertical des champs date et personnes */
+  // Empilement vertical des champs date et voyageurs
   .search-col-date,
   .search-col-who {
     display: flex;
@@ -433,6 +505,7 @@ $blanc: #ffffff;
     margin-top: 0px;
   }
 
+  // Bouton de recherche en position relative
   .searchProcess {
     position: relative;
     margin-top: 10px;

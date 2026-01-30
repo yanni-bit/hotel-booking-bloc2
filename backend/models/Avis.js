@@ -1,14 +1,22 @@
 // ============================================================================
 // AVIS.JS - MODÈLE AVIS
-// Gère les opérations sur les avis clients
+// ============================================================================
+// Ce modèle gère toutes les opérations CRUD sur les avis clients.
+// Pattern utilisé : Classe statique (méthodes sans instanciation)
+// Sécurité : Requêtes préparées (?) pour prévenir les injections SQL
 // ============================================================================
 
-const db = require('../config/database');
+const db = require("../config/database");
 
 class Avis {
-  
+  // ==========================================================================
+  // MÉTHODES DE LECTURE (READ)
+  // ==========================================================================
+
   /**
-   * Récupère les avis d'un hôtel
+   * Récupère les avis d'un hôtel spécifique
+   * @param {number} hotelId - ID de l'hôtel
+   * @param {function} callback - Fonction de rappel (err, results)
    */
   static getByHotelId(hotelId, callback) {
     const query = `
@@ -23,7 +31,7 @@ class Avis {
       ORDER BY a.date_avis DESC
       LIMIT 10
     `;
-    
+
     db.query(query, [hotelId], (err, results) => {
       if (err) {
         return callback(err, null);
@@ -33,44 +41,37 @@ class Avis {
   }
 
   /**
-   * Créer un nouvel avis (utilisateur connecté)
+   * Récupère un avis par son ID
+   * @param {number} avisId - ID de l'avis
+   * @param {function} callback - Fonction de rappel (err, result)
    */
-  static create(avisData, callback) {
+  static getById(avisId, callback) {
     const query = `
-      INSERT INTO AVIS (
-        id_hotel, 
-        id_user, 
-        pseudo_user, 
-        note, 
-        titre_avis, 
-        commentaire, 
-        date_avis, 
-        type_voyageur, 
-        langue
-      ) VALUES (?, ?, ?, ?, ?, ?, CURDATE(), ?, ?)
+      SELECT 
+        a.*,
+        h.nom_hotel,
+        u.prenom_user,
+        u.nom_user
+      FROM AVIS a
+      LEFT JOIN hotel h ON a.id_hotel = h.id_hotel
+      LEFT JOIN utilisateur u ON a.id_user = u.id_user
+      WHERE a.id_avis = ?
     `;
-    
-    const values = [
-      avisData.id_hotel,
-      avisData.id_user,
-      avisData.pseudo_user,
-      avisData.note,
-      avisData.titre_avis || null,
-      avisData.commentaire,
-      avisData.type_voyageur || 'autre',
-      avisData.langue || 'fr'
-    ];
-    
-    db.query(query, values, (err, result) => {
+
+    db.query(query, [avisId], (err, results) => {
       if (err) {
         return callback(err, null);
       }
-      callback(null, { id_avis: result.insertId });
+      if (results.length === 0) {
+        return callback(new Error("Avis non trouvé"), null);
+      }
+      callback(null, results[0]);
     });
   }
 
   /**
-   * Récupère tous les avis (admin)
+   * Récupère tous les avis (administration)
+   * @param {function} callback - Fonction de rappel (err, results)
    */
   static getAll(callback) {
     const query = `
@@ -87,7 +88,7 @@ class Avis {
       LEFT JOIN utilisateur u ON a.id_user = u.id_user
       ORDER BY a.date_avis DESC
     `;
-    
+
     db.query(query, (err, results) => {
       if (err) {
         return callback(err, null);
@@ -97,7 +98,8 @@ class Avis {
   }
 
   /**
-   * Récupère les avis récents (derniers 7 jours) - pour admin
+   * Récupère les avis récents (7 derniers jours)
+   * @param {function} callback - Fonction de rappel (err, results)
    */
   static getRecent(callback) {
     const query = `
@@ -115,7 +117,7 @@ class Avis {
       WHERE a.date_avis >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
       ORDER BY a.date_avis DESC
     `;
-    
+
     db.query(query, (err, results) => {
       if (err) {
         return callback(err, null);
@@ -125,7 +127,8 @@ class Avis {
   }
 
   /**
-   * Compte les nouveaux avis (derniers 7 jours)
+   * Compte les nouveaux avis (7 derniers jours)
+   * @param {function} callback - Fonction de rappel (err, count)
    */
   static countNew(callback) {
     const query = `
@@ -133,7 +136,7 @@ class Avis {
       FROM AVIS
       WHERE date_avis >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
     `;
-    
+
     db.query(query, (err, results) => {
       if (err) {
         return callback(err, null);
@@ -142,68 +145,86 @@ class Avis {
     });
   }
 
-  /**
-   * Supprime un avis (admin)
-   */
-  static delete(avisId, callback) {
-    const query = `DELETE FROM AVIS WHERE id_avis = ?`;
-    
-    db.query(query, [avisId], (err, result) => {
-      if (err) {
-        return callback(err, null);
-      }
-      callback(null, { deleted: result.affectedRows > 0 });
-    });
-  }
+  // ==========================================================================
+  // MÉTHODE DE CRÉATION (CREATE)
+  // ==========================================================================
 
   /**
-   * Récupère un avis par son ID
+   * Créer un nouvel avis
+   * @param {Object} avisData - Données de l'avis
+   * @param {number} avisData.id_hotel - ID de l'hôtel
+   * @param {number} avisData.id_user - ID de l'utilisateur
+   * @param {string} avisData.pseudo_user - Pseudo affiché
+   * @param {number} avisData.note - Note de 1 à 10
+   * @param {string} avisData.commentaire - Texte de l'avis
+   * @param {string} [avisData.titre_avis] - Titre optionnel
+   * @param {string} [avisData.type_voyageur] - Type de voyageur
+   * @param {string} [avisData.langue] - Code langue
+   * @param {function} callback - Fonction de rappel (err, result)
    */
-  static getById(avisId, callback) {
+  static create(avisData, callback) {
     const query = `
-      SELECT 
-        a.*,
-        h.nom_hotel,
-        u.prenom_user,
-        u.nom_user
-      FROM AVIS a
-      LEFT JOIN hotel h ON a.id_hotel = h.id_hotel
-      LEFT JOIN utilisateur u ON a.id_user = u.id_user
-      WHERE a.id_avis = ?
+      INSERT INTO AVIS (
+        id_hotel, 
+        id_user, 
+        pseudo_user, 
+        note, 
+        titre_avis, 
+        commentaire, 
+        date_avis, 
+        type_voyageur, 
+        langue
+      ) VALUES (?, ?, ?, ?, ?, ?, CURDATE(), ?, ?)
     `;
-    
-    db.query(query, [avisId], (err, results) => {
+
+    const values = [
+      avisData.id_hotel,
+      avisData.id_user,
+      avisData.pseudo_user,
+      avisData.note,
+      avisData.titre_avis || null,
+      avisData.commentaire,
+      avisData.type_voyageur || "autre",
+      avisData.langue || "fr",
+    ];
+
+    db.query(query, values, (err, result) => {
       if (err) {
         return callback(err, null);
       }
-      if (results.length === 0) {
-        return callback(new Error('Avis non trouvé'), null);
-      }
-      callback(null, results[0]);
+      callback(null, { id_avis: result.insertId });
     });
   }
 
+  // ==========================================================================
+  // MÉTHODE DE MISE À JOUR (UPDATE)
+  // ==========================================================================
+
   /**
-   * Met à jour un avis (uniquement par son créateur)
+   * Met à jour un avis existant (uniquement par son créateur)
+   * @param {number} avisId - ID de l'avis à modifier
+   * @param {number} userId - ID de l'utilisateur (vérification de propriété)
+   * @param {Object} avisData - Nouvelles données
+   * @param {function} callback - Fonction de rappel (err, result)
    */
   static update(avisId, userId, avisData, callback) {
-    // Vérifier que l'avis appartient à l'utilisateur
+    // Étape 1 : Vérifier que l'avis appartient à l'utilisateur
     const checkQuery = `SELECT id_user FROM AVIS WHERE id_avis = ?`;
-    
+
     db.query(checkQuery, [avisId], (err, results) => {
       if (err) {
         return callback(err, null);
       }
-      
+
       if (results.length === 0) {
-        return callback(new Error('Avis non trouvé'), null);
+        return callback(new Error("Avis non trouvé"), null);
       }
-      
+
       if (results[0].id_user !== userId) {
-        return callback(new Error('Non autorisé à modifier cet avis'), null);
+        return callback(new Error("Non autorisé à modifier cet avis"), null);
       }
-      
-      // Mettre à jour l'avis
+
+      // Étape 2 : Mettre à jour l'avis
       const updateQuery = `
         UPDATE AVIS SET
           note = ?,
@@ -213,23 +234,43 @@ class Avis {
           pays_origine = ?
         WHERE id_avis = ? AND id_user = ?
       `;
-      
+
       const values = [
         avisData.note,
         avisData.titre_avis || null,
         avisData.commentaire,
-        avisData.type_voyageur || 'autre',
+        avisData.type_voyageur || "autre",
         avisData.pays_origine || null,
         avisId,
-        userId
+        userId,
       ];
-      
+
       db.query(updateQuery, values, (err, result) => {
         if (err) {
           return callback(err, null);
         }
         callback(null, { updated: result.affectedRows > 0 });
       });
+    });
+  }
+
+  // ==========================================================================
+  // MÉTHODE DE SUPPRESSION (DELETE)
+  // ==========================================================================
+
+  /**
+   * Supprime un avis (administration)
+   * @param {number} avisId - ID de l'avis à supprimer
+   * @param {function} callback - Fonction de rappel (err, result)
+   */
+  static delete(avisId, callback) {
+    const query = `DELETE FROM AVIS WHERE id_avis = ?`;
+
+    db.query(query, [avisId], (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, { deleted: result.affectedRows > 0 });
     });
   }
 }

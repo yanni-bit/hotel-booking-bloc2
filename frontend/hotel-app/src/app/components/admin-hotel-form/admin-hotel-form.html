@@ -1,7 +1,27 @@
+<!-- ============================================================================
+     FICHIER : admin-hotel-form.component.html
+     DESCRIPTION : Formulaire de création/édition d'un hôtel avec gestion
+                   des services associés (prix et disponibilité)
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - En-tête avec navigation
+       - Formulaire principal :
+         * Informations générales (nom, étoiles, description)
+         * Adresse (rue, CP, ville, pays)
+         * Contact (téléphone, email, site web)
+         * Image & Localisation (URL image, coordonnées GPS)
+         * Services de l'hôtel (mode édition uniquement)
+       - Boutons d'action (Soumettre / Annuler)
+     ============================================================================ -->
+
 <main class="admin-hotel-form-page py-5">
   <div class="container">
 
-    <!-- En-tête -->
+    <!-- ====================================================================
+         EN-TÊTE AVEC NAVIGATION
+         ==================================================================== -->
     <div class="mb-4">
       <a [routerLink]="['/admin/hotels']" class="text-muted me-3">
         <i class="bi bi-arrow-left"></i> Retour à la liste
@@ -12,24 +32,32 @@
       </h1>
     </div>
 
-    <!-- Formulaire -->
+    <!-- ====================================================================
+         FORMULAIRE PRINCIPAL
+         ==================================================================== -->
     <div class="card border-0 shadow-sm">
       <div class="card-body p-4">
 
         <form (ngSubmit)="onSubmit()">
 
-          <!-- SECTION INFORMATIONS GÉNÉRALES -->
+          <!-- ============================================================
+               SECTION : INFORMATIONS GÉNÉRALES
+               ============================================================ -->
           <h5 class="mb-3 text-turquoise">Informations générales</h5>
 
           <div class="row mb-3">
-            <!-- Nom -->
+            <!-- ----------------------------------------
+                 Champ : Nom de l'hôtel (obligatoire)
+                 ---------------------------------------- -->
             <div class="col-md-8">
               <label class="form-label fw-bold">Nom de l'hôtel *</label>
               <input type="text" class="form-control" [(ngModel)]="hotel.nom_hotel" name="nom_hotel"
                 placeholder="Hôtel Paradise" required>
             </div>
 
-            <!-- Étoiles -->
+            <!-- ----------------------------------------
+                 Champ : Nombre d'étoiles
+                 ---------------------------------------- -->
             <div class="col-md-4">
               <label class="form-label fw-bold">Nombre d'étoiles *</label>
               <select class="form-select" [(ngModel)]="hotel.nbre_etoile_hotel" name="nbre_etoile_hotel">
@@ -42,7 +70,9 @@
             </div>
           </div>
 
-          <!-- Description -->
+          <!-- ----------------------------------------
+               Champ : Description
+               ---------------------------------------- -->
           <div class="mb-3">
             <label class="form-label fw-bold">Description</label>
             <textarea class="form-control" rows="4" [(ngModel)]="hotel.description_hotel" name="description_hotel"
@@ -51,11 +81,15 @@
 
           <hr class="my-4">
 
-          <!-- SECTION ADRESSE -->
+          <!-- ============================================================
+               SECTION : ADRESSE
+               ============================================================ -->
           <h5 class="mb-3 text-turquoise">Adresse</h5>
 
+          <!-- ----------------------------------------
+               Champ : Rue (obligatoire)
+               ---------------------------------------- -->
           <div class="row mb-3">
-            <!-- Rue -->
             <div class="col-md-12">
               <label class="form-label fw-bold">Rue *</label>
               <input type="text" class="form-control" [(ngModel)]="hotel.rue_hotel" name="rue_hotel"
@@ -64,21 +98,27 @@
           </div>
 
           <div class="row mb-3">
-            <!-- Code postal -->
+            <!-- ----------------------------------------
+                 Champ : Code postal (obligatoire)
+                 ---------------------------------------- -->
             <div class="col-md-4">
               <label class="form-label fw-bold">Code postal *</label>
               <input type="text" class="form-control" [(ngModel)]="hotel.code_postal_hotel" name="code_postal_hotel"
                 placeholder="75008" required>
             </div>
 
-            <!-- Ville -->
+            <!-- ----------------------------------------
+                 Champ : Ville (obligatoire)
+                 ---------------------------------------- -->
             <div class="col-md-4">
               <label class="form-label fw-bold">Ville *</label>
               <input type="text" class="form-control" [(ngModel)]="hotel.ville_hotel" name="ville_hotel"
                 placeholder="Paris" required>
             </div>
 
-            <!-- Pays -->
+            <!-- ----------------------------------------
+                 Champ : Pays (obligatoire)
+                 ---------------------------------------- -->
             <div class="col-md-4">
               <label class="form-label fw-bold">Pays *</label>
               <input type="text" class="form-control" [(ngModel)]="hotel.pays_hotel" name="pays_hotel"
@@ -88,25 +128,33 @@
 
           <hr class="my-4">
 
-          <!-- SECTION CONTACT -->
+          <!-- ============================================================
+               SECTION : CONTACT
+               ============================================================ -->
           <h5 class="mb-3 text-turquoise">Contact</h5>
 
           <div class="row mb-3">
-            <!-- Téléphone -->
+            <!-- ----------------------------------------
+                 Champ : Téléphone
+                 ---------------------------------------- -->
             <div class="col-md-4">
               <label class="form-label fw-bold">Téléphone</label>
               <input type="tel" class="form-control" [(ngModel)]="hotel.tel_hotel" name="tel_hotel"
                 placeholder="+33 1 23 45 67 89">
             </div>
 
-            <!-- Email -->
+            <!-- ----------------------------------------
+                 Champ : Email
+                 ---------------------------------------- -->
             <div class="col-md-4">
               <label class="form-label fw-bold">Email</label>
               <input type="email" class="form-control" [(ngModel)]="hotel.email_hotel" name="email_hotel"
                 placeholder="contact@hotel.com">
             </div>
 
-            <!-- Site web -->
+            <!-- ----------------------------------------
+                 Champ : Site web
+                 ---------------------------------------- -->
             <div class="col-md-4">
               <label class="form-label fw-bold">Site web</label>
               <input type="url" class="form-control" [(ngModel)]="hotel.site_web_hotel" name="site_web_hotel"
@@ -116,11 +164,15 @@
 
           <hr class="my-4">
 
-          <!-- SECTION IMAGE & LOCALISATION -->
+          <!-- ============================================================
+               SECTION : IMAGE & LOCALISATION
+               ============================================================ -->
           <h5 class="mb-3 text-turquoise">Image & Localisation</h5>
 
+          <!-- ----------------------------------------
+               Champ : URL de l'image
+               ---------------------------------------- -->
           <div class="row mb-3">
-            <!-- URL Image -->
             <div class="col-md-12">
               <label class="form-label fw-bold">URL de l'image</label>
               <input type="url" class="form-control" [(ngModel)]="hotel.img_hotel" name="img_hotel"
@@ -132,14 +184,18 @@
           </div>
 
           <div class="row mb-4">
-            <!-- Latitude -->
+            <!-- ----------------------------------------
+                 Champ : Latitude GPS
+                 ---------------------------------------- -->
             <div class="col-md-6">
               <label class="form-label fw-bold">Latitude</label>
               <input type="number" step="0.000001" class="form-control" [(ngModel)]="hotel.latitude" name="latitude"
                 placeholder="48.856614">
             </div>
 
-            <!-- Longitude -->
+            <!-- ----------------------------------------
+                 Champ : Longitude GPS
+                 ---------------------------------------- -->
             <div class="col-md-6">
               <label class="form-label fw-bold">Longitude</label>
               <input type="number" step="0.000001" class="form-control" [(ngModel)]="hotel.longitude" name="longitude"
@@ -147,7 +203,10 @@
             </div>
           </div>
 
-          <!-- SECTION SERVICES (uniquement en mode édition) -->
+          <!-- ============================================================
+               SECTION : SERVICES DE L'HÔTEL (Mode édition uniquement)
+               Tableau avec prix et disponibilité de chaque service
+               ============================================================ -->
           @if (isEditMode && hotelServices.length > 0) {
           <hr class="my-4">
 
@@ -166,19 +225,24 @@
                 </tr>
               </thead>
               <tbody>
+                <!-- Boucle sur les services de l'hôtel -->
                 @for (service of hotelServices; track service.id_hotel_service; let i = $index) {
                 <tr>
+                  <!-- Nom du service avec icône -->
                   <td class="align-middle">
                     <i class="bi {{ service.icone_service }} me-2 text-turquoise"></i>
                     <strong>{{ service.nom_service }}</strong>
                   </td>
+                  <!-- Type de facturation -->
                   <td class="align-middle">
                     <small class="text-muted">{{ getTypeLabel(service.type_service) }}</small>
                   </td>
+                  <!-- Prix éditable -->
                   <td>
                     <input type="number" class="form-control form-control-sm"
                       [(ngModel)]="hotelServices[i].prix_service" name="prix_{{i}}" min="0" step="0.01">
                   </td>
+                  <!-- Checkbox disponibilité -->
                   <td class="text-center align-middle">
                     <input class="form-check-input" type="checkbox"
                       [attr.checked]="service.disponible == 1 ? true : null"
@@ -191,8 +255,11 @@
           </div>
           }
 
-          <!-- Boutons -->
+          <!-- ============================================================
+               BOUTONS D'ACTION
+               ============================================================ -->
           <div class="d-flex gap-2">
+            <!-- Bouton Soumettre -->
             <button type="submit" class="btn btn-primary" [disabled]="submitting">
               <span *ngIf="!submitting">
                 <i class="bi bi-check-circle me-2"></i>
@@ -204,6 +271,7 @@
               </span>
             </button>
 
+            <!-- Bouton Annuler -->
             <a [routerLink]="['/admin/hotels']" class="btn btn-secondary">
               <i class="bi bi-x-circle me-2"></i>Annuler
             </a>

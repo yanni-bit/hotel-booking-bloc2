@@ -1,6 +1,28 @@
+// ============================================================================
+// FICHIER : criteres.component.scss
+// DESCRIPTION : Styles de la section Critères de sélection des hôtels
+//               Cartes informatives avec effet hover
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Section conteneur (.criteres-section)
+//   - Cartes d'information (.info-card)
+//   - Contenu des cartes (.info-card-body, .info-card-title, .info-card-text)
+// VARIABLES CSS UTILISÉES :
+//   --marron-clair (fond de section)
+//   --turquoise (titre des cartes)
+//   --gris-fonce (texte)
+//   --font-secondaire (police du texte)
+// LAYOUT :
+//   - Grid Bootstrap : 4 colonnes (lg) / 2 colonnes (md) / 1 colonne (sm)
+//   - Cartes avec hauteur égale (h-100)
+// ============================================================================
+
 /* ==========================================================
-   SECTION CRITÈRES DE SÉLECTION (index.html)
-   ---------------------------------------------------------- */
+   SECTION CRITÈRES DE SÉLECTION
+   Container avec fond marron clair
+   ========================================================== */
 
 .criteres-section {
   background-color: var(--marron-clair);
@@ -8,33 +30,49 @@
   padding-top: 40px;
 }
 
+// Alignement des cartes pour hauteurs égales
 .criteres-section .container .row {
   align-items: stretch;
 }
 
-/* === Cards d'information (.info-card) - Partagé avec contact.html mais stylé différemment === */
+/* ==========================================================
+   CARTES D'INFORMATION (.info-card)
+   Cartes avec dégradé de fond et effet hover
+   ========================================================== */
 
-/* Remarque : la classe .info-card est aussi dans contact.html, mais le style dans index est plus spécifique */
-.criteres-section .info-card { 
+// Note : la classe .info-card est aussi utilisée dans contact.html
+// mais le style ici est spécifique à la section critères
+.criteres-section .info-card {
   height: 100%;
-  /* Dégradé de fond pour les cartes de critères */
+
+  // Dégradé de fond blanc vers gris clair
   background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(242, 242, 242, 1) 100%);
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
+// Effet hover : élévation et ombre plus prononcée
 .criteres-section .info-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
+/* ==========================================================
+   CONTENU DES CARTES
+   Corps, titre et texte descriptif
+   ========================================================== */
+
+// Corps de la carte avec padding
 .info-card-body {
   padding: 25px 20px;
   text-align: left;
 }
 
+// Titre en turquoise avec bordure inférieure
 .info-card-title {
   font-size: 18px;
   font-weight: 700;
@@ -43,10 +81,10 @@
   border-bottom: 1px solid #ddd;
 }
 
+// Texte descriptif avec police secondaire
 .info-card-text {
   color: var(--gris-fonce);
   font-size: 14px;
   line-height: 1.6;
   font-family: var(--font-secondaire);
 }
-

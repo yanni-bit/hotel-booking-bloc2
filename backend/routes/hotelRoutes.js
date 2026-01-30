@@ -1,6 +1,30 @@
 // ============================================================================
-// HOTELROUTES.JS - ROUTES API HÔTELS
-// Définit les endpoints pour les hôtels
+// FICHIER : hotelRoutes.js
+// DESCRIPTION : Routes API pour la gestion des hôtels et chambres
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// ROUTES PUBLIQUES - HÔTELS :
+//   - GET /api/hotels                              → Liste tous les hôtels
+//   - GET /api/hotels/:id                          → Détails d'un hôtel
+//   - GET /api/hotels/:id/chambres                 → Chambres d'un hôtel
+//   - GET /api/hotels/:id/avis                     → Avis d'un hôtel
+//   - GET /api/hotels/popular/:city                → Hôtels populaires d'une ville
+//   - GET /api/hotels/popular-by-country/:country  → Hôtels populaires d'un pays
+//   - GET /api/hotels/deal-of-day/:country         → Offre du jour d'un pays
+//
+// ROUTES PUBLIQUES - RECHERCHE :
+//   - GET /api/search                              → Recherche full-text
+//   - GET /api/destinations                        → Nombre d'hôtels par ville
+//   - GET /api/cities                              → Liste des villes distinctes
+//
+// ROUTES PUBLIQUES - CHAMBRES :
+//   - GET /api/chambres/:id                        → Détails d'une chambre avec offres
+//
+// ROUTES ADMIN - GESTION HÔTELS :
+//   - POST   /api/hotels                           → Créer un hôtel
+//   - PUT    /api/hotels/:id                       → Modifier un hôtel
+//   - DELETE /api/hotels/:id                       → Supprimer un hôtel
 // ============================================================================
 
 const HotelController = require("../controllers/hotelController");
@@ -9,29 +33,45 @@ const AvisController = require("../controllers/avisController");
 const Hotel = require("../models/Hotel");
 const db = require("../config/database");
 
+// ============================================================================
+// FONCTION PRINCIPALE - ROUTEUR HÔTELS
+// ============================================================================
+
+/**
+ * Routeur principal pour les routes des hôtels
+ * Gère la consultation, recherche et administration des hôtels
+ * @function hotelRoutes
+ * @param {Object} req - Objet requête HTTP avec pathname et method
+ * @param {Object} res - Objet réponse HTTP
+ * @returns {void}
+ */
 function hotelRoutes(req, res) {
   const pathname = req.pathname;
   const method = req.method;
 
-  // ========================================
+  // ==========================================================================
+  // ROUTES PUBLIQUES - LISTE ET RECHERCHE
+  // ==========================================================================
+
+  // ----------------------------------------
   // GET /api/hotels - Liste tous les hôtels
-  // ========================================
+  // ----------------------------------------
   if (pathname === "/api/hotels" && method === "GET") {
     HotelController.getAllHotels(req, res);
     return;
   }
 
-  // ========================================
+  // ----------------------------------------
   // GET /api/destinations - Nombre d'hôtels par ville
-  // ========================================
+  // ----------------------------------------
   if (pathname === "/api/destinations" && method === "GET") {
     HotelController.getDestinationsCount(req, res);
     return;
   }
 
-  // ========================================
+  // ----------------------------------------
   // GET /api/cities - Liste des villes distinctes
-  // ========================================
+  // ----------------------------------------
   if (pathname === "/api/cities" && method === "GET") {
     db.query(
       "SELECT DISTINCT ville_hotel FROM hotel ORDER BY ville_hotel ASC",
@@ -44,7 +84,7 @@ function hotelRoutes(req, res) {
             JSON.stringify({
               success: false,
               message: "Erreur serveur",
-            })
+            }),
           );
           return;
         }
@@ -57,16 +97,16 @@ function hotelRoutes(req, res) {
           JSON.stringify({
             success: true,
             data: cities,
-          })
+          }),
         );
-      }
+      },
     );
     return;
   }
 
-  // ========================================
+  // ----------------------------------------
   // GET /api/search?q=xxx&page=1 - Recherche full-text hôtels avec pagination
-  // ========================================
+  // ----------------------------------------
   if (pathname === "/api/search" && method === "GET") {
     const query = req.query.q;
     const page = parseInt(req.query.page) || 1;
@@ -80,7 +120,7 @@ function hotelRoutes(req, res) {
         JSON.stringify({
           success: false,
           message: "Paramètre de recherche requis",
-        })
+        }),
       );
       return;
     }
@@ -127,7 +167,7 @@ function hotelRoutes(req, res) {
             res.statusCode = 500;
             res.setHeader("Content-Type", "application/json");
             res.end(
-              JSON.stringify({ success: false, message: "Erreur serveur" })
+              JSON.stringify({ success: false, message: "Erreur serveur" }),
             );
             return;
           }
@@ -145,17 +185,21 @@ function hotelRoutes(req, res) {
                 perPage: limit,
               },
               data: results,
-            })
+            }),
           );
-        }
+        },
       );
     });
     return;
   }
 
-  // ========================================
+  // ==========================================================================
+  // ROUTES PUBLIQUES - HÔTELS POPULAIRES ET OFFRES
+  // ==========================================================================
+
+  // ----------------------------------------
   // GET /api/hotels/deal-of-day/:country?exclude=:id - Offre du jour d'un pays
-  // ========================================
+  // ----------------------------------------
   if (
     pathname.match(/^\/api\/hotels\/deal-of-day\/[^/]+$/) &&
     method === "GET"
@@ -166,9 +210,9 @@ function hotelRoutes(req, res) {
     return;
   }
 
-  // ========================================
+  // ----------------------------------------
   // GET /api/hotels/popular-by-country/:country?exclude=:id - Hôtels populaires d'un pays
-  // ========================================
+  // ----------------------------------------
   if (
     pathname.match(/^\/api\/hotels\/popular-by-country\/[^/]+$/) &&
     method === "GET"
@@ -179,36 +223,40 @@ function hotelRoutes(req, res) {
     return;
   }
 
-  // ========================================
-  // GET /api/hotels/:id/chambres - Chambres d'un hôtel
-  // ========================================
-  if (pathname.match(/^\/api\/hotels\/\d+\/chambres$/) && method === "GET") {
-    const hotelId = pathname.split("/")[3];
-    ChambreController.getChambresByHotelId(req, res, hotelId);
-    return;
-  }
-
-  // ========================================
-  // GET /api/hotels/:id/avis - Avis d'un hôtel
-  // ========================================
-  if (pathname.match(/^\/api\/hotels\/\d+\/avis$/) && method === "GET") {
-    const hotelId = pathname.split("/")[3];
-    AvisController.getAvisByHotelId(req, res, hotelId);
-    return;
-  }
-
-  // ========================================
+  // ----------------------------------------
   // GET /api/hotels/popular/:city - Hôtels populaires d'une ville
-  // ========================================
+  // ----------------------------------------
   if (pathname.match(/^\/api\/hotels\/popular\/[^/]+$/) && method === "GET") {
     const city = decodeURIComponent(pathname.split("/")[4]);
     HotelController.getPopularHotels(req, res, city);
     return;
   }
 
-  // ========================================
+  // ==========================================================================
+  // ROUTES PUBLIQUES - DÉTAILS HÔTEL
+  // ==========================================================================
+
+  // ----------------------------------------
+  // GET /api/hotels/:id/chambres - Chambres d'un hôtel
+  // ----------------------------------------
+  if (pathname.match(/^\/api\/hotels\/\d+\/chambres$/) && method === "GET") {
+    const hotelId = pathname.split("/")[3];
+    ChambreController.getChambresByHotelId(req, res, hotelId);
+    return;
+  }
+
+  // ----------------------------------------
+  // GET /api/hotels/:id/avis - Avis d'un hôtel
+  // ----------------------------------------
+  if (pathname.match(/^\/api\/hotels\/\d+\/avis$/) && method === "GET") {
+    const hotelId = pathname.split("/")[3];
+    AvisController.getAvisByHotelId(req, res, hotelId);
+    return;
+  }
+
+  // ----------------------------------------
   // GET /api/hotels/:id - Détails d'un hôtel
-  // ========================================
+  // ----------------------------------------
   if (pathname.match(/^\/api\/hotels\/\d+$/) && method === "GET") {
     const id = pathname.split("/")[3];
 
@@ -219,7 +267,7 @@ function hotelRoutes(req, res) {
         JSON.stringify({
           success: false,
           message: "ID invalide",
-        })
+        }),
       );
       return;
     }
@@ -228,9 +276,13 @@ function hotelRoutes(req, res) {
     return;
   }
 
-  // ========================================
+  // ==========================================================================
+  // ROUTES PUBLIQUES - CHAMBRES
+  // ==========================================================================
+
+  // ----------------------------------------
   // GET /api/chambres/:id - Détails d'une chambre avec offres
-  // ========================================
+  // ----------------------------------------
   if (pathname.match(/^\/api\/chambres\/\d+$/) && method === "GET") {
     const chambreId = pathname.split("/")[3];
 
@@ -245,7 +297,7 @@ function hotelRoutes(req, res) {
           JSON.stringify({
             success: false,
             message: "Erreur serveur",
-          })
+          }),
         );
         return;
       }
@@ -257,7 +309,7 @@ function hotelRoutes(req, res) {
           JSON.stringify({
             success: false,
             message: "Chambre non trouvée",
-          })
+          }),
         );
         return;
       }
@@ -296,15 +348,19 @@ function hotelRoutes(req, res) {
         JSON.stringify({
           success: true,
           data: chambre,
-        })
+        }),
       );
     });
     return;
   }
 
-  // ========================================
-  // POST /api/hotels - Créer un hôtel
-  // ========================================
+  // ==========================================================================
+  // ROUTES ADMIN - GESTION DES HÔTELS (CRUD)
+  // ==========================================================================
+
+  // ----------------------------------------
+  // POST /api/hotels - Créer un hôtel (admin)
+  // ----------------------------------------
   if (pathname === "/api/hotels" && method === "POST") {
     let body = "";
 
@@ -325,7 +381,7 @@ function hotelRoutes(req, res) {
               JSON.stringify({
                 success: false,
                 message: "Erreur lors de la création de l'hôtel",
-              })
+              }),
             );
             return;
           }
@@ -337,7 +393,7 @@ function hotelRoutes(req, res) {
               success: true,
               message: "Hôtel créé avec succès",
               data: result,
-            })
+            }),
           );
         });
       } catch (error) {
@@ -347,16 +403,16 @@ function hotelRoutes(req, res) {
           JSON.stringify({
             success: false,
             message: "Données invalides",
-          })
+          }),
         );
       }
     });
     return;
   }
 
-  // ========================================
-  // PUT /api/hotels/:id - Mettre à jour un hôtel
-  // ========================================
+  // ----------------------------------------
+  // PUT /api/hotels/:id - Mettre à jour un hôtel (admin)
+  // ----------------------------------------
   if (pathname.match(/^\/api\/hotels\/\d+$/) && method === "PUT") {
     const hotelId = pathname.split("/")[3];
     let body = "";
@@ -378,7 +434,7 @@ function hotelRoutes(req, res) {
               JSON.stringify({
                 success: false,
                 message: "Erreur lors de la mise à jour de l'hôtel",
-              })
+              }),
             );
             return;
           }
@@ -389,7 +445,7 @@ function hotelRoutes(req, res) {
             JSON.stringify({
               success: true,
               message: "Hôtel mis à jour avec succès",
-            })
+            }),
           );
         });
       } catch (error) {
@@ -399,16 +455,16 @@ function hotelRoutes(req, res) {
           JSON.stringify({
             success: false,
             message: "Données invalides",
-          })
+          }),
         );
       }
     });
     return;
   }
 
-  // ========================================
-  // DELETE /api/hotels/:id - Supprimer un hôtel
-  // ========================================
+  // ----------------------------------------
+  // DELETE /api/hotels/:id - Supprimer un hôtel (admin)
+  // ----------------------------------------
   if (pathname.match(/^\/api\/hotels\/\d+$/) && method === "DELETE") {
     const hotelId = pathname.split("/")[3];
 
@@ -421,7 +477,7 @@ function hotelRoutes(req, res) {
           JSON.stringify({
             success: false,
             message: "Erreur lors de la suppression de l'hôtel",
-          })
+          }),
         );
         return;
       }
@@ -432,23 +488,26 @@ function hotelRoutes(req, res) {
         JSON.stringify({
           success: true,
           message: "Hôtel supprimé avec succès",
-        })
+        }),
       );
     });
     return;
   }
 
-  // ========================================
-  // Route non trouvée
-  // ========================================
+  // ==========================================================================
+  // ROUTE NON TROUVÉE
+  // ==========================================================================
   res.statusCode = 404;
   res.setHeader("Content-Type", "application/json");
   res.end(
     JSON.stringify({
       success: false,
       message: "Route non trouvée",
-    })
+    }),
   );
 }
 
+// ============================================================================
+// EXPORT DU MODULE
+// ============================================================================
 module.exports = hotelRoutes;

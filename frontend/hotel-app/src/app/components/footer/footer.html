@@ -1,7 +1,37 @@
+<!-- ============================================================================
+     FICHIER : footer.component.html
+     DESCRIPTION : Footer du site avec informations de contact, liens support,
+                   réseaux sociaux, newsletter et liens légaux
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     STRUCTURE :
+       - Footer principal (4 colonnes) :
+         * Colonne 1 : Informations de contact (adresse, téléphone, email)
+         * Colonne 2 : Support client (FAQ, guides, liens utiles)
+         * Colonne 3 : Réseaux sociaux (6 icônes)
+         * Colonne 4 : Newsletter (formulaire d'inscription)
+       - Bas de page :
+         * Copyright
+         * Navigation liens légaux (About, Contact, Terms, Privacy, etc.)
+     ACCESSIBILITÉ :
+       - role="contentinfo" sur le footer
+       - aria-label sur les liens sociaux
+       - aria-required sur le champ email
+       - label visually-hidden pour le champ email
+     ============================================================================ -->
+
+<!-- ========================================================================
+     FOOTER PRINCIPAL - 4 COLONNES
+     ======================================================================== -->
 <footer class="container-fluid mt-1" role="contentinfo">
     <div>
         <div class="row">
 
+            <!-- ============================================================
+                 COLONNE 1 : INFORMATIONS DE CONTACT
+                 Nom de l'entreprise, adresse, téléphone, email
+                 ============================================================ -->
             <div class="col-lg-3 footer_contact">
                 <div class="p-3">
                     <h2>{{ 'footer.company' | translate }}</h2>
@@ -11,21 +41,34 @@
                 </div>
             </div>
 
+            <!-- ============================================================
+                 COLONNE 2 : SUPPORT CLIENT
+                 Liens vers FAQ, guides et pages d'aide
+                 ============================================================ -->
             <div class="col-lg-3">
                 <div class="p-3 footer_support">
                     <h2>{{ 'footer.support' | translate }}</h2>
                     <ul>
-                        <li><a routerLink="/faq" [title]="'footer.faq' | translate">{{ 'footer.faq' | translate }}</a></li>
-                        <li><a routerLink="/how-to-book" [title]="'footer.howToBook' | translate">{{ 'footer.howToBook' | translate }}</a></li>
-                        <li><a routerLink="/payment-options" [title]="'footer.paymentOptions' | translate">{{ 'footer.paymentOptions' | translate }}</a></li>
-                        <li><a routerLink="/booking-tips" [title]="'footer.bookingTips' | translate">{{ 'footer.bookingTips' | translate }}</a></li>
+                        <li><a routerLink="/faq" [title]="'footer.faq' | translate">{{ 'footer.faq' | translate }}</a>
+                        </li>
+                        <li><a routerLink="/how-to-book" [title]="'footer.howToBook' | translate">{{ 'footer.howToBook'
+                                | translate }}</a></li>
+                        <li><a routerLink="/payment-options" [title]="'footer.paymentOptions' | translate">{{
+                                'footer.paymentOptions' | translate }}</a></li>
+                        <li><a routerLink="/booking-tips" [title]="'footer.bookingTips' | translate">{{
+                                'footer.bookingTips' | translate }}</a></li>
                     </ul>
                 </div>
             </div>
 
+            <!-- ============================================================
+                 COLONNE 3 : RÉSEAUX SOCIAUX
+                 6 icônes avec liens externes (target="_blank")
+                 ============================================================ -->
             <div class="col-lg-3">
                 <div class="p-3 footer_follow">
                     <h2>{{ 'footer.followUs' | translate }}</h2>
+                    <!-- Boucle sur les réseaux sociaux -->
                     <ul class="list-unstyled d-flex gap-2 mt-3">
                         <li *ngFor="let social of socialLinks">
                             <a [href]="social.url" [attr.aria-label]="social.ariaLabel" target="_blank">
@@ -36,18 +79,28 @@
                 </div>
             </div>
 
+            <!-- ============================================================
+                 COLONNE 4 : NEWSLETTER
+                 Formulaire d'inscription avec email et bouton
+                 ============================================================ -->
             <div class="col-lg-3">
                 <div class="p-3 footer_newsletter">
                     <h2>{{ 'footer.newsletter' | translate }}</h2>
                     <p>{{ 'footer.newsletterText' | translate }}</p>
+                    <!-- Formulaire newsletter -->
                     <form (ngSubmit)="subscribeToNewsletter()">
-                        <label for="newsletter-email" class="visually-hidden">{{ 'footer.emailPlaceholder' | translate }}</label>
+                        <!-- Label caché visuellement mais accessible aux lecteurs d'écran -->
+                        <label for="newsletter-email" class="visually-hidden">{{ 'footer.emailPlaceholder' | translate
+                            }}</label>
                         <div class="input-group">
-                            <input type="email" id="newsletter-email" class="form-control" [placeholder]="'footer.emailPlaceholder' | translate"
-                                required aria-required="true" [attr.aria-label]="'footer.emailPlaceholder' | translate" name="newsletterEmail"
+                            <input type="email" id="newsletter-email" class="form-control"
+                                [placeholder]="'footer.emailPlaceholder' | translate" required aria-required="true"
+                                [attr.aria-label]="'footer.emailPlaceholder' | translate" name="newsletterEmail"
                                 [(ngModel)]="newsletterEmail">
                             <button class="btn btn-dark" type="submit"
-                                [attr.aria-label]="'footer.subscribeAriaLabel' | translate">{{ 'footer.subscribe' | translate }}</button>
+                                [attr.aria-label]="'footer.subscribeAriaLabel' | translate">
+                                {{ 'footer.subscribe' | translate }}
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -56,19 +109,33 @@
         </div>
     </div>
 </footer>
+
+<!-- ========================================================================
+     BAS DE PAGE - COPYRIGHT ET LIENS LÉGAUX
+     ======================================================================== -->
 <div class="bottom w-100 p-3">
+    <!-- Copyright -->
     <p class="copy">{{ 'footer.copyright' | translate }}</p>
 
+    <!-- Navigation des liens légaux -->
     <nav>
         <ul class="list-inline text-center mb-0">
-            <li class="list-inline-item"><a routerLink="/about" [title]="'footer.aboutUs' | translate">{{ 'footer.aboutUs' | translate }}</a></li>
-            <li class="list-inline-item"><a routerLink="/contact" [title]="'nav.contact' | translate">{{ 'nav.contact' | translate }}</a></li>
-            <li class="list-inline-item"><a routerLink="/partners" [title]="'footer.partners' | translate">{{ 'footer.partners' | translate }}</a></li>
-            <li class="list-inline-item"><a routerLink="/customer-service" [title]="'footer.customerService' | translate">{{ 'footer.customerService' | translate }}</a></li>
-            <li class="list-inline-item"><a routerLink="/faq" [title]="'footer.faq' | translate">{{ 'footer.faq' | translate }}</a></li>
-            <li class="list-inline-item"><a routerLink="/careers" [title]="'footer.careers' | translate">{{ 'footer.careers' | translate }}</a></li>
-            <li class="list-inline-item"><a routerLink="/terms" [title]="'footer.terms' | translate">{{ 'footer.terms' | translate }}</a></li>
-            <li class="list-inline-item"><a routerLink="/privacy" [title]="'footer.privacy' | translate">{{ 'footer.privacy' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/about" [title]="'footer.aboutUs' | translate">{{
+                    'footer.aboutUs' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/contact" [title]="'nav.contact' | translate">{{ 'nav.contact' |
+                    translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/partners" [title]="'footer.partners' | translate">{{
+                    'footer.partners' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/customer-service"
+                    [title]="'footer.customerService' | translate">{{ 'footer.customerService' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/faq" [title]="'footer.faq' | translate">{{ 'footer.faq' |
+                    translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/careers" [title]="'footer.careers' | translate">{{
+                    'footer.careers' | translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/terms" [title]="'footer.terms' | translate">{{ 'footer.terms' |
+                    translate }}</a></li>
+            <li class="list-inline-item"><a routerLink="/privacy" [title]="'footer.privacy' | translate">{{
+                    'footer.privacy' | translate }}</a></li>
         </ul>
     </nav>
 </div>

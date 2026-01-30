@@ -1,7 +1,29 @@
+// ============================================================================
+// FICHIER : footer.component.scss
+// DESCRIPTION : Styles du footer avec informations de contact, support,
+//               réseaux sociaux, newsletter et liens légaux
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Container footer principal
+//   - Sections du footer (contact, support, follow, newsletter)
+//   - Titres et textes
+//   - Puces turquoise du support
+//   - Icônes réseaux sociaux
+//   - Formulaire newsletter
+//   - Bas de page (copyright, liens légaux)
+//   - Responsive (tablettes, mobiles)
+// VARIABLES CSS UTILISÉES :
+//   --blanc (fond footer)
+//   --gris-moyen (textes)
+//   --turquoise (accents, hover)
+//   --marron (fond icônes sociales, bouton newsletter)
+// ============================================================================
+
 /* ==========================================================
-   FOOTER (index.html, room.html, booking.html, contact.html)
-   ----------------------------------------------------------
-   Styles spécifiques au footer de base
+   FOOTER PRINCIPAL
+   Container avec fond blanc et largeur limitée
    ========================================================== */
 
 footer.container-fluid {
@@ -11,12 +33,15 @@ footer.container-fluid {
   color: var(--gris-moyen);
   text-align: center;
   font-weight: 700;
-  max-width: 98%; /* Limite la largeur du footer */
+  max-width: 98%; // Limite la largeur du footer
   margin-left: auto;
   margin-right: auto;
 }
 
-/* === Sections du footer === */
+/* ==========================================================
+   SECTIONS DU FOOTER (4 colonnes)
+   Alignement à gauche pour chaque section
+   ========================================================== */
 
 .footer_contact,
 .footer_support,
@@ -25,11 +50,17 @@ footer.container-fluid {
   text-align: left;
 }
 
+/* ==========================================================
+   TITRES ET TEXTES
+   ========================================================== */
+
+// Titres des sections (h2)
 footer.container-fluid h2 {
   font-size: 20px;
   color: var(--gris-moyen);
 }
 
+// Paragraphes et liens
 footer.container-fluid p,
 .footer li,
 .footer a {
@@ -37,17 +68,23 @@ footer.container-fluid p,
   color: var(--gris-moyen);
 }
 
+// Espacement des éléments de liste
 footer.container-fluid ul li {
   line-height: 1.2;
 }
 
+// Liens du support
 .footer_support a {
   color: var(--gris-moyen);
 }
 
-/* Puces turquoise pour le support */
+/* ==========================================================
+   PUCES TURQUOISE (Section Support)
+   Puces personnalisées en turquoise
+   ========================================================== */
+
 footer.container-fluid .footer_support ul li::before {
-  content: "•";
+  content: '•';
   color: var(--turquoise);
   font-weight: bold;
   display: inline-block;
@@ -58,8 +95,12 @@ footer.container-fluid .footer_support ul li::before {
   top: 3px;
 }
 
-/* === Réseaux sociaux === */
+/* ==========================================================
+   RÉSEAUX SOCIAUX
+   Icônes rondes avec effet hover
+   ========================================================== */
 
+// Container flex pour les icônes
 .footer_follow ul {
   list-style: none;
   padding: 0;
@@ -74,6 +115,7 @@ footer.container-fluid .footer_support ul li::before {
   display: inline-block;
 }
 
+// Icônes rondes avec fond marron
 .footer_follow a {
   display: inline-flex;
   align-items: center;
@@ -89,6 +131,7 @@ footer.container-fluid .footer_support ul li::before {
   text-decoration: none;
 }
 
+// Effet hover : fond clair + scale + couleur turquoise
 .footer_follow a:hover {
   background-color: #d1c6bc;
   transform: scale(1.1);
@@ -96,27 +139,35 @@ footer.container-fluid .footer_support ul li::before {
   border-color: var(--marron);
 }
 
+// Ajustement position de l'icône
 .footer_follow i {
   position: relative;
   top: -2px;
 }
 
-/* === Newsletter === */
+/* ==========================================================
+   NEWSLETTER
+   Formulaire avec input et bouton
+   ========================================================== */
 
+// Style des labels "P:" et "E:" en turquoise
 .footer.container-fluid em {
   color: var(--turquoise);
   font-weight: bold;
 }
 
+// Placeholder de l'input email
 .footer_newsletter input::placeholder {
   color: var(--gris-moyen);
 }
 
+// Bouton d'inscription (fond marron)
 .btn-dark {
   background-color: var(--marron);
   border-color: var(--marron);
 }
 
+// Hover du bouton : même effet que les icônes sociales
 .btn-dark:hover {
   background-color: #d1c6bc;
   transform: scale(1.1);
@@ -124,8 +175,11 @@ footer.container-fluid .footer_support ul li::before {
   border-color: var(--marron);
 }
 
-/* === Footer bas de page (Copyright & Liens légaux) === */
+/* ==========================================================
+   BAS DE PAGE (Copyright & Liens légaux)
+   ========================================================== */
 
+// Liens du bas de page
 footer .bottom a {
   color: var(--gris-moyen);
   text-decoration: none;
@@ -133,11 +187,12 @@ footer .bottom a {
   font-weight: 300;
 }
 
+// Hover des liens
 footer .bottom a:hover {
   color: var(--turquoise);
 }
 
-/* Séparateur vertical entre les liens */
+// Séparateur vertical entre les liens (sauf le premier)
 footer .bottom nav li:not(:first-child) {
   border-left: 1px solid #e5e5e5;
 }
@@ -146,34 +201,37 @@ footer .bottom nav li {
   padding: 0 0 0 12px;
 }
 
+// Container du bas de page
 .bottom {
   font-size: 13px;
 }
 
+// Copyright centré
 .copy {
   text-align: center;
 }
 
 /* ==========================================================
-   TABLETTES ET MOBILES (largeur ≤ 991px)
+   RESPONSIVE - TABLETTES (≤ 991px)
    ========================================================== */
 
 @media (max-width: 991px) {
-    footer.container-fluid {
+  footer.container-fluid {
     margin-left: -15px;
   }
 }
 
 /* ==========================================================
-   PETITS MOBILES (largeur ≤ 390px)
+   RESPONSIVE - PETITS MOBILES (≤ 390px)
    ========================================================== */
 
 @media (max-width: 390px) {
-    footer .bottom a {
+  // Liens soulignés pour meilleure visibilité
+  footer .bottom a {
     text-decoration: underline;
   }
 
-  /* Retrait des séparateurs verticaux entre les liens légaux */
+  // Retrait des séparateurs verticaux entre les liens
   footer .bottom nav li {
     padding: 0;
     border: none !important;

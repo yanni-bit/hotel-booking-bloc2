@@ -1,7 +1,21 @@
+<!-- ============================================================================
+     FICHIER : admin.component.html
+     DESCRIPTION : Page tableau de bord administration
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - En-tête avec badge admin
+       - Statistiques (6 cartes cliquables)
+       - Menu d'actions (6 modules de gestion)
+     ============================================================================ -->
+
 <main class="admin-page py-5">
   <div class="container">
-    
-    <!-- En-tête -->
+
+    <!-- ====================================================================
+         EN-TÊTE ADMINISTRATION
+         ==================================================================== -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1 class="h3 text-turquoise mb-0">
         <i class="bi bi-shield-check me-2"></i>Administration
@@ -11,11 +25,16 @@
         <span class="ms-2">{{ authService.currentUser()?.prenom }} {{ authService.currentUser()?.nom }}</span>
       </div>
     </div>
-    
-    <!-- Statistiques -->
+
+    <!-- ====================================================================
+         SECTION STATISTIQUES
+         6 cartes avec compteurs cliquables
+         ==================================================================== -->
     <div class="row mb-5" *ngIf="!loading">
-      
-      <!-- Hôtels -->
+
+      <!-- ----------------------------------------
+           Statistique : Hôtels
+           ---------------------------------------- -->
       <div class="col-6 col-lg-2 mb-4">
         <a [routerLink]="['/admin/hotels']" class="text-decoration-none">
           <div class="card border-0 shadow-sm stat-card">
@@ -27,8 +46,10 @@
           </div>
         </a>
       </div>
-      
-      <!-- Réservations -->
+
+      <!-- ----------------------------------------
+           Statistique : Réservations
+           ---------------------------------------- -->
       <div class="col-6 col-lg-2 mb-4">
         <a [routerLink]="['/admin/reservations']" class="text-decoration-none">
           <div class="card border-0 shadow-sm stat-card">
@@ -40,8 +61,10 @@
           </div>
         </a>
       </div>
-      
-      <!-- Utilisateurs -->
+
+      <!-- ----------------------------------------
+           Statistique : Utilisateurs
+           ---------------------------------------- -->
       <div class="col-6 col-lg-2 mb-4">
         <a [routerLink]="['/admin/users']" class="text-decoration-none">
           <div class="card border-0 shadow-sm stat-card">
@@ -53,8 +76,10 @@
           </div>
         </a>
       </div>
-      
-      <!-- Messages -->
+
+      <!-- ----------------------------------------
+           Statistique : Messages (avec badge non lus)
+           ---------------------------------------- -->
       <div class="col-6 col-lg-2 mb-4">
         <a [routerLink]="['/admin/messages']" class="text-decoration-none">
           <div class="card border-0 shadow-sm stat-card">
@@ -63,8 +88,7 @@
               <h3 class="h2 mb-0 mt-3">{{ stats.messages }}</h3>
               <p class="text-muted mb-0">Messages</p>
               <!-- Badge non lus -->
-              <span 
-                *ngIf="stats.messagesUnread > 0" 
+              <span *ngIf="stats.messagesUnread > 0"
                 class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-danger"
                 style="margin-top: 10px; margin-right: 10px;">
                 {{ stats.messagesUnread }}
@@ -74,8 +98,10 @@
           </div>
         </a>
       </div>
-      
-      <!-- Avis -->
+
+      <!-- ----------------------------------------
+           Statistique : Avis (avec badge nouveaux)
+           ---------------------------------------- -->
       <div class="col-6 col-lg-2 mb-4">
         <a [routerLink]="['/admin/avis']" class="text-decoration-none">
           <div class="card border-0 shadow-sm stat-card">
@@ -84,8 +110,7 @@
               <h3 class="h2 mb-0 mt-3">{{ stats.avis }}</h3>
               <p class="text-muted mb-0">Avis</p>
               <!-- Badge nouveaux -->
-              <span 
-                *ngIf="stats.avisNew > 0" 
+              <span *ngIf="stats.avisNew > 0"
                 class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-success"
                 style="margin-top: 10px; margin-right: 10px;">
                 {{ stats.avisNew }}
@@ -95,8 +120,10 @@
           </div>
         </a>
       </div>
-      
-      <!-- Services -->
+
+      <!-- ----------------------------------------
+           Statistique : Services
+           ---------------------------------------- -->
       <div class="col-6 col-lg-2 mb-4">
         <a [routerLink]="['/admin/services']" class="text-decoration-none">
           <div class="card border-0 shadow-sm stat-card">
@@ -108,13 +135,18 @@
           </div>
         </a>
       </div>
-      
+
     </div>
-    
-    <!-- Menu d'actions -->
+
+    <!-- ====================================================================
+         SECTION MENU D'ACTIONS
+         Cartes avec boutons d'accès aux modules de gestion
+         ==================================================================== -->
     <div class="row">
-      
-      <!-- Gestion Hôtels -->
+
+      <!-- ----------------------------------------
+           Action : Gestion des Hôtels
+           ---------------------------------------- -->
       <div class="col-md-6 col-lg-3 mb-4">
         <div class="card border-0 shadow-sm action-card h-100">
           <div class="card-body p-4">
@@ -129,8 +161,10 @@
           </div>
         </div>
       </div>
-      
-      <!-- Gestion Réservations -->
+
+      <!-- ----------------------------------------
+           Action : Gestion des Réservations
+           ---------------------------------------- -->
       <div class="col-md-6 col-lg-3 mb-4">
         <div class="card border-0 shadow-sm action-card h-100">
           <div class="card-body p-4">
@@ -145,8 +179,10 @@
           </div>
         </div>
       </div>
-      
-      <!-- Gestion Messages -->
+
+      <!-- ----------------------------------------
+           Action : Gestion des Messages
+           ---------------------------------------- -->
       <div class="col-md-6 col-lg-3 mb-4">
         <div class="card border-0 shadow-sm action-card h-100">
           <div class="card-body p-4 position-relative">
@@ -159,8 +195,7 @@
               <i class="bi bi-arrow-right me-2"></i>Voir les messages
             </a>
             <!-- Badge non lus -->
-            <span 
-              *ngIf="stats.messagesUnread > 0" 
+            <span *ngIf="stats.messagesUnread > 0"
               class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-warning text-dark"
               style="margin-top: 15px; margin-right: 15px;">
               {{ stats.messagesUnread }} nouveau(x)
@@ -168,8 +203,10 @@
           </div>
         </div>
       </div>
-      
-      <!-- Gestion Avis -->
+
+      <!-- ----------------------------------------
+           Action : Gestion des Avis
+           ---------------------------------------- -->
       <div class="col-md-6 col-lg-3 mb-4">
         <div class="card border-0 shadow-sm action-card h-100">
           <div class="card-body p-4 position-relative">
@@ -182,8 +219,7 @@
               <i class="bi bi-arrow-right me-2"></i>Gérer les avis
             </a>
             <!-- Badge nouveaux -->
-            <span 
-              *ngIf="stats.avisNew > 0" 
+            <span *ngIf="stats.avisNew > 0"
               class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-success"
               style="margin-top: 15px; margin-right: 15px;">
               {{ stats.avisNew }} nouveau(x)
@@ -191,8 +227,10 @@
           </div>
         </div>
       </div>
-      
-      <!-- Gestion Utilisateurs -->
+
+      <!-- ----------------------------------------
+           Action : Gestion des Utilisateurs
+           ---------------------------------------- -->
       <div class="col-md-6 col-lg-3 mb-4">
         <div class="card border-0 shadow-sm action-card h-100">
           <div class="card-body p-4">
@@ -207,8 +245,10 @@
           </div>
         </div>
       </div>
-      
-      <!-- Gestion Services -->
+
+      <!-- ----------------------------------------
+           Action : Gestion des Services
+           ---------------------------------------- -->
       <div class="col-md-6 col-lg-3 mb-4">
         <div class="card border-0 shadow-sm action-card h-100">
           <div class="card-body p-4">
@@ -223,8 +263,8 @@
           </div>
         </div>
       </div>
-      
+
     </div>
-    
+
   </div>
 </main>

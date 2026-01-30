@@ -1,41 +1,82 @@
+// ============================================================================
+// FICHIER : admin-hotel-form.component.scss
+// DESCRIPTION : Styles du formulaire de création/édition d'hôtel
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Container principal (.admin-hotel-form-page)
+//   - Utilitaires de couleur (.text-turquoise)
+//   - Labels de formulaire (.form-label)
+//   - Champs de formulaire (.form-control, .form-select)
+//   - Boutons (.btn-primary, .btn-secondary)
+//   - Séparateurs (hr)
+// ============================================================================
+
+// ============================================================================
+// CONTAINER PRINCIPAL
+// ============================================================================
+
 .admin-hotel-form-page {
   min-height: 80vh;
   background-color: var(--marron-clair);
 }
 
+// ============================================================================
+// UTILITAIRES DE COULEUR
+// ============================================================================
+
 .text-turquoise {
   color: var(--turquoise) !important;
 }
+
+// ============================================================================
+// LABELS DE FORMULAIRE
+// ============================================================================
 
 .form-label {
   color: var(--gris-fonce);
   margin-bottom: 0.5rem;
 }
 
+// ============================================================================
+// CHAMPS DE FORMULAIRE
+// Focus avec couleur turquoise du thème
+// ============================================================================
+
 .form-control,
 .form-select {
   border-color: #ddd;
-  
+
   &:focus {
     border-color: var(--turquoise);
     box-shadow: 0 0 0 0.2rem rgba(95, 200, 194, 0.25);
   }
 }
 
+// ============================================================================
+// BOUTON PRINCIPAL
+// Surcharge Bootstrap avec la couleur turquoise du thème
+// ============================================================================
+
 .btn-primary {
   background-color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover:not(:disabled) {
     background-color: var(--turquoise-hover);
     border-color: var(--turquoise-hover);
   }
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
 }
+
+// ============================================================================
+// BOUTON SECONDAIRE
+// ============================================================================
 
 .btn-secondary {
   &:hover {
@@ -43,6 +84,11 @@
     border-color: #545b62;
   }
 }
+
+// ============================================================================
+// SÉPARATEURS
+// Opacity réduite pour un rendu discret
+// ============================================================================
 
 hr {
   opacity: 0.1;

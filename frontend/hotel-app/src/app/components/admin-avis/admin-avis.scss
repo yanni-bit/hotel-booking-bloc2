@@ -1,19 +1,49 @@
+// ============================================================================
+// FICHIER : admin-avis.component.scss
+// DESCRIPTION : Styles de l'interface de gestion des avis clients
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Container principal (.admin-avis-page)
+//   - Utilitaires de couleur (.text-turquoise)
+//   - Cartes statistiques (.stat-card)
+//   - Tableau des avis (.table)
+//   - Badges (.badge)
+//   - Boutons d'action (.btn-group)
+//   - Modal de détail (.modal)
+// ============================================================================
+
+// ============================================================================
+// CONTAINER PRINCIPAL
+// ============================================================================
+
 .admin-avis-page {
   min-height: calc(100vh - 200px);
-  
+
+  // --------------------------------------------------------------------------
+  // Utilitaire couleur turquoise
+  // --------------------------------------------------------------------------
   .text-turquoise {
     color: var(--turquoise, #5cb8b2);
   }
-  
+
+  // --------------------------------------------------------------------------
+  // Cartes statistiques avec animation hover
+  // --------------------------------------------------------------------------
   .stat-card {
     transition: transform 0.2s ease;
-    
+
     &:hover {
       transform: translateY(-3px);
     }
   }
-  
+
+  // --------------------------------------------------------------------------
+  // Tableau des avis
+  // --------------------------------------------------------------------------
   .table {
+    // En-têtes de colonnes
     th {
       font-size: 0.85rem;
       font-weight: 600;
@@ -21,29 +51,37 @@
       color: #6c757d;
       border-bottom: 2px solid #dee2e6;
     }
-    
+
+    // Cellules - alignement vertical centré
     td {
       vertical-align: middle;
     }
-    
+
+    // Lignes avec effet hover turquoise
     tbody tr {
       transition: background-color 0.15s ease;
-      
+
       &:hover {
         background-color: rgba(92, 184, 178, 0.1) !important;
       }
     }
-    
-    // Ligne pour les avis clients (highlight)
+
+    // Highlight pour les avis clients inscrits
     .table-success {
       background-color: rgba(25, 135, 84, 0.1) !important;
     }
   }
-  
+
+  // --------------------------------------------------------------------------
+  // Badges
+  // --------------------------------------------------------------------------
   .badge {
     font-weight: 500;
   }
-  
+
+  // --------------------------------------------------------------------------
+  // Groupe de boutons d'action
+  // --------------------------------------------------------------------------
   .btn-group {
     .btn {
       padding: 0.25rem 0.5rem;
@@ -51,12 +89,17 @@
   }
 }
 
-// Modal
+// ============================================================================
+// MODAL DE DÉTAIL
+// ============================================================================
+
 .modal {
+  // Header avec couleur turquoise du thème
   .modal-header.bg-turquoise {
     background-color: var(--turquoise, #5cb8b2) !important;
   }
-  
+
+  // Corps avec scroll si contenu trop long
   .modal-body {
     max-height: 60vh;
     overflow-y: auto;

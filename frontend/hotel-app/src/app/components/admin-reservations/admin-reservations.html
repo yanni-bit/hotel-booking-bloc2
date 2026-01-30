@@ -1,7 +1,25 @@
+<!-- ============================================================================
+     FICHIER : admin-reservations.component.html
+     DESCRIPTION : Interface de gestion des réservations - Liste filtrable
+                   avec modal de détail et modification de statut
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - En-tête avec navigation et compteur
+       - Messages de succès/erreur
+       - Filtres (statut, recherche)
+       - État de chargement
+       - Tableau des réservations
+       - Modal de détail complet (client, hôtel, séjour, prix, services)
+     ============================================================================ -->
+
 <main class="admin-reservations-page py-5">
   <div class="container-fluid">
 
-    <!-- En-tête -->
+    <!-- ====================================================================
+         EN-TÊTE AVEC NAVIGATION ET COMPTEUR
+         ==================================================================== -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <a [routerLink]="['/admin']" class="text-muted me-3">
@@ -16,7 +34,9 @@
       </div>
     </div>
 
-    <!-- Messages -->
+    <!-- ====================================================================
+         MESSAGES DE SUCCÈS / ERREUR
+         ==================================================================== -->
     @if (successMessage) {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
       <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
@@ -31,12 +51,17 @@
     </div>
     }
 
-    <!-- FILTRES -->
+    <!-- ====================================================================
+         SECTION FILTRES
+         Statut | Recherche | Rafraîchir
+         ==================================================================== -->
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body p-3">
         <div class="row g-3">
 
-          <!-- Filtre par statut -->
+          <!-- ----------------------------------------
+               Filtre par statut
+               ---------------------------------------- -->
           <div class="col-md-3">
             <label class="form-label small fw-bold">Filtrer par statut</label>
             <select class="form-select form-select-sm" [(ngModel)]="filterStatus" (change)="onFilterChange()">
@@ -47,14 +72,18 @@
             </select>
           </div>
 
-          <!-- Recherche -->
+          <!-- ----------------------------------------
+               Recherche textuelle
+               ---------------------------------------- -->
           <div class="col-md-6">
             <label class="form-label small fw-bold">Recherche</label>
             <input type="text" class="form-control form-control-sm" [(ngModel)]="searchTerm" (input)="onFilterChange()"
               placeholder="Rechercher par hôtel, client, email, n° confirmation...">
           </div>
 
-          <!-- Bouton rafraîchir -->
+          <!-- ----------------------------------------
+               Bouton rafraîchir
+               ---------------------------------------- -->
           <div class="col-md-3 d-flex align-items-end">
             <button class="btn btn-sm btn-outline-primary w-100" (click)="loadReservations()">
               <i class="bi bi-arrow-clockwise me-1"></i>Rafraîchir
@@ -65,7 +94,9 @@
       </div>
     </div>
 
-    <!-- LOADING -->
+    <!-- ====================================================================
+         ÉTAT DE CHARGEMENT
+         ==================================================================== -->
     @if (loading) {
     <div class="text-center py-5">
       <div class="spinner-border text-turquoise" role="status">
@@ -75,13 +106,20 @@
     </div>
     }
 
-    <!-- TABLEAU -->
+    <!-- ====================================================================
+         TABLEAU DES RÉSERVATIONS
+         Colonnes : N° | Client | Hôtel | Dates | Nuits | Prix | Statut | Confirmation | Actions
+         ==================================================================== -->
     @if (!loading) {
     <div class="card border-0 shadow-sm">
       <div class="card-body p-0">
 
         <div class="table-responsive">
           <table class="table table-hover mb-0">
+
+            <!-- ----------------------------------------
+                 En-tête du tableau
+                 ---------------------------------------- -->
             <thead class="table-light">
               <tr>
                 <th width="80">N°</th>
@@ -95,16 +133,20 @@
                 <th width="100" class="text-center">Actions</th>
               </tr>
             </thead>
+
+            <!-- ----------------------------------------
+                 Corps du tableau - Liste des réservations
+                 ---------------------------------------- -->
             <tbody>
               @for (reservation of filteredReservations; track reservation.id_reservation) {
               <tr>
 
-                <!-- ID -->
+                <!-- Colonne : ID -->
                 <td class="align-middle">
                   <small class="text-muted">#{{ reservation.id_reservation }}</small>
                 </td>
 
-                <!-- Client -->
+                <!-- Colonne : Client (nom + email) -->
                 <td class="align-middle">
                   <div>
                     <strong>{{ reservation.prenom_user || reservation.client_prenom }} {{
@@ -114,13 +156,13 @@
                     }}</small>
                 </td>
 
-                <!-- Hôtel -->
+                <!-- Colonne : Hôtel (nom + ville) -->
                 <td class="align-middle">
                   <div><strong>{{ reservation.nom_hotel }}</strong></div>
                   <small class="text-muted">{{ reservation.ville_hotel }}</small>
                 </td>
 
-                <!-- Dates -->
+                <!-- Colonne : Dates (check-in / check-out) -->
                 <td class="align-middle">
                   <div>
                     <i class="bi bi-box-arrow-in-right text-success me-1"></i>
@@ -132,30 +174,30 @@
                   </div>
                 </td>
 
-                <!-- Nuits -->
+                <!-- Colonne : Nombre de nuits -->
                 <td class="align-middle text-center">
                   <span class="badge bg-secondary">{{ reservation.nbre_nuits }}</span>
                 </td>
 
-                <!-- Prix -->
+                <!-- Colonne : Prix total -->
                 <td class="align-middle text-end">
                   <strong class="text-turquoise">{{ reservation.total_price }} {{ reservation.devise
                     || '€' }}</strong>
                 </td>
 
-                <!-- Statut -->
+                <!-- Colonne : Statut (badge coloré) -->
                 <td class="align-middle">
                   <span class="badge" [ngClass]="'bg-' + getStatusColor(reservation.id_statut)">
                     {{ getStatusName(reservation.id_statut) }}
                   </span>
                 </td>
 
-                <!-- N° Confirmation -->
+                <!-- Colonne : Numéro de confirmation -->
                 <td class="align-middle">
                   <small class="fw-bold">{{ reservation.num_confirmation }}</small>
                 </td>
 
-                <!-- Actions -->
+                <!-- Colonne : Actions (Voir détail) -->
                 <td class="align-middle text-center">
                   <button class="btn btn-sm btn-outline-primary" (click)="openDetailModal(reservation)"
                     title="Voir détail">
@@ -165,6 +207,7 @@
 
               </tr>
               } @empty {
+              <!-- Message si aucune réservation -->
               <tr>
                 <td colspan="9" class="text-center py-5">
                   <i class="bi bi-inbox" style="font-size: 3rem; color: var(--turquoise);"></i>
@@ -183,16 +226,19 @@
   </div>
 </main>
 
-<!-- ========================================
+<!-- ========================================================================
      MODAL DÉTAIL RÉSERVATION
-======================================== -->
+     Affiche toutes les informations d'une réservation sélectionnée
+     ======================================================================== -->
 @if (showDetailModal && selectedReservation) {
 <div class="modal-backdrop fade show"></div>
 <div class="modal fade show d-block" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
 
-      <!-- Header -->
+      <!-- ----------------------------------------
+           Header du modal
+           ---------------------------------------- -->
       <div class="modal-header bg-light">
         <h5 class="modal-title">
           <i class="bi bi-calendar-check me-2 text-turquoise"></i>
@@ -201,10 +247,12 @@
         <button type="button" class="btn-close" (click)="closeDetailModal()"></button>
       </div>
 
-      <!-- Body -->
+      <!-- ----------------------------------------
+           Corps du modal - Détails de la réservation
+           ---------------------------------------- -->
       <div class="modal-body">
 
-        <!-- Statut actuel -->
+        <!-- Statut actuel avec numéro de confirmation -->
         <div class="text-center mb-4">
           <span class="badge fs-6 px-4 py-2" [ngClass]="'bg-' + getStatusColor(selectedReservation.id_statut)">
             {{ getStatusName(selectedReservation.id_statut) }}
@@ -216,10 +264,12 @@
 
         <div class="row">
 
-          <!-- Colonne gauche : Client + Hôtel -->
+          <!-- ============================================
+               COLONNE GAUCHE : Client + Hôtel
+               ============================================ -->
           <div class="col-md-6">
 
-            <!-- Informations client -->
+            <!-- Carte : Informations client -->
             <div class="card mb-3">
               <div class="card-header bg-white">
                 <i class="bi bi-person me-2"></i><strong>Client</strong>
@@ -240,7 +290,7 @@
               </div>
             </div>
 
-            <!-- Informations hôtel -->
+            <!-- Carte : Informations hôtel -->
             <div class="card mb-3">
               <div class="card-header bg-white">
                 <i class="bi bi-building me-2"></i><strong>Hébergement</strong>
@@ -263,10 +313,12 @@
 
           </div>
 
-          <!-- Colonne droite : Dates + Prix -->
+          <!-- ============================================
+               COLONNE DROITE : Dates + Prix
+               ============================================ -->
           <div class="col-md-6">
 
-            <!-- Dates et voyageurs -->
+            <!-- Carte : Dates et voyageurs -->
             <div class="card mb-3">
               <div class="card-header bg-white">
                 <i class="bi bi-calendar-range me-2"></i><strong>Séjour</strong>
@@ -305,7 +357,7 @@
               </div>
             </div>
 
-            <!-- Prix -->
+            <!-- Carte : Tarification -->
             <div class="card mb-3">
               <div class="card-header bg-white">
                 <i class="bi bi-cash-stack me-2"></i><strong>Tarification</strong>
@@ -333,7 +385,9 @@
 
         </div>
 
-        <!-- Services additionnels -->
+        <!-- ============================================
+             SERVICES ADDITIONNELS (si présents)
+             ============================================ -->
         @if (selectedServices.length > 0) {
         <div class="card mb-3">
           <div class="card-header bg-white">
@@ -374,7 +428,9 @@
         </div>
         }
 
-        <!-- Demandes spéciales -->
+        <!-- ============================================
+             DEMANDES SPÉCIALES (si présentes)
+             ============================================ -->
         @if (selectedReservation.special_requests) {
         <div class="card mb-3">
           <div class="card-header bg-white">
@@ -386,7 +442,9 @@
         </div>
         }
 
-        <!-- Modifier le statut -->
+        <!-- ============================================
+             MODIFICATION DU STATUT
+             ============================================ -->
         <div class="card border-primary">
           <div class="card-header bg-primary text-white">
             <i class="bi bi-pencil-square me-2"></i><strong>Modifier le statut</strong>
@@ -409,7 +467,7 @@
           </div>
         </div>
 
-        <!-- Informations de réservation -->
+        <!-- Informations de réservation (date de création) -->
         <div class="text-center mt-3">
           <small class="text-muted">
             Réservé le {{ formatDateTime(selectedReservation.date_reservation) }}
@@ -418,7 +476,9 @@
 
       </div>
 
-      <!-- Footer -->
+      <!-- ----------------------------------------
+           Footer du modal
+           ---------------------------------------- -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">
           <i class="bi bi-x-circle me-2"></i>Fermer

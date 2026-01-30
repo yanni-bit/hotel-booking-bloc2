@@ -1,32 +1,80 @@
+// ============================================================================
+// FICHIER : hotel-description.component.scss
+// DESCRIPTION : Styles pour l'affichage de la description d'un hotel
+//               Mise en forme du texte et des informations
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Container principal (.hotel-description)
+//   - Titre de section (h2)
+//   - Titre de l'hotel (.hotel-title)
+//   - Icones turquoise (.turquoise)
+//   - Sous-titres (.sous-titre)
+//   - Texte de description (.description-text)
+//   - Fond clair (.bg-light)
+// VARIABLES CSS UTILISEES :
+//   --gris-moyen (textes)
+//   --turquoise (accents, icones)
+//   --gris-clair (fond informations complementaires)
+// ============================================================================
+
 .hotel-description {
-  
+  // ==========================================================================
+  // TITRE DE SECTION
+  // ==========================================================================
+
   h2 {
     color: var(--gris-moyen);
     font-weight: 600;
   }
+
+  // ==========================================================================
+  // TITRE DE L'HOTEL
+  // Nom de l'hotel en turquoise
+  // ==========================================================================
 
   .hotel-title {
     color: var(--turquoise);
     font-weight: 600;
   }
 
+  // ==========================================================================
+  // ICONES TURQUOISE
+  // Classe utilitaire pour les icones d'information
+  // ==========================================================================
+
   .turquoise {
     color: var(--turquoise);
-    
   }
+
+  // ==========================================================================
+  // SOUS-TITRES
+  // Texte des informations (localisation, categorie, etc.)
+  // ==========================================================================
 
   .sous-titre {
     color: var(--gris-moyen);
   }
-  
+
+  // ==========================================================================
+  // TEXTE DE DESCRIPTION
+  // Paragraphe justifie avec espacement
+  // ==========================================================================
+
   .description-text {
     text-align: justify;
-    
+
     p {
       margin-bottom: 1rem;
     }
   }
-  
+
+  // ==========================================================================
+  // FOND CLAIR
+  // Pour la section des coordonnees
+  // ==========================================================================
+
   .bg-light {
     background-color: var(--gris-clair) !important;
   }

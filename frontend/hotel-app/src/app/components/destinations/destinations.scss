@@ -1,13 +1,45 @@
+// ============================================================================
+// FICHIER : destinations.component.scss
+// DESCRIPTION : Styles de la section Destinations populaires
+//               Cartes avec image, overlay et effets hover
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Section container (.destinations-section)
+//   - Cartes destination (.destination-card)
+//   - Image avec effet zoom (.destination-card-image)
+//   - Overlay avec dégradé (.destination-overlay)
+//   - Informations destination (.destination-info, .destination-name, etc.)
+//   - Statistiques (.destination-stats)
+//   - Footer de carte (.destination-card-footer)
+//   - Bouton voir hôtels (.btn-destination)
+//   - Responsive (tablettes, mobiles)
+// VARIABLES CSS UTILISÉES :
+//   --marron-clair (fond de section)
+//   --blanc (fond cartes, texte)
+//   --turquoise, --turquoise-hover (liens, effet overlay)
+// EFFETS :
+//   - Zoom image au hover (scale 1.15)
+//   - Élévation carte au hover
+//   - Dégradé overlay : noir → turquoise au hover
+//   - Animation flèche du bouton
+// ============================================================================
+
 /* ==========================================================
-   SECTION DESTINATIONS (index.html)
-   ---------------------------------------------------------- */
+   SECTION DESTINATIONS
+   Container avec fond marron clair
+   ========================================================== */
 
 .destinations-section {
   background-color: var(--marron-clair);
   padding-bottom: 20px;
 }
 
-/* === Cards des destinations (.destination-card) === */
+/* ==========================================================
+   CARTES DESTINATION (.destination-card)
+   Cartes flexbox avec hauteur 100%
+   ========================================================== */
 
 .destination-card {
   background-color: var(--blanc);
@@ -20,12 +52,17 @@
   flex-direction: column;
 }
 
+// Effet hover : élévation et ombre plus prononcée
 .destination-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Image avec overlay */
+/* ==========================================================
+   IMAGE AVEC EFFET ZOOM
+   Container avec overflow hidden pour l'effet zoom
+   ========================================================== */
+
 .destination-card-image {
   position: relative;
   overflow: hidden;
@@ -39,41 +76,57 @@
   transition: transform 0.5s ease;
 }
 
+// Effet zoom au hover (scale 1.15)
 .destination-card:hover .destination-card-image img {
   transform: scale(1.15);
 }
 
-/* Overlay avec dégradé */
+/* ==========================================================
+   OVERLAY AVEC DÉGRADÉ
+   Dégradé noir transparent → opaque en bas
+   Devient turquoise au hover
+   ========================================================== */
+
 .destination-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0) 60%,
-      rgba(0, 0, 0, 0.3) 80%,
-      rgba(0, 0, 0, 0.8) 100%);
+  // Dégradé par défaut : transparent → noir
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 60%,
+    rgba(0, 0, 0, 0.3) 80%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
   display: flex;
   align-items: flex-end;
   padding: 20px;
   transition: background 0.3s ease;
 }
 
+// Dégradé au hover : transparent → turquoise
 .destination-card:hover .destination-overlay {
-  /* Dégradé de couleur lors du hover pour l'effet turquoise */
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0) 50%,
-      rgba(0, 0, 0, 0.4) 75%,
-      rgba(95, 200, 194, 0.9) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.4) 75%,
+    rgba(95, 200, 194, 0.9) 100%
+  );
 }
 
-/* Informations de la destination */
+/* ==========================================================
+   INFORMATIONS DE LA DESTINATION
+   Nom de la ville, pays, statistiques
+   ========================================================== */
+
 .destination-info {
   color: var(--blanc);
   width: 100%;
 }
 
+// Nom de la ville
 .destination-name {
   font-size: 24px;
   font-weight: 700;
@@ -82,11 +135,17 @@
   line-height: 1.2;
 }
 
+// Nom du pays
 .destination-country {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 10px;
 }
+
+/* ==========================================================
+   STATISTIQUES (Nombre d'hôtels + Prix)
+   Affichage en ligne avec icônes
+   ========================================================== */
 
 .destination-stats {
   display: flex;
@@ -105,12 +164,21 @@
   font-size: 14px;
 }
 
-/* Footer de la card */
+/* ==========================================================
+   FOOTER DE LA CARTE
+   Contient le bouton "Voir les hôtels"
+   ========================================================== */
+
 .destination-card-footer {
   padding: 15px 20px;
   background-color: var(--blanc);
   border-top: 1px solid #f0f0f0;
 }
+
+/* ==========================================================
+   BOUTON VOIR LES HÔTELS
+   Lien turquoise avec animation de flèche
+   ========================================================== */
 
 .btn-destination {
   color: var(--turquoise);
@@ -123,6 +191,7 @@
   transition: all 0.3s ease;
 }
 
+// Hover : couleur plus foncée + augmentation du gap
 .btn-destination:hover {
   color: var(--turquoise-hover);
   gap: 10px;
@@ -134,19 +203,21 @@
   transition: transform 0.3s ease;
 }
 
+// Animation de la flèche au hover
 .btn-destination:hover i {
   transform: translateX(5px);
 }
 
 /* ==========================================================
-   TABLETTES ET MOBILES (largeur ≤ 991px)
+   RESPONSIVE - TABLETTES (≤ 991px)
    ========================================================== */
 
 @media (max-width: 991px) {
-    .destinations-section {
+  .destinations-section {
     padding: 40px 0;
   }
 
+  // Image plus petite
   .destination-card-image {
     height: 250px;
   }
@@ -155,24 +226,22 @@
     font-size: 22px;
   }
 
-  /* === FOOTER (index.html, etc.) === */
-
+  // Note : Footer styles déplacés ici pour cohérence
   footer.container-fluid {
     margin-left: -15px;
   }
 }
 
 /* ==========================================================
-   PETITS MOBILES (largeur ≤ 390px)
+   RESPONSIVE - PETITS MOBILES (≤ 390px)
    ========================================================== */
 
-   /* === SECTION DESTINATIONS (index.html) === */
-
-  @media (max-width: 390px) {
-   .destinations-section {
+@media (max-width: 390px) {
+  .destinations-section {
     padding: 30px 0;
   }
 
+  // Image encore plus petite
   .destination-card-image {
     height: 220px;
   }
@@ -181,7 +250,7 @@
     font-size: 20px;
   }
 
-  /* Empilement vertical des stats (Hôtels/Prix) */
+  // Empilement vertical des statistiques (Hôtels/Prix)
   .destination-stats {
     flex-direction: column;
     gap: 5px;

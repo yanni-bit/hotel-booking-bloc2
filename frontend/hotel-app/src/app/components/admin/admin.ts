@@ -1,3 +1,20 @@
+// ============================================================================
+// FICHIER : admin.component.ts
+// DESCRIPTION : Composant tableau de bord administration - Affiche les
+//               statistiques globales et les accès rapides aux modules de gestion
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// STRATÉGIE : OnPush pour optimisation des performances
+// SERVICES INJECTÉS :
+//   - AuthService : Gestion authentification et utilisateurs
+//   - HttpClient : Requêtes HTTP directes (hôtels)
+//   - ContactService : Gestion des messages de contact
+//   - AvisService : Gestion des avis clients
+//   - ReservationService : Gestion des réservations
+//   - ServiceService : Gestion des services additionnels
+// ============================================================================
+
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -13,10 +30,24 @@ import { ServiceService } from '../../services/service';
   imports: [CommonModule, RouterLink],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Admin implements OnInit {
+  // ==========================================================================
+  // PROPRIÉTÉS
+  // ==========================================================================
 
+  /**
+   * Objet contenant toutes les statistiques du dashboard
+   * @property {number} hotels - Nombre total d'hôtels
+   * @property {number} reservations - Nombre total de réservations
+   * @property {number} users - Nombre total d'utilisateurs
+   * @property {number} services - Nombre total de services
+   * @property {number} messages - Nombre total de messages
+   * @property {number} messagesUnread - Nombre de messages non lus
+   * @property {number} avis - Nombre total d'avis
+   * @property {number} avisNew - Nombre de nouveaux avis
+   */
   stats = {
     hotels: 0,
     reservations: 0,
@@ -25,11 +56,26 @@ export class Admin implements OnInit {
     messages: 0,
     messagesUnread: 0,
     avis: 0,
-    avisNew: 0
+    avisNew: 0,
   };
 
+  /** Indicateur de chargement des données */
   loading: boolean = true;
 
+  // ==========================================================================
+  // CONSTRUCTEUR
+  // ==========================================================================
+
+  /**
+   * Injection des dépendances
+   * @param {AuthService} authService - Service d'authentification (public pour le template)
+   * @param {HttpClient} http - Client HTTP Angular
+   * @param {ContactService} contactService - Service de gestion des contacts
+   * @param {AvisService} avisService - Service de gestion des avis
+   * @param {ReservationService} reservationService - Service de gestion des réservations
+   * @param {ServiceService} serviceService - Service de gestion des services
+   * @param {ChangeDetectorRef} cdr - Référence pour déclencher la détection de changements
+   */
   constructor(
     public authService: AuthService,
     private http: HttpClient,
@@ -37,15 +83,33 @@ export class Admin implements OnInit {
     private avisService: AvisService,
     private reservationService: ReservationService,
     private serviceService: ServiceService,
-    private cdr: ChangeDetectorRef
-  ) { }
+    private cdr: ChangeDetectorRef,
+  ) {}
 
+  // ==========================================================================
+  // CYCLE DE VIE
+  // ==========================================================================
+
+  /**
+   * Initialisation du composant
+   * Déclenche le chargement des statistiques
+   */
   ngOnInit() {
     this.loadStats();
   }
 
+  // ==========================================================================
+  // MÉTHODES PRIVÉES
+  // ==========================================================================
+
+  /**
+   * Charge toutes les statistiques du dashboard en parallèle
+   * Utilise markForCheck() pour la stratégie OnPush
+   */
   loadStats() {
-    // Charger les stats de messages
+    // -------------------------------------------------------------------------
+    // Chargement des statistiques de messages
+    // -------------------------------------------------------------------------
     this.contactService.getAllMessages().subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
@@ -54,10 +118,12 @@ export class Admin implements OnInit {
         }
         this.cdr.markForCheck();
       },
-      error: (err: any) => console.error('Erreur chargement messages:', err)
+      error: (err: any) => console.error('Erreur chargement messages:', err),
     });
 
-    // Charger les stats des avis
+    // -------------------------------------------------------------------------
+    // Chargement des statistiques des avis
+    // -------------------------------------------------------------------------
     this.avisService.getAllAvis().subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
@@ -65,10 +131,12 @@ export class Admin implements OnInit {
         }
         this.cdr.markForCheck();
       },
-      error: (err: any) => console.error('Erreur chargement avis:', err)
+      error: (err: any) => console.error('Erreur chargement avis:', err),
     });
 
-    // Charger le nombre de nouveaux avis
+    // -------------------------------------------------------------------------
+    // Chargement du compteur de nouveaux avis
+    // -------------------------------------------------------------------------
     this.avisService.countNewAvis().subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
@@ -76,10 +144,12 @@ export class Admin implements OnInit {
         }
         this.cdr.markForCheck();
       },
-      error: (err: any) => console.error('Erreur comptage avis:', err)
+      error: (err: any) => console.error('Erreur comptage avis:', err),
     });
 
-    // Charger les réservations
+    // -------------------------------------------------------------------------
+    // Chargement des statistiques de réservations
+    // -------------------------------------------------------------------------
     this.reservationService.getAllReservations().subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
@@ -87,10 +157,12 @@ export class Admin implements OnInit {
         }
         this.cdr.markForCheck();
       },
-      error: (err: any) => console.error('Erreur chargement réservations:', err)
+      error: (err: any) => console.error('Erreur chargement réservations:', err),
     });
 
-    // Charger les utilisateurs
+    // -------------------------------------------------------------------------
+    // Chargement des statistiques utilisateurs
+    // -------------------------------------------------------------------------
     this.authService.getAllUsers().subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
@@ -98,10 +170,12 @@ export class Admin implements OnInit {
         }
         this.cdr.markForCheck();
       },
-      error: (err: any) => console.error('Erreur chargement utilisateurs:', err)
+      error: (err: any) => console.error('Erreur chargement utilisateurs:', err),
     });
 
-    // Charger les hôtels
+    // -------------------------------------------------------------------------
+    // Chargement des statistiques hôtels (désactive le loading à la fin)
+    // -------------------------------------------------------------------------
     this.http.get<any>('http://localhost:3000/api/hotels').subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
@@ -114,10 +188,12 @@ export class Admin implements OnInit {
         console.error('Erreur chargement hôtels:', err);
         this.loading = false;
         this.cdr.markForCheck();
-      }
+      },
     });
 
-    // Charger les services
+    // -------------------------------------------------------------------------
+    // Chargement des statistiques services
+    // -------------------------------------------------------------------------
     this.serviceService.getAllServices().subscribe({
       next: (response: any) => {
         if (response.success && response.data) {
@@ -125,7 +201,7 @@ export class Admin implements OnInit {
         }
         this.cdr.markForCheck();
       },
-      error: (err: any) => console.error('Erreur chargement services:', err)
+      error: (err: any) => console.error('Erreur chargement services:', err),
     });
   }
 }

@@ -1,11 +1,42 @@
+// ============================================================================
+// FICHIER : admin-users.component.scss
+// DESCRIPTION : Styles de l'interface de gestion des utilisateurs avec tableau,
+//               avatars et modal de confirmation
+// AUTEUR : Yannick
+// DATE : 2025
+// ============================================================================
+// SECTIONS :
+//   - Container principal (.admin-users-page)
+//   - Utilitaires de couleur (.text-turquoise)
+//   - Avatar circulaire (.avatar-circle)
+//   - Select rôle (.role-select)
+//   - Tableau (.table)
+//   - Boutons hover states
+//   - Modal (.modal, .modal-content)
+//   - Responsive
+// ============================================================================
+
+// ============================================================================
+// CONTAINER PRINCIPAL
+// ============================================================================
+
 .admin-users-page {
   min-height: 80vh;
   background-color: var(--marron-clair);
 }
 
+// ============================================================================
+// UTILITAIRES DE COULEUR
+// ============================================================================
+
 .text-turquoise {
   color: var(--turquoise) !important;
 }
+
+// ============================================================================
+// AVATAR CIRCULAIRE
+// Cercle avec initiales de l'utilisateur
+// ============================================================================
 
 .avatar-circle {
   width: 40px;
@@ -20,12 +51,22 @@
   font-size: 0.85rem;
 }
 
+// ============================================================================
+// SELECT RÔLE
+// Select compact pour modification du rôle en ligne
+// ============================================================================
+
 .role-select {
   width: auto;
   min-width: 120px;
 }
 
+// ============================================================================
+// TABLEAU
+// ============================================================================
+
 .table {
+  // En-têtes de colonnes
   th {
     font-weight: 600;
     font-size: 0.85rem;
@@ -33,11 +74,17 @@
     letter-spacing: 0.5px;
     border-bottom: 2px solid #dee2e6;
   }
-  
+
+  // Cellules - alignement vertical centré
   td {
     vertical-align: middle;
   }
 }
+
+// ============================================================================
+// BOUTONS - ÉTATS HOVER
+// Couleurs de texte sur hover pour meilleure lisibilité
+// ============================================================================
 
 .btn-outline-warning:hover {
   color: #000;
@@ -51,7 +98,11 @@
   color: #fff;
 }
 
-// Modal
+// ============================================================================
+// MODAL
+// ============================================================================
+
+// Fond semi-transparent
 .modal-backdrop {
   background-color: rgba(0, 0, 0, 0.5);
 }
@@ -60,18 +111,24 @@
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+// Contenu du modal avec coins arrondis et ombre
 .modal-content {
   border: none;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
-// Responsive
+// ============================================================================
+// RESPONSIVE
+// ============================================================================
+
 @media (max-width: 768px) {
+  // Tableau plus compact sur mobile
   .table-responsive {
     font-size: 0.85rem;
   }
-  
+
+  // Avatar plus petit sur mobile
   .avatar-circle {
     width: 32px;
     height: 32px;

@@ -1,7 +1,25 @@
+<!-- ============================================================================
+     FICHIER : admin-users.component.html
+     DESCRIPTION : Interface de gestion des utilisateurs - Liste filtrable avec
+                   modification de rôle en ligne et suppression avec confirmation
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - En-tête avec navigation et compteur
+       - Messages de succès/erreur
+       - Filtres (recherche, rôle, statut)
+       - État de chargement
+       - Tableau des utilisateurs
+       - Modal de confirmation de suppression
+     ============================================================================ -->
+
 <main class="admin-users-page py-5">
   <div class="container">
 
-    <!-- En-tête -->
+    <!-- ====================================================================
+         EN-TÊTE AVEC NAVIGATION ET COMPTEUR
+         ==================================================================== -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <a [routerLink]="['/admin']" class="text-muted text-decoration-none mb-2 d-inline-block">
@@ -14,7 +32,9 @@
       <span class="badge bg-secondary">{{ filteredUsers.length }} utilisateur(s)</span>
     </div>
 
-    <!-- Messages -->
+    <!-- ====================================================================
+         MESSAGES DE SUCCÈS / ERREUR
+         ==================================================================== -->
     @if (successMessage) {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
       <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
@@ -29,12 +49,17 @@
     </div>
     }
 
-    <!-- Filtres -->
+    <!-- ====================================================================
+         SECTION FILTRES
+         Recherche | Rôle | Statut
+         ==================================================================== -->
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body">
         <div class="row g-3">
 
-          <!-- Recherche -->
+          <!-- ----------------------------------------
+               Recherche textuelle
+               ---------------------------------------- -->
           <div class="col-md-4">
             <label class="form-label small text-muted">Rechercher</label>
             <div class="input-group">
@@ -43,7 +68,9 @@
             </div>
           </div>
 
-          <!-- Filtre rôle -->
+          <!-- ----------------------------------------
+               Filtre par rôle
+               ---------------------------------------- -->
           <div class="col-md-4">
             <label class="form-label small text-muted">Rôle</label>
             <select class="form-select" [(ngModel)]="filterRole">
@@ -54,7 +81,9 @@
             </select>
           </div>
 
-          <!-- Filtre statut -->
+          <!-- ----------------------------------------
+               Filtre par statut
+               ---------------------------------------- -->
           <div class="col-md-4">
             <label class="form-label small text-muted">Statut</label>
             <select class="form-select" [(ngModel)]="filterStatus">
@@ -68,7 +97,9 @@
       </div>
     </div>
 
-    <!-- Chargement -->
+    <!-- ====================================================================
+         ÉTAT DE CHARGEMENT
+         ==================================================================== -->
     @if (loading) {
     <div class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
@@ -78,11 +109,16 @@
     </div>
     }
 
-    <!-- Liste des utilisateurs -->
+    <!-- ====================================================================
+         TABLEAU DES UTILISATEURS
+         Colonnes : Utilisateur | Email | Rôle | Statut | Inscription | Connexion | Actions
+         ==================================================================== -->
     @if (!loading) {
     <div class="card border-0 shadow-sm">
       <div class="table-responsive">
         <table class="table table-hover mb-0">
+
+          <!-- En-tête du tableau -->
           <thead class="table-light">
             <tr>
               <th>Utilisateur</th>
@@ -94,18 +130,22 @@
               <th class="text-end">Actions</th>
             </tr>
           </thead>
+
+          <!-- Corps du tableau -->
           <tbody>
             @for (user of filteredUsers; track user.id_user) {
             <tr [class.table-warning]="isCurrentUser(user)">
 
-              <!-- Nom -->
+              <!-- Colonne : Utilisateur (avatar + nom) -->
               <td>
                 <div class="d-flex align-items-center">
+                  <!-- Avatar avec initiales -->
                   <div class="avatar-circle me-2">
                     {{ user.prenom_user.charAt(0) }}{{ user.nom_user.charAt(0) }}
                   </div>
                   <div>
                     <strong>{{ user.prenom_user }} {{ user.nom_user }}</strong>
+                    <!-- Badge "Vous" si utilisateur connecté -->
                     @if (isCurrentUser(user)) {
                     <span class="badge bg-secondary ms-1">Vous</span>
                     }
@@ -113,7 +153,7 @@
                 </div>
               </td>
 
-              <!-- Email -->
+              <!-- Colonne : Email avec indicateur vérifié -->
               <td>
                 <span class="text-muted">{{ user.email_user }}</span>
                 @if (user.email_verifie) {
@@ -121,13 +161,15 @@
                 }
               </td>
 
-              <!-- Rôle -->
+              <!-- Colonne : Rôle (badge ou select modifiable) -->
               <td>
+                <!-- Utilisateur connecté : badge non modifiable -->
                 @if (isCurrentUser(user)) {
                 <span class="badge" [ngClass]="getRoleBadgeClass(user.code_role)">
                   {{ user.nom_role }}
                 </span>
                 } @else {
+                <!-- Autres utilisateurs : select modifiable -->
                 <select class="form-select form-select-sm role-select" [value]="user.id_role"
                   (change)="onRoleChange(user, +$any($event.target).value)">
                   @for (role of roles; track role.id_role) {
@@ -139,7 +181,7 @@
                 }
               </td>
 
-              <!-- Statut -->
+              <!-- Colonne : Statut (badge actif/inactif) -->
               <td>
                 @if (user.actif) {
                 <span class="badge bg-success">Actif</span>
@@ -148,32 +190,33 @@
                 }
               </td>
 
-              <!-- Date inscription -->
+              <!-- Colonne : Date d'inscription -->
               <td>
                 <small class="text-muted">{{ formatDate(user.date_inscription) }}</small>
               </td>
 
-              <!-- Dernière connexion -->
+              <!-- Colonne : Dernière connexion -->
               <td>
                 <small class="text-muted">{{ formatDate(user.derniere_connexion) }}</small>
               </td>
 
-              <!-- Actions -->
+              <!-- Colonne : Actions (Voir / Toggle / Supprimer) -->
               <td class="text-end">
-                <!-- Voir profil -->
+                <!-- Bouton voir profil -->
                 <a [routerLink]="['/admin/users', user.id_user]" class="btn btn-sm btn-outline-primary me-1"
                   title="Voir profil">
                   <i class="bi bi-eye"></i>
                 </a>
 
+                <!-- Actions désactivées pour l'utilisateur connecté -->
                 @if (!isCurrentUser(user)) {
-                <!-- Toggle actif -->
+                <!-- Bouton toggle actif/inactif -->
                 <button class="btn btn-sm me-1" [ngClass]="user.actif ? 'btn-outline-warning' : 'btn-outline-success'"
                   (click)="toggleUserStatus(user)" [title]="user.actif ? 'Désactiver' : 'Activer'">
                   <i [ngClass]="user.actif ? 'bi bi-pause-circle' : 'bi bi-play-circle'"></i>
                 </button>
 
-                <!-- Supprimer -->
+                <!-- Bouton supprimer -->
                 <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(user)" title="Supprimer">
                   <i class="bi bi-trash"></i>
                 </button>
@@ -184,6 +227,7 @@
 
             </tr>
             } @empty {
+            <!-- Message si aucun utilisateur trouvé -->
             <tr>
               <td colspan="7" class="text-center py-4 text-muted">
                 <i class="bi bi-people fs-1 d-block mb-2"></i>
@@ -200,27 +244,36 @@
   </div>
 </main>
 
-<!-- Modal de confirmation suppression -->
+<!-- ========================================================================
+     MODAL CONFIRMATION DE SUPPRESSION
+     ======================================================================== -->
 @if (showDeleteModal && userToDelete) {
 <div class="modal-backdrop fade show"></div>
 <div class="modal fade show d-block" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
+
+      <!-- Header -->
       <div class="modal-header border-0">
         <h5 class="modal-title text-danger">
           <i class="bi bi-exclamation-triangle me-2"></i>Confirmer la suppression
         </h5>
         <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
       </div>
+
+      <!-- Body avec informations utilisateur -->
       <div class="modal-body">
         <p>Êtes-vous sûr de vouloir supprimer l'utilisateur :</p>
         <p class="fw-bold">{{ userToDelete.prenom_user }} {{ userToDelete.nom_user }}</p>
         <p class="text-muted small">{{ userToDelete.email_user }}</p>
+        <!-- Avertissement -->
         <div class="alert alert-warning">
           <i class="bi bi-exclamation-circle me-2"></i>
           Cette action est irréversible. Toutes les données associées seront supprimées.
         </div>
       </div>
+
+      <!-- Footer avec boutons Annuler/Supprimer -->
       <div class="modal-footer border-0">
         <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">
           Annuler
@@ -229,6 +282,7 @@
           <i class="bi bi-trash me-2"></i>Supprimer
         </button>
       </div>
+
     </div>
   </div>
 </div>

@@ -1,7 +1,25 @@
+<!-- ============================================================================
+     FICHIER : admin-services.component.html
+     DESCRIPTION : Interface de gestion des services additionnels - CRUD complet
+                   avec tableau, modals de création/édition et suppression
+     AUTEUR : Yannick
+     DATE : 2025
+     ============================================================================
+     SECTIONS :
+       - En-tête avec navigation et bouton création
+       - Messages de succès/erreur
+       - État de chargement
+       - Tableau des services
+       - Modal de création/édition
+       - Modal de confirmation de suppression
+     ============================================================================ -->
+
 <main class="admin-services-page py-5">
   <div class="container">
 
-    <!-- En-tête -->
+    <!-- ====================================================================
+         EN-TÊTE AVEC NAVIGATION ET BOUTON CRÉATION
+         ==================================================================== -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <a [routerLink]="['/admin']" class="text-muted text-decoration-none mb-2 d-inline-block">
@@ -16,261 +34,288 @@
       </button>
     </div>
 
-    <!-- Messages -->
+    <!-- ====================================================================
+         MESSAGES DE SUCCÈS / ERREUR
+         ==================================================================== -->
     @if (successMessage) {
-      <div class="alert alert-success alert-dismissible fade show">
-        <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
-        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
-      </div>
+    <div class="alert alert-success alert-dismissible fade show">
+      <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+    </div>
     }
 
     @if (error) {
-      <div class="alert alert-danger alert-dismissible fade show">
-        <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
-        <button type="button" class="btn-close" (click)="error = ''"></button>
-      </div>
+    <div class="alert alert-danger alert-dismissible fade show">
+      <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+      <button type="button" class="btn-close" (click)="error = ''"></button>
+    </div>
     }
 
-    <!-- Loading -->
+    <!-- ====================================================================
+         ÉTAT DE CHARGEMENT
+         ==================================================================== -->
     @if (loading) {
-      <div class="text-center py-5">
-        <div class="spinner-border text-turquoise" role="status">
-          <span class="visually-hidden">Chargement...</span>
-        </div>
-        <p class="mt-3 text-muted">Chargement des services...</p>
+    <div class="text-center py-5">
+      <div class="spinner-border text-turquoise" role="status">
+        <span class="visually-hidden">Chargement...</span>
       </div>
+      <p class="mt-3 text-muted">Chargement des services...</p>
+    </div>
     }
 
-    <!-- Liste des services -->
+    <!-- ====================================================================
+         CARTE LISTE DES SERVICES
+         ==================================================================== -->
     @if (!loading) {
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white py-3">
-          <h5 class="mb-0">
-            <i class="bi bi-list-ul me-2"></i>
-            Services additionnels ({{ services.length }})
-          </h5>
-        </div>
-        <div class="card-body p-0">
-
-          @if (services.length === 0) {
-            <div class="text-center py-5">
-              <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
-              <p class="text-muted mt-3">Aucun service</p>
-              <button class="btn btn-primary" (click)="openCreateModal()">
-                <i class="bi bi-plus-circle me-2"></i>Créer un service
-              </button>
-            </div>
-          }
-
-          @if (services.length > 0) {
-            <div class="table-responsive">
-              <table class="table table-hover mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th style="width: 50px;">ID</th>
-                    <th style="width: 60px;">Icône</th>
-                    <th>Nom</th>
-                    <th>Description</th>
-                    <th>Type</th>
-                    <th class="text-center">Statut</th>
-                    <th class="text-end">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (service of services; track service.id_service) {
-                    <tr [class.table-secondary]="!service.actif">
-                      <td class="align-middle">
-                        <small class="text-muted">#{{ service.id_service }}</small>
-                      </td>
-                      <td class="align-middle text-center">
-                        <i class="bi {{ service.icone_service }} fs-4 text-turquoise"></i>
-                      </td>
-                      <td class="align-middle">
-                        <strong>{{ service.nom_service }}</strong>
-                      </td>
-                      <td class="align-middle">
-                        <small class="text-muted">{{ service.description_service || '-' }}</small>
-                      </td>
-                      <td class="align-middle">
-                        <span class="badge bg-info">{{ getTypeLabel(service.type_service) }}</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        @if (service.actif) {
-                          <span class="badge bg-success">Actif</span>
-                        } @else {
-                          <span class="badge bg-secondary">Inactif</span>
-                        }
-                      </td>
-                      <td class="align-middle text-end">
-                        <!-- Toggle statut -->
-                        <button 
-                          class="btn btn-sm me-1"
-                          [ngClass]="service.actif ? 'btn-outline-warning' : 'btn-outline-success'"
-                          (click)="toggleStatus(service)"
-                          [title]="service.actif ? 'Désactiver' : 'Activer'"
-                        >
-                          <i [ngClass]="service.actif ? 'bi bi-pause-circle' : 'bi bi-play-circle'"></i>
-                        </button>
-                        
-                        <!-- Modifier -->
-                        <button 
-                          class="btn btn-sm btn-outline-primary me-1"
-                          (click)="openEditModal(service)"
-                          title="Modifier"
-                        >
-                          <i class="bi bi-pencil"></i>
-                        </button>
-                        
-                        <!-- Supprimer -->
-                        <button 
-                          class="btn btn-sm btn-outline-danger"
-                          (click)="openDeleteModal(service)"
-                          title="Supprimer"
-                        >
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          }
-
-        </div>
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h5 class="mb-0">
+          <i class="bi bi-list-ul me-2"></i>
+          Services additionnels ({{ services.length }})
+        </h5>
       </div>
+      <div class="card-body p-0">
+
+        <!-- ----------------------------------------
+               État vide : aucun service
+               ---------------------------------------- -->
+        @if (services.length === 0) {
+        <div class="text-center py-5">
+          <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+          <p class="text-muted mt-3">Aucun service</p>
+          <button class="btn btn-primary" (click)="openCreateModal()">
+            <i class="bi bi-plus-circle me-2"></i>Créer un service
+          </button>
+        </div>
+        }
+
+        <!-- ----------------------------------------
+               Tableau des services
+               Colonnes : ID | Icône | Nom | Description | Type | Statut | Actions
+               ---------------------------------------- -->
+        @if (services.length > 0) {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+
+            <!-- En-tête du tableau -->
+            <thead class="table-light">
+              <tr>
+                <th style="width: 50px;">ID</th>
+                <th style="width: 60px;">Icône</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th class="text-center">Statut</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+
+            <!-- Corps du tableau -->
+            <tbody>
+              @for (service of services; track service.id_service) {
+              <tr [class.table-secondary]="!service.actif">
+
+                <!-- Colonne : ID -->
+                <td class="align-middle">
+                  <small class="text-muted">#{{ service.id_service }}</small>
+                </td>
+
+                <!-- Colonne : Icône -->
+                <td class="align-middle text-center">
+                  <i class="bi {{ service.icone_service }} fs-4 text-turquoise"></i>
+                </td>
+
+                <!-- Colonne : Nom -->
+                <td class="align-middle">
+                  <strong>{{ service.nom_service }}</strong>
+                </td>
+
+                <!-- Colonne : Description -->
+                <td class="align-middle">
+                  <small class="text-muted">{{ service.description_service || '-' }}</small>
+                </td>
+
+                <!-- Colonne : Type de tarification -->
+                <td class="align-middle">
+                  <span class="badge bg-info">{{ getTypeLabel(service.type_service) }}</span>
+                </td>
+
+                <!-- Colonne : Statut (Actif/Inactif) -->
+                <td class="align-middle text-center">
+                  @if (service.actif) {
+                  <span class="badge bg-success">Actif</span>
+                  } @else {
+                  <span class="badge bg-secondary">Inactif</span>
+                  }
+                </td>
+
+                <!-- Colonne : Actions (Toggle / Modifier / Supprimer) -->
+                <td class="align-middle text-end">
+                  <!-- Bouton Toggle statut -->
+                  <button class="btn btn-sm me-1"
+                    [ngClass]="service.actif ? 'btn-outline-warning' : 'btn-outline-success'"
+                    (click)="toggleStatus(service)" [title]="service.actif ? 'Désactiver' : 'Activer'">
+                    <i [ngClass]="service.actif ? 'bi bi-pause-circle' : 'bi bi-play-circle'"></i>
+                  </button>
+
+                  <!-- Bouton Modifier -->
+                  <button class="btn btn-sm btn-outline-primary me-1" (click)="openEditModal(service)" title="Modifier">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+
+                  <!-- Bouton Supprimer -->
+                  <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(service)" title="Supprimer">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
+
+      </div>
+    </div>
     }
 
   </div>
 </main>
 
-<!-- ========================================
-     MODAL CRÉATION/ÉDITION
-======================================== -->
+<!-- ========================================================================
+     MODAL CRÉATION / ÉDITION DE SERVICE
+     Formulaire avec : Nom, Description, Type, Icône, Statut
+     ======================================================================== -->
 @if (showModal) {
-  <div class="modal-backdrop fade show"></div>
-  <div class="modal fade show d-block" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        
-        <div class="modal-header">
-          <h5 class="modal-title">
-            <i class="bi {{ modalMode === 'create' ? 'bi-plus-circle' : 'bi-pencil' }} me-2 text-turquoise"></i>
-            {{ modalMode === 'create' ? 'Nouveau service' : 'Modifier le service' }}
-          </h5>
-          <button type="button" class="btn-close" (click)="closeModal()"></button>
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- ----------------------------------------
+             Header du modal
+             ---------------------------------------- -->
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi {{ modalMode === 'create' ? 'bi-plus-circle' : 'bi-pencil' }} me-2 text-turquoise"></i>
+          {{ modalMode === 'create' ? 'Nouveau service' : 'Modifier le service' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <!-- ----------------------------------------
+             Corps du modal - Formulaire
+             ---------------------------------------- -->
+      <div class="modal-body">
+
+        <!-- Champ : Nom du service (obligatoire) -->
+        <div class="mb-3">
+          <label class="form-label">Nom du service *</label>
+          <input type="text" class="form-control" [(ngModel)]="currentService.nom_service"
+            placeholder="Ex: Petit-déjeuner">
         </div>
-        
-        <div class="modal-body">
-          
-          <!-- Nom -->
-          <div class="mb-3">
-            <label class="form-label">Nom du service *</label>
-            <input 
-              type="text" 
-              class="form-control" 
-              [(ngModel)]="currentService.nom_service"
-              placeholder="Ex: Petit-déjeuner"
-            >
-          </div>
-          
-          <!-- Description -->
-          <div class="mb-3">
-            <label class="form-label">Description</label>
-            <textarea 
-              class="form-control" 
-              rows="2"
-              [(ngModel)]="currentService.description_service"
-              placeholder="Description du service..."
-            ></textarea>
-          </div>
-          
-          <div class="row">
-            <!-- Type -->
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Type de tarification</label>
-              <select class="form-select" [(ngModel)]="currentService.type_service">
-                @for (type of typeServices; track type.value) {
-                  <option [value]="type.value">{{ type.label }}</option>
-                }
-              </select>
-            </div>
-            
-            <!-- Icône -->
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Icône</label>
-              <select class="form-select" [(ngModel)]="currentService.icone_service">
-                @for (icone of icones; track icone.value) {
-                  <option [value]="icone.value">{{ icone.label }}</option>
-                }
-              </select>
-              <div class="mt-2 text-center">
-                <i class="bi {{ currentService.icone_service }} fs-2 text-turquoise"></i>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Statut -->
-          <div class="mb-3">
-            <label class="form-label">Statut</label>
-            <select class="form-select" [(ngModel)]="currentService.actif">
-              <option [value]="1">Actif</option>
-              <option [value]="0">Inactif</option>
+
+        <!-- Champ : Description -->
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" rows="2" [(ngModel)]="currentService.description_service"
+            placeholder="Description du service..."></textarea>
+        </div>
+
+        <div class="row">
+          <!-- Champ : Type de tarification -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Type de tarification</label>
+            <select class="form-select" [(ngModel)]="currentService.type_service">
+              @for (type of typeServices; track type.value) {
+              <option [value]="type.value">{{ type.label }}</option>
+              }
             </select>
           </div>
-          
+
+          <!-- Champ : Icône avec prévisualisation -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Icône</label>
+            <select class="form-select" [(ngModel)]="currentService.icone_service">
+              @for (icone of icones; track icone.value) {
+              <option [value]="icone.value">{{ icone.label }}</option>
+              }
+            </select>
+            <!-- Prévisualisation de l'icône sélectionnée -->
+            <div class="mt-2 text-center">
+              <i class="bi {{ currentService.icone_service }} fs-2 text-turquoise"></i>
+            </div>
+          </div>
         </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()">
-            <i class="bi bi-x-circle me-2"></i>Annuler
-          </button>
-          <button type="button" class="btn btn-primary" (click)="saveService()">
-            <i class="bi bi-check-circle me-2"></i>
-            {{ modalMode === 'create' ? 'Créer' : 'Enregistrer' }}
-          </button>
+
+        <!-- Champ : Statut -->
+        <div class="mb-3">
+          <label class="form-label">Statut</label>
+          <select class="form-select" [(ngModel)]="currentService.actif">
+            <option [value]="1">Actif</option>
+            <option [value]="0">Inactif</option>
+          </select>
         </div>
-        
+
       </div>
+
+      <!-- ----------------------------------------
+             Footer du modal - Actions
+             ---------------------------------------- -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          <i class="bi bi-x-circle me-2"></i>Annuler
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveService()">
+          <i class="bi bi-check-circle me-2"></i>
+          {{ modalMode === 'create' ? 'Créer' : 'Enregistrer' }}
+        </button>
+      </div>
+
     </div>
   </div>
+</div>
 }
 
-<!-- ========================================
-     MODAL SUPPRESSION
-======================================== -->
+<!-- ========================================================================
+     MODAL CONFIRMATION DE SUPPRESSION
+     ======================================================================== -->
 @if (showDeleteModal && serviceToDelete) {
-  <div class="modal-backdrop fade show"></div>
-  <div class="modal fade show d-block" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title">
-            <i class="bi bi-exclamation-triangle me-2"></i>Confirmer la suppression
-          </h5>
-          <button type="button" class="btn-close btn-close-white" (click)="closeDeleteModal()"></button>
-        </div>
-        
-        <div class="modal-body text-center py-4">
-          <i class="bi bi-trash text-danger" style="font-size: 3rem;"></i>
-          <p class="mt-3 mb-0">
-            Voulez-vous vraiment supprimer le service<br>
-            <strong>{{ serviceToDelete.nom_service }}</strong> ?
-          </p>
-          <small class="text-muted">Cette action est irréversible.</small>
-        </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">
-            <i class="bi bi-x-circle me-2"></i>Annuler
-          </button>
-          <button type="button" class="btn btn-danger" (click)="confirmDelete()">
-            <i class="bi bi-trash me-2"></i>Supprimer
-          </button>
-        </div>
-        
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Header avec fond rouge -->
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-exclamation-triangle me-2"></i>Confirmer la suppression
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeDeleteModal()"></button>
       </div>
+
+      <!-- Corps avec message de confirmation -->
+      <div class="modal-body text-center py-4">
+        <i class="bi bi-trash text-danger" style="font-size: 3rem;"></i>
+        <p class="mt-3 mb-0">
+          Voulez-vous vraiment supprimer le service<br>
+          <strong>{{ serviceToDelete.nom_service }}</strong> ?
+        </p>
+        <small class="text-muted">Cette action est irréversible.</small>
+      </div>
+
+      <!-- Footer avec boutons Annuler/Supprimer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">
+          <i class="bi bi-x-circle me-2"></i>Annuler
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()">
+          <i class="bi bi-trash me-2"></i>Supprimer
+        </button>
+      </div>
+
     </div>
   </div>
+</div>
 }

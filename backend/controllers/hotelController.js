@@ -1,14 +1,27 @@
 // ============================================================================
-// HOTELCONTROLLER.JS - LOGIQUE MÉTIER HÔTELS
-// Gère les opérations sur les hôtels
+// HOTELCONTROLLER.JS - CONTRÔLEUR HÔTELS
+// ============================================================================
+// Ce contrôleur gère la logique métier des hôtels.
+// Responsabilités :
+//   - Appel au modèle Hotel
+//   - Formatage des réponses HTTP (JSON)
+//   - Gestion des codes HTTP (200, 404, 500)
+// Pattern utilisé : Classe statique avec méthodes CRUD
 // ============================================================================
 
 const Hotel = require("../models/Hotel");
 
 class HotelController {
-  // ========================================
-  // GET - Récupérer tous les hôtels
-  // ========================================
+  // ==========================================================================
+  // MÉTHODES DE LECTURE (READ)
+  // ==========================================================================
+
+  /**
+   * Récupère tous les hôtels
+   * @param {Object} req - Requête HTTP
+   * @param {Object} res - Réponse HTTP
+   * @route GET /api/hotels
+   */
   static getAllHotels(req, res) {
     Hotel.getAll((err, hotels) => {
       if (err) {
@@ -19,12 +32,11 @@ class HotelController {
           JSON.stringify({
             success: false,
             message: "Erreur serveur",
-          })
+          }),
         );
         return;
       }
 
-      // Succès
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -32,14 +44,18 @@ class HotelController {
           success: true,
           count: hotels.length,
           data: hotels,
-        })
+        }),
       );
     });
   }
 
-  // ========================================
-  // GET - Récupérer un hôtel par ID
-  // ========================================
+  /**
+   * Récupère un hôtel par son ID avec ses équipements
+   * @param {Object} req - Requête HTTP
+   * @param {Object} res - Réponse HTTP
+   * @param {number} id - ID de l'hôtel
+   * @route GET /api/hotels/:id
+   */
   static getHotelById(req, res, id) {
     Hotel.getById(id, (err, hotel) => {
       if (err) {
@@ -50,7 +66,7 @@ class HotelController {
           JSON.stringify({
             success: false,
             message: "Erreur serveur",
-          })
+          }),
         );
         return;
       }
@@ -62,26 +78,75 @@ class HotelController {
           JSON.stringify({
             success: false,
             message: "Hôtel non trouvé",
-          })
+          }),
         );
         return;
       }
 
-      // Succès
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
       res.end(
         JSON.stringify({
           success: true,
           data: hotel,
-        })
+        }),
       );
     });
   }
 
-  // ========================================
-  // GET - Rechercher des hôtels par ville
-  // ========================================
+  /**
+   * Récupère un hôtel avec tous ses détails (statistiques)
+   * @param {Object} req - Requête HTTP
+   * @param {Object} res - Réponse HTTP
+   * @param {number} id - ID de l'hôtel
+   * @route GET /api/hotels/:id/details
+   * @returns {Object} Hôtel avec nombre de chambres, avis et note moyenne
+   */
+  static getHotelDetails(req, res, id) {
+    Hotel.getByIdWithDetails(id, (err, hotel) => {
+      if (err) {
+        console.error("Erreur lors de la récupération de l'hôtel:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: "Erreur serveur",
+          }),
+        );
+        return;
+      }
+
+      if (!hotel) {
+        res.statusCode = 404;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: "Hôtel non trouvé",
+          }),
+        );
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: true,
+          data: hotel,
+        }),
+      );
+    });
+  }
+
+  /**
+   * Recherche des hôtels par ville
+   * @param {Object} req - Requête HTTP
+   * @param {Object} res - Réponse HTTP
+   * @param {string} city - Nom de la ville (recherche partielle)
+   * @route GET /api/hotels/search?city=:city
+   */
   static searchHotelsByCity(req, res, city) {
     Hotel.getByCity(city, (err, hotels) => {
       if (err) {
@@ -92,12 +157,11 @@ class HotelController {
           JSON.stringify({
             success: false,
             message: "Erreur serveur",
-          })
+          }),
         );
         return;
       }
 
-      // Succès
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -105,14 +169,18 @@ class HotelController {
           success: true,
           count: hotels.length,
           data: hotels,
-        })
+        }),
       );
     });
   }
 
-  // ========================================
-  // GET - Récupérer le nombre d'hôtels par destination
-  // ========================================
+  /**
+   * Récupère le nombre d'hôtels par destination (ville/pays)
+   * @param {Object} req - Requête HTTP
+   * @param {Object} res - Réponse HTTP
+   * @route GET /api/hotels/destinations
+   * @returns {Object} Liste des destinations avec leur nombre d'hôtels
+   */
   static getDestinationsCount(req, res) {
     Hotel.getDestinationsCount((err, destinations) => {
       if (err) {
@@ -124,67 +192,30 @@ class HotelController {
             success: false,
             message: "Erreur serveur",
             error: err.message,
-          })
+          }),
         );
         return;
       }
 
-      // Succès
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
       res.end(
         JSON.stringify({
           success: true,
           data: destinations,
-        })
+        }),
       );
     });
   }
 
-  // ========================================
-  // GET - Récupère un hôtel avec détails complets
-  // ========================================
-  static getHotelDetails(req, res, id) {
-    Hotel.getByIdWithDetails(id, (err, hotel) => {
-      if (err) {
-        console.error("Erreur lors de la récupération de l'hôtel:", err);
-        res.statusCode = 500;
-        res.setHeader("Content-Type", "application/json");
-        res.end(
-          JSON.stringify({
-            success: false,
-            message: "Erreur serveur",
-          })
-        );
-        return;
-      }
-
-      if (!hotel) {
-        res.statusCode = 404;
-        res.setHeader("Content-Type", "application/json");
-        res.end(
-          JSON.stringify({
-            success: false,
-            message: "Hôtel non trouvé",
-          })
-        );
-        return;
-      }
-
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.end(
-        JSON.stringify({
-          success: true,
-          data: hotel,
-        })
-      );
-    });
-  }
-
-  // ========================================
-  // GET - Récupère les hôtels populaires d'une ville
-  // ========================================
+  /**
+   * Récupère les hôtels populaires d'une ville
+   * @param {Object} req - Requête HTTP
+   * @param {Object} res - Réponse HTTP
+   * @param {string} city - Nom de la ville
+   * @route GET /api/hotels/popular?city=:city
+   * @returns {Object} Top 4 hôtels de la ville par note
+   */
   static getPopularHotels(req, res, city) {
     Hotel.getPopularByCity(city, 4, (err, hotels) => {
       if (err) {
@@ -195,7 +226,7 @@ class HotelController {
           JSON.stringify({
             success: false,
             message: "Erreur serveur",
-          })
+          }),
         );
         return;
       }
@@ -206,14 +237,20 @@ class HotelController {
         JSON.stringify({
           success: true,
           data: hotels,
-        })
+        }),
       );
     });
   }
 
-  // ========================================
-  // GET - Récupère les hôtels populaires d'un pays
-  // ========================================
+  /**
+   * Récupère les hôtels populaires d'un pays (exclut l'hôtel courant)
+   * @param {Object} req - Requête HTTP
+   * @param {Object} res - Réponse HTTP
+   * @param {string} country - Nom du pays
+   * @param {number} excludeId - ID de l'hôtel à exclure
+   * @route GET /api/hotels/popular-country?country=:country&exclude=:id
+   * @returns {Object} Top 4 hôtels du pays (hors hôtel courant)
+   */
   static getPopularHotelsByCountry(req, res, country, excludeId) {
     Hotel.getPopularByCountry(country, excludeId, 4, (err, hotels) => {
       if (err) {
@@ -224,7 +261,7 @@ class HotelController {
           JSON.stringify({
             success: false,
             message: "Erreur serveur",
-          })
+          }),
         );
         return;
       }
@@ -235,14 +272,20 @@ class HotelController {
         JSON.stringify({
           success: true,
           data: hotels,
-        })
+        }),
       );
     });
   }
 
-  // ========================================
-  // GET - Récupère l'offre du jour d'un pays
-  // ========================================
+  /**
+   * Récupère l'offre du jour d'un pays (meilleur rapport qualité/prix)
+   * @param {Object} req - Requête HTTP
+   * @param {Object} res - Réponse HTTP
+   * @param {string} country - Nom du pays
+   * @param {number} excludeId - ID de l'hôtel à exclure
+   * @route GET /api/hotels/deal?country=:country&exclude=:id
+   * @returns {Object} Hôtel avec le meilleur rapport qualité/prix
+   */
   static getDealOfDayByCountry(req, res, country, excludeId) {
     Hotel.getDealOfDay(country, excludeId, (err, hotel) => {
       if (err) {
@@ -253,7 +296,7 @@ class HotelController {
           JSON.stringify({
             success: false,
             message: "Erreur serveur",
-          })
+          }),
         );
         return;
       }
@@ -264,7 +307,7 @@ class HotelController {
         JSON.stringify({
           success: true,
           data: hotel,
-        })
+        }),
       );
     });
   }
