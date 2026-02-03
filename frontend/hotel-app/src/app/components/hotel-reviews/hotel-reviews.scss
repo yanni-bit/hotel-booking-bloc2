@@ -1,10 +1,37 @@
+/**
+ * ============================================================
+ * FICHIER     : hotel-reviews.scss
+ * COMPOSANT   : HotelReviews
+ * DESCRIPTION : Styles de l'onglet Avis d'un hôtel. Gère la mise
+ *               en forme du formulaire d'avis (slider, textarea),
+ *               des cartes d'avis individuelles avec effet hover,
+ *               des statistiques globales et du responsive tablette.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Titre de section
+ *   2. Classes utilitaires couleurs
+ *   3. Bouton turquoise personnalisé
+ *   4. Formulaire d'avis (slider, textarea)
+ *   5. Statistiques globales
+ *   6. Liste des avis (cartes avec hover)
+ *   7. Alerte note de bas de page
+ *   8. Responsive (tablette ≤ 768px)
+ * ============================================================
+ */
+
 .hotel-reviews {
-  
+  /* ==============================================
+     1. TITRE DE SECTION
+     ============================================== */
   h2 {
     color: var(--gris-moyen);
     font-weight: 600;
   }
 
+  /* ==============================================
+     2. CLASSES UTILITAIRES COULEURS
+     ============================================== */
   .text-turquoise {
     color: var(--turquoise);
   }
@@ -17,32 +44,38 @@
     background-color: var(--turquoise);
   }
 
-  // Bouton turquoise
+  /* ==============================================
+     3. BOUTON TURQUOISE PERSONNALISÉ
+     Utilisé pour "Laisser un avis" et "Publier"
+     ============================================== */
   .btn-turquoise {
     background-color: var(--turquoise);
     border-color: var(--turquoise);
     color: white;
-    
+
     &:hover {
       background-color: darken(#5cb8b2, 10%);
       border-color: darken(#5cb8b2, 10%);
       color: white;
     }
-    
+
     &:disabled {
       opacity: 0.7;
     }
   }
 
-  // Section formulaire
+  /* ==============================================
+     4. FORMULAIRE D'AVIS
+     Slider note, header turquoise, textarea
+     ============================================== */
   .add-review-section {
-    
     .review-form {
-      
+      /* Header du formulaire : fond turquoise forcé */
       .card-header.bg-turquoise {
         background-color: var(--turquoise) !important;
       }
-      
+
+      /* Slider note : curseur turquoise (webkit + moz) */
       .form-range {
         &::-webkit-slider-thumb {
           background-color: var(--turquoise);
@@ -51,86 +84,102 @@
           background-color: var(--turquoise);
         }
       }
-      
+
+      /* Textarea : redimensionnement vertical uniquement */
       textarea {
         resize: vertical;
         min-height: 100px;
       }
     }
   }
-  
+
   .reviews-content {
-    
-    // Statistiques
+    /* ==============================================
+       5. STATISTIQUES GLOBALES
+       Note moyenne et nombre d'avis
+       ============================================== */
     .reviews-stats {
-      
       .h4 {
         line-height: 1;
       }
     }
-    
-    // Liste des avis
+
+    /* ==============================================
+       6. LISTE DES AVIS
+       Cartes individuelles avec hover et métadonnées
+       ============================================== */
     .reviews-list {
-      
       .review-card {
         transition: all 0.2s ease;
-        
+
+        /* Effet hover : élévation + ombre renforcée */
         &:hover {
           transform: translateY(-2px);
           box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
         }
-        
+
+        /* Badge note : taille et padding personnalisés */
         .review-note {
           font-size: 1rem;
           font-weight: 600;
           padding: 0.5rem 0.75rem;
         }
-        
+
+        /* Titre de l'avis en italique turquoise */
         h5 {
           color: var(--turquoise);
           font-style: italic;
         }
-        
+
+        /* Commentaire : interligne aéré et texte justifié */
         p {
           line-height: 1.8;
           text-align: justify;
         }
-        
+
+        /* Barre de métadonnées en bas de carte (type voyageur, pays) */
         .review-meta {
           background-color: var(--gris-clair);
           margin: -1rem -1rem 0 -1rem;
           padding: 1rem;
           border-radius: 0 0 0.375rem 0.375rem;
         }
-        
-        // Badge client vérifié
+
+        /* Badge client vérifié */
         .badge.bg-success {
           font-size: 0.7rem;
         }
       }
     }
   }
-  
+
+  /* ==============================================
+     7. ALERTE NOTE DE BAS DE PAGE
+     ============================================== */
   .alert-light {
     background-color: var(--gris-clair);
     border: none;
   }
 }
 
-// Responsive
+/* ==============================================
+   8. RESPONSIVE - TABLETTE (≤ 768px)
+   Réduction taille note + boutons en colonne
+   ============================================== */
 @media (max-width: 768px) {
   .hotel-reviews {
-    
+    /* Réduction de la taille de la note moyenne */
     .reviews-stats {
       .display-3 {
         font-size: 2.5rem !important;
       }
     }
-    
+
+    /* Boutons formulaire empilés verticalement */
     .review-form {
       .d-flex.gap-2 {
         flex-direction: column;
-        
+
         .btn {
           width: 100%;
         }

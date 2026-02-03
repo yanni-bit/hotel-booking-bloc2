@@ -1,56 +1,101 @@
+/**
+ * ============================================================
+ * FICHIER     : register.scss
+ * COMPOSANT   : Register
+ * DESCRIPTION : Styles de la page d'inscription. Fond de page,
+ *               champs de formulaire avec focus turquoise, bouton
+ *               d'inscription, liens et alertes succès/erreur.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Conteneur de page
+ *   2. Classe utilitaire turquoise
+ *   3. Champs de formulaire (focus)
+ *   4. Bouton d'inscription
+ *   5. Liens
+ *   6. Alertes (succès / erreur)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. CONTENEUR DE PAGE
+   ============================================== */
 .register-page {
   min-height: 80vh;
   background-color: var(--marron-clair);
 }
 
+/* ==============================================
+   2. CLASSE UTILITAIRE TURQUOISE
+   ============================================== */
 .text-turquoise {
   color: var(--turquoise) !important;
 }
 
+/* ==============================================
+   3. CHAMPS DE FORMULAIRE
+   Bordure grise par défaut, turquoise au focus
+   ============================================== */
 .form-control {
   border-color: #ddd;
-  
+
   &:focus {
     border-color: var(--turquoise);
     box-shadow: 0 0 0 0.2rem rgba(95, 200, 194, 0.25);
   }
 }
 
+/* ==============================================
+   4. BOUTON D'INSCRIPTION
+   Style turquoise avec hover et état désactivé
+   ============================================== */
 .btn-primary {
   background-color: var(--turquoise);
   border-color: var(--turquoise);
   font-weight: 500;
   transition: all 0.2s ease;
-  
+
+  /* Hover : turquoise foncé + légère élévation */
   &:hover:not(:disabled) {
     background-color: var(--turquoise-hover);
     border-color: var(--turquoise-hover);
     transform: translateY(-1px);
   }
-  
+
+  /* État désactivé pendant le chargement */
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
 }
 
+/* ==============================================
+   5. LIENS
+   Sans soulignement par défaut, souligné au hover
+   ============================================== */
 a {
   text-decoration: none;
-  
+
   &:hover {
     text-decoration: underline;
   }
 }
 
+/* ==============================================
+   6. ALERTES (succès / erreur)
+   Couleurs Bootstrap personnalisées
+   ============================================== */
 .alert {
   border-radius: 0.375rem;
-  
+
+  /* Succès : fond vert clair */
   &.alert-success {
     background-color: #d4edda;
     border-color: #c3e6cb;
     color: #155724;
   }
-  
+
+  /* Erreur : fond rouge clair */
   &.alert-danger {
     background-color: #f8d7da;
     border-color: #f5c6cb;

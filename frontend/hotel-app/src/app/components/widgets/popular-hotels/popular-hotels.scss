@@ -1,15 +1,46 @@
+/**
+ * ============================================================
+ * FICHIER     : popular-hotels.scss
+ * COMPOSANT   : PopularHotels
+ * DESCRIPTION : Styles du widget sidebar des hôtels populaires.
+ *               Design compact en liste horizontale : miniature
+ *               70×55px + infos (nom turquoise, étoiles, prix,
+ *               badge note). Tailles réduites pour sidebar.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Conteneur principal (fond gris clair)
+ *   2. Item hôtel (dernier sans bordure basse)
+ *   3. Miniature image (70×55px, object-fit cover)
+ *   4. Nom hôtel (turquoise, hover souligné)
+ *   5. Étoiles (très petites, 0.65rem)
+ *   6. Prix (compact, 0.75rem)
+ *   7. Badge note (très petit, 0.7rem)
+ *   8. Lien "Show all" (turquoise)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. CONTENEUR PRINCIPAL
+   Fond gris très clair
+   ============================================== */
 .popular-hotels {
   background-color: #f8f9fa;
 
   .hotels-list {
     .hotel-item {
+      /* Dernier item sans bordure basse */
       &:last-child {
         border-bottom: none !important;
       }
 
+      /* ==============================================
+         3. MINIATURE IMAGE
+         Fixe 70×55px, pas de rétrécissement flex
+         ============================================== */
       .hotel-img-link {
         flex-shrink: 0;
-        
+
         .hotel-thumb {
           width: 70px;
           height: 55px;
@@ -18,8 +49,12 @@
       }
 
       .hotel-info {
-        min-width: 0; // Permet le text-truncate
+        min-width: 0; /* Permet le text-truncate si nom trop long */
 
+        /* ==============================================
+           4. NOM DE L'HÔTEL
+           Turquoise (#5cb8b2), gras, hover souligné
+           ============================================== */
         .hotel-name {
           display: block;
           font-size: 0.85rem;
@@ -34,19 +69,31 @@
           }
         }
 
+        /* ==============================================
+           5. ÉTOILES
+           Très petites (0.65rem) pour compact sidebar
+           ============================================== */
         .hotel-stars {
           margin-bottom: 2px;
-          
+
           i {
             font-size: 0.65rem;
           }
         }
 
+        /* ==============================================
+           6. PRIX
+           Compact (0.75rem), interligne serré
+           ============================================== */
         .hotel-price {
           font-size: 0.75rem;
           line-height: 1.3;
         }
 
+        /* ==============================================
+           7. BADGE NOTE
+           Très petit (0.7rem), padding compact
+           ============================================== */
         .hotel-rating {
           margin-top: 3px;
 
@@ -59,7 +106,10 @@
     }
   }
 
-  // Lien "Show all"
+  /* ==============================================
+     8. LIEN "SHOW ALL"
+     Turquoise avec hover foncé
+     ============================================== */
   .btn-link {
     color: #5cb8b2;
     font-size: 0.85rem;

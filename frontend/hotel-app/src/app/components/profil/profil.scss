@@ -1,18 +1,53 @@
+/**
+ * ============================================================
+ * FICHIER     : profil.scss
+ * COMPOSANT   : Profil
+ * DESCRIPTION : Styles de la page profil utilisateur. Fond de page,
+ *               champs de formulaire avec focus turquoise, boutons
+ *               primary/outline/secondary, badges de rôle et groupe
+ *               input mot de passe avec bouton toggle visibilité.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Conteneur de page
+ *   2. Classe utilitaire turquoise
+ *   3. Badges de rôle
+ *   4. Champs de formulaire (focus + disabled)
+ *   5. Boutons (primary, outline, secondary)
+ *   6. Cartes (hover)
+ *   7. Groupe input mot de passe (toggle œil)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. CONTENEUR DE PAGE
+   ============================================== */
 .profil-page {
   min-height: 80vh;
   background-color: var(--marron-clair);
 }
 
+/* ==============================================
+   2. CLASSE UTILITAIRE TURQUOISE
+   ============================================== */
 .text-turquoise {
   color: var(--turquoise) !important;
 }
 
+/* ==============================================
+   3. BADGES DE RÔLE
+   Padding élargi, uppercase
+   ============================================== */
 .badge {
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
   text-transform: uppercase;
 }
 
+/* ==============================================
+   4. CHAMPS DE FORMULAIRE
+   Bordure grise, focus turquoise, état disabled grisé
+   ============================================== */
 .form-control {
   border-color: #ddd;
 
@@ -27,6 +62,11 @@
   }
 }
 
+/* ==============================================
+   5. BOUTONS
+   ============================================== */
+
+/* Bouton principal turquoise */
 .btn-primary {
   background-color: var(--turquoise);
   border-color: var(--turquoise);
@@ -42,6 +82,7 @@
   }
 }
 
+/* Bouton outline turquoise */
 .btn-outline-primary {
   color: var(--turquoise);
   border-color: var(--turquoise);
@@ -53,6 +94,7 @@
   }
 }
 
+/* Bouton secondaire (annuler) */
 .btn-secondary {
   &:hover:not(:disabled) {
     background-color: #5a6268;
@@ -60,6 +102,10 @@
   }
 }
 
+/* ==============================================
+   6. CARTES
+   Ombre renforcée au hover
+   ============================================== */
 .card {
   transition: box-shadow 0.2s ease;
 
@@ -68,14 +114,19 @@
   }
 }
 
-// Groupe input + bouton œil
+/* ==============================================
+   7. GROUPE INPUT MOT DE PASSE
+   Input avec bouton toggle œil positionné en absolu
+   ============================================== */
 .password-input-group {
   position: relative;
 
+  /* Espace réservé à droite pour le bouton œil */
   .form-control {
-    padding-right: 45px; // Espace pour le bouton
+    padding-right: 45px;
   }
 
+  /* Bouton toggle visibilité (œil / œil barré) */
   .btn-toggle-password {
     position: absolute;
     right: 5px;

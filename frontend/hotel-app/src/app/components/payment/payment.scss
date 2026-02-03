@@ -1,14 +1,49 @@
-// Variables
+/**
+ * ============================================================
+ * FICHIER     : payment.scss
+ * COMPOSANT   : Payment
+ * DESCRIPTION : Styles de la page de paiement. Indicateur d'étapes,
+ *               formulaire carte bancaire, résumé de réservation
+ *               latéral, page de confirmation succès, breadcrumb
+ *               et responsive mobile.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Variables locales
+ *   2. Conteneur de page
+ *   3. Indicateur d'étapes (steps)
+ *   4. Titre avec numéro d'étape
+ *   5. Formulaire (labels, inputs, select)
+ *   6. Checkbox conditions
+ *   7. Boutons (primary, outline)
+ *   8. Résumé de réservation (détails, prix)
+ *   9. Box d'aide
+ *  10. Carte de succès
+ *  11. Breadcrumb
+ *  12. Classe utilitaire turquoise
+ *  13. Responsive mobile (≤768px)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. VARIABLES LOCALES
+   ============================================== */
 $turquoise: #5cb8b2;
 $turquoise-dark: #4a9a95;
 $marron-clair: #a08060;
 
+/* ==============================================
+   2. CONTENEUR DE PAGE
+   ============================================== */
 .payment-page {
   background-color: #f8f9fa;
   min-height: 100vh;
 }
 
-// Indicateur d'étapes
+/* ==============================================
+   3. INDICATEUR D'ÉTAPES
+   Deux pastilles (completed/active) reliées par une ligne
+   ============================================== */
 .steps-indicator {
   display: flex;
   align-items: center;
@@ -24,11 +59,13 @@ $marron-clair: #a08060;
     background-color: #e9ecef;
     color: #6c757d;
 
+    /* Étape active : fond turquoise */
     &.active {
       background-color: $turquoise;
       color: white;
     }
 
+    /* Étape complétée : fond vert */
     &.completed {
       background-color: #28a745;
       color: white;
@@ -44,6 +81,7 @@ $marron-clair: #a08060;
     }
   }
 
+  /* Ligne de connexion entre les étapes */
   .step-line {
     width: 60px;
     height: 2px;
@@ -52,7 +90,10 @@ $marron-clair: #a08060;
   }
 }
 
-// Titre avec numéro d'étape
+/* ==============================================
+   4. TITRE AVEC NUMÉRO D'ÉTAPE
+   Style marron clair avec numéro turquoise
+   ============================================== */
 .step-title {
   display: flex;
   align-items: center;
@@ -67,7 +108,10 @@ $marron-clair: #a08060;
   }
 }
 
-// Formulaire
+/* ==============================================
+   5. FORMULAIRE
+   Labels semi-bold, inputs avec focus turquoise
+   ============================================== */
 .form-label {
   font-weight: 500;
   color: #495057;
@@ -87,13 +131,17 @@ $marron-clair: #a08060;
   }
 }
 
+/* Icône dans l'input group (calendrier) */
 .input-group-text {
   background-color: #fff;
   border-color: #ced4da;
   color: #6c757d;
 }
 
-// Checkbox conditions
+/* ==============================================
+   6. CHECKBOX CONDITIONS
+   Style turquoise quand cochée
+   ============================================== */
 .form-check {
   .form-check-input {
     width: 1.2em;
@@ -116,7 +164,10 @@ $marron-clair: #a08060;
   }
 }
 
-// Boutons
+/* ==============================================
+   7. BOUTONS
+   Primary turquoise uppercase + outline secondary
+   ============================================== */
 .btn-primary {
   background-color: $turquoise;
   border-color: $turquoise;
@@ -142,7 +193,10 @@ $marron-clair: #a08060;
   }
 }
 
-// Résumé réservation
+/* ==============================================
+   8. RÉSUMÉ DE RÉSERVATION (sidebar)
+   Lignes label/value empilées
+   ============================================== */
 .reservation-details {
   .detail-row {
     display: flex;
@@ -162,7 +216,7 @@ $marron-clair: #a08060;
   }
 }
 
-// Prix total
+/* Prix total */
 .total-price {
   h3 {
     color: #212529;
@@ -170,7 +224,10 @@ $marron-clair: #a08060;
   }
 }
 
-// Box d'aide
+/* ==============================================
+   9. BOX D'AIDE TÉLÉPHONIQUE
+   Bordure gauche turquoise
+   ============================================== */
 .help-box {
   border-left: 3px solid $turquoise;
 
@@ -179,14 +236,20 @@ $marron-clair: #a08060;
   }
 }
 
-// Card de succès
+/* ==============================================
+   10. CARTE DE SUCCÈS
+   Icône check verte grande taille
+   ============================================== */
 .success-card {
   i.bi-check-circle-fill {
     color: #28a745;
   }
 }
 
-// Breadcrumb
+/* ==============================================
+   11. BREADCRUMB
+   Liens turquoise, fond transparent
+   ============================================== */
 .breadcrumb {
   background: transparent;
   padding: 0;
@@ -207,12 +270,18 @@ $marron-clair: #a08060;
   }
 }
 
-// Texte turquoise
+/* ==============================================
+   12. CLASSE UTILITAIRE TURQUOISE
+   ============================================== */
 .text-turquoise {
   color: $turquoise !important;
 }
 
-// Responsive
+/* ==============================================
+   13. RESPONSIVE MOBILE (≤768px)
+   Étapes : masquer les labels, réduire la ligne
+   Bouton : taille réduite
+   ============================================== */
 @media (max-width: 768px) {
   .steps-indicator {
     .step {

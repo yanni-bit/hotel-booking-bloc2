@@ -1,55 +1,51 @@
+<!--
+  ============================================================
+  FICHIER     : hotel-sidebar.html
+  COMPOSANT   : HotelSidebar
+  DESCRIPTION : Template de la barre de navigation latérale de la
+                page hôtel. Affiche 5 onglets verticaux (nav-pills)
+                avec icônes Bootstrap Icons, liens vers les routes
+                enfants et classe active automatique.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - Navigation verticale (nav-pills) avec 5 onglets :
+      1. Description (route: description)
+      2. Offres (route: offers)
+      3. Équipements (route: amenities)
+      4. Avis (route: reviews)
+      5. Localisation (route: location)
+  ============================================================
+-->
+
+<!-- Conteneur sidebar avec navigation par onglets -->
 <aside class="sidebar-nav-container p-0 mb-4">
   <nav class="nav flex-column nav-pills" role="tablist">
-    
+
     <!-- Onglet Description -->
-    <a 
-      class="nav-link" 
-      routerLink="description" 
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{exact: false}"
-    >
+    <a class="nav-link" routerLink="description" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
       <i class="bi bi-file-text me-2"></i> {{ 'hotel.description' | translate }}
     </a>
-    
+
     <!-- Onglet Offres -->
-    <a 
-      class="nav-link" 
-      routerLink="offers" 
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{exact: false}"
-    >
+    <a class="nav-link" routerLink="offers" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
       <i class="bi bi-tag me-2"></i> {{ 'hotel.offers' | translate }}
     </a>
-    
+
     <!-- Onglet Équipements -->
-    <a 
-      class="nav-link" 
-      routerLink="amenities" 
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{exact: false}"
-    >
+    <a class="nav-link" routerLink="amenities" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
       <i class="bi bi-star me-2"></i> {{ 'hotel.amenities' | translate }}
     </a>
-    
+
     <!-- Onglet Avis -->
-    <a 
-      class="nav-link" 
-      routerLink="reviews" 
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{exact: false}"
-    >
+    <a class="nav-link" routerLink="reviews" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
       <i class="bi bi-chat-left-text me-2"></i> {{ 'hotel.reviews' | translate }}
     </a>
-    
+
     <!-- Onglet Localisation -->
-    <a 
-      class="nav-link" 
-      routerLink="location" 
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{exact: false}"
-    >
+    <a class="nav-link" routerLink="location" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
       <i class="bi bi-geo-alt me-2"></i> {{ 'hotel.location' | translate }}
     </a>
-    
+
   </nav>
 </aside>

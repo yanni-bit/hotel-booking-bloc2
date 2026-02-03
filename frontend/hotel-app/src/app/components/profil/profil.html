@@ -1,6 +1,27 @@
+<!--
+  ============================================================
+  FICHIER     : profil.html
+  COMPOSANT   : Profil
+  DESCRIPTION : Template de la page profil utilisateur. Deux cartes :
+                informations personnelles (lecture/édition) et
+                changement de mot de passe avec toggle de visibilité.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - Titre de la page
+    - Carte informations personnelles :
+      - Mode lecture : prénom, nom, email, téléphone, rôle
+      - Mode édition : formulaire prénom, nom, téléphone (email disabled)
+    - Carte mot de passe :
+      - État fermé : texte informatif + bouton "Modifier"
+      - Formulaire : ancien mdp, nouveau mdp, confirmation (avec toggles œil)
+  ============================================================
+-->
+
 <main class="profil-page py-5">
   <div class="container">
 
+    <!-- Titre de la page -->
     <h1 class="h3 mb-4 text-turquoise">
       <i class="bi bi-person-circle me-2"></i>{{ 'profile.title' | translate }}
     </h1>
@@ -8,10 +29,11 @@
     <div class="row">
       <div class="col-lg-8">
 
-        <!-- CARD INFORMATIONS -->
+        <!-- ====== CARTE INFORMATIONS PERSONNELLES ====== -->
         <div class="card border-0 shadow-sm mb-4">
           <div class="card-body p-4">
 
+            <!-- En-tête avec bouton édition -->
             <div class="d-flex justify-content-between align-items-center mb-4">
               <h2 class="h5 mb-0">{{ 'profile.personalInfo' | translate }}</h2>
               <button class="btn btn-sm btn-outline-primary" (click)="toggleEditMode()" *ngIf="!editMode">
@@ -19,8 +41,9 @@
               </button>
             </div>
 
-            <!-- MODE LECTURE -->
+            <!-- MODE LECTURE : affichage des informations -->
             <div *ngIf="!editMode">
+              <!-- Prénom -->
               <div class="row mb-3">
                 <div class="col-md-3">
                   <strong>{{ 'booking.firstName' | translate }} :</strong>
@@ -30,6 +53,7 @@
                 </div>
               </div>
 
+              <!-- Nom -->
               <div class="row mb-3">
                 <div class="col-md-3">
                   <strong>{{ 'booking.lastName' | translate }} :</strong>
@@ -39,6 +63,7 @@
                 </div>
               </div>
 
+              <!-- Email -->
               <div class="row mb-3">
                 <div class="col-md-3">
                   <strong>{{ 'booking.email' | translate }} :</strong>
@@ -48,6 +73,7 @@
                 </div>
               </div>
 
+              <!-- Téléphone -->
               <div class="row mb-3">
                 <div class="col-md-3">
                   <strong>{{ 'booking.phone' | translate }} :</strong>
@@ -57,6 +83,7 @@
                 </div>
               </div>
 
+              <!-- Rôle utilisateur (badge) -->
               <div class="row mb-3">
                 <div class="col-md-3">
                   <strong>{{ 'profile.role' | translate }} :</strong>
@@ -67,9 +94,10 @@
               </div>
             </div>
 
-            <!-- MODE ÉDITION -->
+            <!-- MODE ÉDITION : formulaire de modification -->
             <form *ngIf="editMode" (ngSubmit)="saveProfile()">
 
+              <!-- Prénom et Nom (côte à côte) -->
               <div class="row mb-3">
                 <div class="col-md-6">
                   <label class="form-label fw-bold">{{ 'booking.firstName' | translate }} *</label>
@@ -82,18 +110,21 @@
                 </div>
               </div>
 
+              <!-- Email (non modifiable) -->
               <div class="mb-3">
                 <label class="form-label fw-bold">{{ 'booking.email' | translate }}</label>
                 <input type="email" class="form-control" [value]="authService.currentUser()?.email" disabled>
                 <small class="text-muted">{{ 'profile.emailCannotChange' | translate }}</small>
               </div>
 
+              <!-- Téléphone -->
               <div class="mb-4">
                 <label class="form-label fw-bold">{{ 'booking.phone' | translate }}</label>
                 <input type="tel" class="form-control" [(ngModel)]="profileForm.telephone" name="telephone"
                   placeholder="+33 6 12 34 56 78">
               </div>
 
+              <!-- Boutons : sauvegarder / annuler -->
               <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary" [disabled]="submitting">
                   <span *ngIf="!submitting">
@@ -114,10 +145,11 @@
           </div>
         </div>
 
-        <!-- CARD MOT DE PASSE -->
+        <!-- ====== CARTE MOT DE PASSE ====== -->
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
 
+            <!-- En-tête avec bouton modifier -->
             <div class="d-flex justify-content-between align-items-center mb-4">
               <h2 class="h5 mb-0">{{ 'auth.password' | translate }}</h2>
               <button class="btn btn-sm btn-outline-primary" (click)="togglePasswordForm()" *ngIf="!showPasswordForm">
@@ -125,6 +157,7 @@
               </button>
             </div>
 
+            <!-- État fermé : message informatif -->
             <div *ngIf="!showPasswordForm">
               <p class="text-muted mb-0">
                 <i class="bi bi-lock me-2"></i>{{ 'profile.passwordSecure' | translate }}
@@ -134,6 +167,7 @@
             <!-- FORMULAIRE CHANGEMENT MOT DE PASSE -->
             <form *ngIf="showPasswordForm" (ngSubmit)="changePassword()">
 
+              <!-- Ancien mot de passe (avec toggle visibilité) -->
               <div class="mb-3">
                 <label class="form-label fw-bold">{{ 'profile.oldPassword' | translate }} *</label>
                 <div class="password-input-group">
@@ -145,6 +179,7 @@
                 </div>
               </div>
 
+              <!-- Nouveau mot de passe (avec toggle visibilité) -->
               <div class="mb-3">
                 <label class="form-label fw-bold">{{ 'profile.newPassword' | translate }} *</label>
                 <div class="password-input-group">
@@ -157,6 +192,7 @@
                 <small class="text-muted">{{ 'profile.minChars' | translate }}</small>
               </div>
 
+              <!-- Confirmation nouveau mot de passe (avec toggle visibilité) -->
               <div class="mb-4">
                 <label class="form-label fw-bold">{{ 'profile.confirmNewPassword' | translate }} *</label>
                 <div class="password-input-group">
@@ -169,6 +205,7 @@
                 </div>
               </div>
 
+              <!-- Boutons : confirmer / annuler -->
               <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary" [disabled]="submitting">
                   <span *ngIf="!submitting">

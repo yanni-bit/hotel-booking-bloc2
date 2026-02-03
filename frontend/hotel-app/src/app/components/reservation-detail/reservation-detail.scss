@@ -1,13 +1,46 @@
-// Variables
+/**
+ * ============================================================
+ * FICHIER     : reservation-detail.scss
+ * COMPOSANT   : ReservationDetail
+ * DESCRIPTION : Styles de la page de détail réservation. Fond gris
+ *               clair, breadcrumb turquoise, cartes arrondies, image
+ *               hôtel, boîtes de dates, badges, boutons et responsive.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Variables SCSS
+ *   2. Conteneur de page
+ *   3. Breadcrumb
+ *   4. Classe utilitaire turquoise
+ *   5. Cartes
+ *   6. Image hôtel
+ *   7. Boîtes de dates
+ *   8. Détail prix
+ *   9. Badges de statut
+ *   10. Boutons (primary, outline-primary, outline-danger)
+ *   11. Responsive (≤768px)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. VARIABLES SCSS
+   ============================================== */
 $turquoise: #5cb8b2;
 $turquoise-dark: #4a9a95;
 
+/* ==============================================
+   2. CONTENEUR DE PAGE
+   Fond gris clair, hauteur minimum plein écran
+   ============================================== */
 .reservation-detail-page {
   background-color: #f8f9fa;
   min-height: 100vh;
 }
 
-// Breadcrumb
+/* ==============================================
+   3. BREADCRUMB
+   Liens turquoise, fond transparent
+   ============================================== */
 .breadcrumb {
   background: transparent;
   padding: 0;
@@ -28,12 +61,17 @@ $turquoise-dark: #4a9a95;
   }
 }
 
-// Texte turquoise
+/* ==============================================
+   4. CLASSE UTILITAIRE TURQUOISE
+   ============================================== */
 .text-turquoise {
   color: $turquoise !important;
 }
 
-// Cards
+/* ==============================================
+   5. CARTES
+   Coins arrondis 8px, titres h2 medium weight
+   ============================================== */
 .card {
   border-radius: 8px;
 
@@ -44,7 +82,10 @@ $turquoise-dark: #4a9a95;
   }
 }
 
-// Image hôtel
+/* ==============================================
+   6. IMAGE HÔTEL
+   Coins arrondis, object-fit cover, max 200px
+   ============================================== */
 .img-fluid {
   border-radius: 8px;
   object-fit: cover;
@@ -52,21 +93,30 @@ $turquoise-dark: #4a9a95;
   max-height: 200px;
 }
 
-// Date boxes
+/* ==============================================
+   7. BOÎTES DE DATES (arrivée / départ / durée)
+   Bordure grise, texte sombre
+   ============================================== */
 .date-box {
   border: 1px solid #e9ecef;
-  
+
   .h5 {
     color: #212529;
   }
 }
 
-// Prix
+/* ==============================================
+   8. DÉTAIL PRIX
+   Taille de police légèrement réduite
+   ============================================== */
 .price-detail {
   font-size: 0.95rem;
 }
 
-// Badges
+/* ==============================================
+   9. BADGES DE STATUT
+   Padding renforcé, taille fs-6 ajustée
+   ============================================== */
 .badge {
   padding: 0.5em 1em;
   font-weight: 500;
@@ -76,7 +126,10 @@ $turquoise-dark: #4a9a95;
   }
 }
 
-// Boutons
+/* ==============================================
+   10. BOUTONS
+   Primary et Outline turquoise, Outline danger
+   ============================================== */
 .btn-primary {
   background-color: $turquoise;
   border-color: $turquoise;
@@ -104,7 +157,10 @@ $turquoise-dark: #4a9a95;
   }
 }
 
-// Responsive
+/* ==============================================
+   11. RESPONSIVE (≤768px)
+   Date-box espacées, image réduite, sidebar non sticky
+   ============================================== */
 @media (max-width: 768px) {
   .date-box {
     margin-bottom: 1rem;
@@ -115,6 +171,7 @@ $turquoise-dark: #4a9a95;
     margin-bottom: 1rem;
   }
 
+  /* Désactive le sticky sur mobile pour éviter le chevauchement */
   .sticky-top {
     position: relative !important;
     top: 0 !important;

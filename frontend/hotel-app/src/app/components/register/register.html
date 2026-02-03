@@ -1,120 +1,102 @@
+<!--
+  ============================================================
+  FICHIER     : register.html
+  COMPOSANT   : Register
+  DESCRIPTION : Template de la page d'inscription. Formulaire centré
+                avec prénom, nom, email, téléphone, mot de passe et
+                confirmation. Affiche des messages de succès ou
+                d'erreur et masque le formulaire après succès.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - En-tête (titre + sous-titre)
+    - Carte formulaire :
+      - Message de succès (masque le formulaire)
+      - Message d'erreur
+      - Champs : prénom*, nom*, email*, téléphone, mot de passe*, confirmation*
+      - Bouton inscription (avec spinner)
+      - Lien vers connexion
+    - Lien retour accueil
+  ============================================================
+-->
+
 <main class="register-page py-5">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-6 col-lg-5">
-        
+
+        <!-- En-tête : titre et sous-titre -->
         <div class="text-center mb-4">
           <h1 class="h3 text-turquoise">
             <i class="bi bi-person-plus-fill me-2"></i>{{ 'auth.createAccount' | translate }}
           </h1>
           <p class="text-muted">{{ 'auth.registerSubtitle' | translate }}</p>
         </div>
-        
+
+        <!-- ====== CARTE FORMULAIRE D'INSCRIPTION ====== -->
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
-            
-            <!-- Message de succès -->
+
+            <!-- Message de succès (affiché après inscription réussie) -->
             <div *ngIf="successMessage" class="alert alert-success" role="alert">
               <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
             </div>
-            
+
             <!-- Message d'erreur -->
             <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
               <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
             </div>
-            
-            <!-- Formulaire -->
+
+            <!-- Formulaire (masqué après succès) -->
             <form (ngSubmit)="onSubmit()" *ngIf="!successMessage">
-              
-              <!-- Prénom & Nom -->
+
+              <!-- Prénom et Nom (côte à côte) -->
               <div class="row mb-3">
                 <div class="col-md-6 mb-3 mb-md-0">
                   <label class="form-label fw-bold">{{ 'booking.firstName' | translate }} *</label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    [(ngModel)]="prenom"
-                    name="prenom"
-                    [placeholder]="'booking.firstNamePlaceholder' | translate"
-                    required
-                  >
+                  <input type="text" class="form-control" [(ngModel)]="prenom" name="prenom"
+                    [placeholder]="'booking.firstNamePlaceholder' | translate" required>
                 </div>
-                
+
                 <div class="col-md-6">
                   <label class="form-label fw-bold">{{ 'booking.lastName' | translate }} *</label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    [(ngModel)]="nom"
-                    name="nom"
-                    [placeholder]="'booking.lastNamePlaceholder' | translate"
-                    required
-                  >
+                  <input type="text" class="form-control" [(ngModel)]="nom" name="nom"
+                    [placeholder]="'booking.lastNamePlaceholder' | translate" required>
                 </div>
               </div>
-              
-              <!-- Email -->
+
+              <!-- Email (obligatoire) -->
               <div class="mb-3">
                 <label class="form-label fw-bold">{{ 'booking.email' | translate }} *</label>
-                <input 
-                  type="email" 
-                  class="form-control" 
-                  [(ngModel)]="email"
-                  name="email"
-                  placeholder="votre@email.com"
-                  required
-                  autocomplete="email"
-                >
+                <input type="email" class="form-control" [(ngModel)]="email" name="email" placeholder="votre@email.com"
+                  required autocomplete="email">
               </div>
-              
-              <!-- Téléphone -->
+
+              <!-- Téléphone (optionnel) -->
               <div class="mb-3">
-                <label class="form-label fw-bold">{{ 'booking.phone' | translate }} ({{ 'contact.phonePlaceholder' | translate }})</label>
-                <input 
-                  type="tel" 
-                  class="form-control" 
-                  [(ngModel)]="telephone"
-                  name="telephone"
-                  placeholder="+33 6 12 34 56 78"
-                  autocomplete="tel"
-                >
+                <label class="form-label fw-bold">{{ 'booking.phone' | translate }} ({{ 'contact.phonePlaceholder' |
+                  translate }})</label>
+                <input type="tel" class="form-control" [(ngModel)]="telephone" name="telephone"
+                  placeholder="+33 6 12 34 56 78" autocomplete="tel">
               </div>
-              
-              <!-- Mot de passe -->
+
+              <!-- Mot de passe (obligatoire, min 6 caractères) -->
               <div class="mb-3">
                 <label class="form-label fw-bold">{{ 'auth.password' | translate }} *</label>
-                <input 
-                  type="password" 
-                  class="form-control" 
-                  [(ngModel)]="password"
-                  name="password"
-                  [placeholder]="'profile.minChars' | translate"
-                  required
-                  autocomplete="new-password"
-                >
+                <input type="password" class="form-control" [(ngModel)]="password" name="password"
+                  [placeholder]="'profile.minChars' | translate" required autocomplete="new-password">
                 <small class="text-muted">{{ 'profile.minChars' | translate }}</small>
               </div>
-              
-              <!-- Confirmation mot de passe -->
+
+              <!-- Confirmation mot de passe (obligatoire) -->
               <div class="mb-4">
                 <label class="form-label fw-bold">{{ 'auth.confirmPassword' | translate }} *</label>
-                <input 
-                  type="password" 
-                  class="form-control" 
-                  [(ngModel)]="confirmPassword"
-                  name="confirmPassword"
-                  [placeholder]="'auth.retypePassword' | translate"
-                  required
-                  autocomplete="new-password"
-                >
+                <input type="password" class="form-control" [(ngModel)]="confirmPassword" name="confirmPassword"
+                  [placeholder]="'auth.retypePassword' | translate" required autocomplete="new-password">
               </div>
-              
-              <!-- Bouton inscription -->
-              <button 
-                type="submit" 
-                class="btn btn-primary btn-lg w-100 mb-3"
-                [disabled]="loading"
-              >
+
+              <!-- Bouton inscription avec spinner pendant le chargement -->
+              <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" [disabled]="loading">
                 <span *ngIf="!loading">
                   <i class="bi bi-person-plus me-2"></i>{{ 'auth.createMyAccount' | translate }}
                 </span>
@@ -122,8 +104,8 @@
                   <span class="spinner-border spinner-border-sm me-2"></span>{{ 'auth.creating' | translate }}
                 </span>
               </button>
-              
-              <!-- Lien connexion -->
+
+              <!-- Lien vers la page de connexion -->
               <div class="text-center">
                 <p class="mb-0 text-muted">
                   {{ 'auth.hasAccount' | translate }}
@@ -132,19 +114,19 @@
                   </a>
                 </p>
               </div>
-              
+
             </form>
-            
+
           </div>
         </div>
-        
-        <!-- Retour accueil -->
+
+        <!-- Lien retour accueil -->
         <div class="text-center mt-3">
           <a [routerLink]="['/']" class="text-muted">
             <i class="bi bi-arrow-left me-1"></i>{{ 'booking.backHome' | translate }}
           </a>
         </div>
-        
+
       </div>
     </div>
   </div>

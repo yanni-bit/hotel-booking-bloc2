@@ -1,16 +1,35 @@
+<!--
+  ============================================================
+  FICHIER     : offres.html
+  COMPOSANT   : Offres
+  DESCRIPTION : Template de la section "Nos dernières offres" sur
+                l'accueil. Grille de 4 cartes promotionnelles avec
+                image, badge, titre, description et bouton de
+                réservation. Chaque carte redirige vers l'hôtel.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - En-tête de section (titre + sous-titre centrés)
+    - Grille 4 colonnes (responsive : 1/2/4 colonnes)
+    - Carte offre × 4 :
+      - Image avec badge promotionnel superposé
+      - Corps : titre, description, bouton réservation
+  ============================================================
+-->
+
 <!-- SECTION NOS DERNIÈRES OFFRES -->
 <section class="offres-section py-5">
   <div class="container ligneSeparation">
-    
+
     <!-- En-tête de section -->
     <div class="text-center mb-5">
       <h2 class="section-title">{{ 'offers.title' | translate }}</h2>
       <p class="section-subtitle">{{ 'offers.subtitle' | translate }}</p>
     </div>
 
-    <!-- Grille des offres -->
+    <!-- Grille des offres (4 colonnes desktop, 2 tablette, 1 mobile) -->
     <div class="row g-4">
-      
+
       <!-- Offre 1 - Escapades Hivernales -->
       <div class="col-12 col-md-6 col-lg-3">
         <div class="offre-card" [routerLink]="['/hotels', offres[0].ville, offres[0].hotelId]">
@@ -23,7 +42,8 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[0].title }}</h3>
             <p class="offre-card-text">{{ offres[0].description }}</p>
-            <a [routerLink]="['/hotels', offres[0].ville, offres[0].hotelId]" class="btn-offre">{{ 'offers.book' | translate }}</a>
+            <a [routerLink]="['/hotels', offres[0].ville, offres[0].hotelId]" class="btn-offre">{{ 'offers.book' |
+              translate }}</a>
           </div>
         </div>
       </div>
@@ -40,7 +60,8 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[1].title }}</h3>
             <p class="offre-card-text">{{ offres[1].description }}</p>
-            <a [routerLink]="['/hotels', offres[1].ville, offres[1].hotelId]" class="btn-offre">{{ 'offers.book' | translate }}</a>
+            <a [routerLink]="['/hotels', offres[1].ville, offres[1].hotelId]" class="btn-offre">{{ 'offers.book' |
+              translate }}</a>
           </div>
         </div>
       </div>
@@ -57,7 +78,8 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[2].title }}</h3>
             <p class="offre-card-text">{{ offres[2].description }}</p>
-            <a [routerLink]="['/hotels', offres[2].ville, offres[2].hotelId]" class="btn-offre">{{ 'offers.book' | translate }}</a>
+            <a [routerLink]="['/hotels', offres[2].ville, offres[2].hotelId]" class="btn-offre">{{ 'offers.book' |
+              translate }}</a>
           </div>
         </div>
       </div>
@@ -74,7 +96,8 @@
           <div class="offre-card-body">
             <h3 class="offre-card-title">{{ offres[3].title }}</h3>
             <p class="offre-card-text">{{ offres[3].description }}</p>
-            <a [routerLink]="['/hotels', offres[3].ville, offres[3].hotelId]" class="btn-offre">{{ 'offers.book' | translate }}</a>
+            <a [routerLink]="['/hotels', offres[3].ville, offres[3].hotelId]" class="btn-offre">{{ 'offers.book' |
+              translate }}</a>
           </div>
         </div>
       </div>

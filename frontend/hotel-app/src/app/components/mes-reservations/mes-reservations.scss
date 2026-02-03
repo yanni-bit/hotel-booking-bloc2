@@ -1,8 +1,32 @@
+/**
+ * ============================================================
+ * FICHIER     : mes-reservations.scss
+ * COMPOSANT   : MesReservations
+ * DESCRIPTION : Styles de la page "Mes réservations". Fond de page,
+ *               cartes de réservation avec effet hover, badges de
+ *               statut et bouton turquoise.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Conteneur de page
+ *   2. Classes utilitaires turquoise
+ *   3. Cartes de réservation (hover + image)
+ *   4. Badges de statut
+ *   5. Bouton principal
+ * ============================================================
+ */
+
+/* ==============================================
+   1. CONTENEUR DE PAGE
+   ============================================== */
 .reservations-page {
   min-height: 60vh;
   background-color: var(--marron-clair);
 }
 
+/* ==============================================
+   2. CLASSES UTILITAIRES TURQUOISE
+   ============================================== */
 .text-turquoise {
   color: var(--turquoise) !important;
 }
@@ -11,30 +35,44 @@
   color: var(--turquoise) !important;
 }
 
+/* ==============================================
+   3. CARTES DE RÉSERVATION
+   Effet hover : élévation + ombre renforcée
+   Image : hauteur max 200px, recadrée
+   ============================================== */
 .reservation-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   }
-  
+
   img {
     max-height: 200px;
     object-fit: cover;
   }
 }
 
+/* ==============================================
+   4. BADGES DE STATUT
+   Padding élargi et texte semi-bold
+   ============================================== */
 .badge {
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
   font-weight: 600;
 }
 
+/* ==============================================
+   5. BOUTON PRINCIPAL TURQUOISE
+   ============================================== */
 .btn-primary {
   background-color: var(--turquoise);
   border-color: var(--turquoise);
-  
+
   &:hover {
     background-color: var(--turquoise-hover);
     border-color: var(--turquoise-hover);

@@ -1,10 +1,37 @@
+/**
+ * ============================================================
+ * FICHIER     : deal-of-day.scss
+ * COMPOSANT   : DealOfDay
+ * DESCRIPTION : Styles du widget sidebar "Offre du jour". Carte
+ *               compacte avec image, nom turquoise, petites étoiles,
+ *               prix et badge note. Design compact pour sidebar.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Conteneur principal (fond gris clair)
+ *   2. Image de l'offre (120px, object-fit cover)
+ *   3. Nom de l'hôtel (turquoise, hover souligné)
+ *   4. Étoiles (petites, 0.7rem)
+ *   5. Prix (compact, 0.8rem)
+ *   6. Badge note (petit, 0.75rem)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. CONTENEUR PRINCIPAL
+   Fond gris très clair
+   ============================================== */
 .deal-of-day {
   background-color: #f8f9fa;
 
   .deal-content {
+    /* ==============================================
+       2. IMAGE DE L'OFFRE
+       Hauteur fixe 120px, remplie en cover
+       ============================================== */
     .deal-img-link {
       display: block;
-      
+
       .deal-img {
         width: 100%;
         height: 120px;
@@ -13,6 +40,10 @@
     }
 
     .deal-info {
+      /* ==============================================
+         3. NOM DE L'HÔTEL
+         Turquoise (#5cb8b2), gras, hover souligné
+         ============================================== */
       .deal-name {
         display: block;
         font-size: 0.9rem;
@@ -26,6 +57,10 @@
         }
       }
 
+      /* ==============================================
+         4. ÉTOILES
+         Petites (0.7rem), espacement vertical 3px
+         ============================================== */
       .deal-stars {
         margin: 3px 0;
 
@@ -34,10 +69,18 @@
         }
       }
 
+      /* ==============================================
+         5. PRIX
+         Compact (0.8rem) pour affichage sidebar
+         ============================================== */
       .deal-price {
         font-size: 0.8rem;
       }
 
+      /* ==============================================
+         6. BADGE NOTE
+         Petit (0.75rem), padding compact
+         ============================================== */
       .deal-rating {
         .badge {
           font-size: 0.75rem;

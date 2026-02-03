@@ -1,11 +1,38 @@
+/**
+ * ============================================================
+ * FICHIER     : hotel-location.scss
+ * COMPOSANT   : HotelLocation
+ * DESCRIPTION : Styles de l'onglet Localisation d'un hôtel.
+ *               Gère la mise en forme de la carte Leaflet, des cartes
+ *               d'information (adresse, contact), des informations
+ *               pratiques avec effets hover, et le responsive tablette.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Titre de section
+ *   2. Carte interactive Leaflet
+ *   3. Classes utilitaires couleurs
+ *   4. Cartes d'information (adresse, contact)
+ *   5. Informations pratiques (check-in/out, paiement)
+ *   6. Alerte note informative
+ *   7. Responsive (tablette ≤ 768px)
+ * ============================================================
+ */
+
 .hotel-location {
+  /* ==============================================
+     1. TITRE DE SECTION
+     ============================================== */
   h2 {
     color: var(--gris-moyen);
     font-weight: 600;
   }
 
   .location-content {
-    // Carte interactive
+    /* ==============================================
+       2. CARTE INTERACTIVE LEAFLET
+       Conteneur fixe 400px avec carte en pleine largeur
+       ============================================== */
     .map-container {
       height: 400px;
       position: relative;
@@ -17,7 +44,9 @@
       }
     }
 
-    // Cartes d'information
+    /* ==============================================
+       3. CLASSES UTILITAIRES COULEURS
+       ============================================== */
     .text-turquoise {
       color: var(--turquoise);
     }
@@ -26,12 +55,17 @@
       color: var(--gris-moyen);
     }
 
+    /* ==============================================
+       4. CARTES D'INFORMATION (ADRESSE, CONTACT)
+       ============================================== */
     .info-card {
+      /* Titres des cartes */
       h3 {
         color: var(--turquoise);
         font-weight: 600;
       }
 
+      /* Liens de contact avec transition hover */
       .contact-item {
         a {
           color: var(--gris-moyen);
@@ -44,6 +78,7 @@
         }
       }
 
+      /* Alerte info réception 24h : couleurs turquoise */
       .alert-info {
         background-color: var(--turquoise-light);
         border-color: var(--turquoise);
@@ -51,7 +86,10 @@
       }
     }
 
-    // Informations pratiques
+    /* ==============================================
+       5. INFORMATIONS PRATIQUES
+       Boîtes check-in/out/paiement avec effet hover
+       ============================================== */
     .practical-info {
       h3 {
         color: var(--turquoise);
@@ -63,10 +101,12 @@
         transition: all 0.2s ease;
         background-color: var(--gris-clair);
 
+        /* Animation de l'icône au hover */
         i {
           transition: transform 0.2s ease;
         }
 
+        /* Effet hover : fond turquoise + légère élévation */
         &:hover {
           background-color: var(--turquoise-light) !important;
           transform: translateY(-2px);
@@ -79,13 +119,19 @@
     }
   }
 
+  /* ==============================================
+     6. ALERTE NOTE INFORMATIVE
+     ============================================== */
   .alert-light {
     background-color: var(--gris-clair);
     border: none;
   }
 }
 
-// Responsive
+/* ==============================================
+   7. RESPONSIVE - TABLETTE (≤ 768px)
+   Réduction de la hauteur de carte et espacement
+   ============================================== */
 @media (max-width: 768px) {
   .hotel-location {
     .map-container {

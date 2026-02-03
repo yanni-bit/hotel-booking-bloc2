@@ -1,28 +1,55 @@
+/**
+ * ============================================================
+ * FICHIER     : hotel-detail.scss
+ * COMPOSANT   : HotelDetail
+ * DESCRIPTION : Styles de la page de détail d'un hôtel.
+ *               Définit le fond de page et personnalise le fil
+ *               d'Ariane (breadcrumb) avec les couleurs du thème.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Conteneur principal de la page
+ *   2. Fil d'Ariane (breadcrumb)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. CONTENEUR PRINCIPAL DE LA PAGE
+   ============================================== */
 .hotel-detail-page {
   min-height: 60vh;
   background-color: var(--marron-clair);
 }
 
+/* ==============================================
+   2. FIL D'ARIANE (BREADCRUMB)
+   ============================================== */
+
+/* Conteneur du breadcrumb : fond transparent */
 .breadcrumb {
   background-color: transparent;
   padding: 0.5rem 0;
 }
 
+/* Séparateur entre les éléments du breadcrumb */
 .breadcrumb-item + .breadcrumb-item::before {
-  content: "›";
+  content: '›';
   color: var(--gris-moyen);
 }
 
+/* Liens du breadcrumb : couleur turquoise du thème */
 .breadcrumb-item a {
   color: var(--turquoise);
   text-decoration: none;
 }
 
+/* État hover des liens du breadcrumb */
 .breadcrumb-item a:hover {
   color: var(--turquoise-hover);
   text-decoration: underline;
 }
 
+/* Élément actif du breadcrumb (page courante) */
 .breadcrumb-item.active {
   color: var(--gris-fonce);
 }

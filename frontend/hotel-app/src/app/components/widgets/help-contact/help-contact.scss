@@ -1,7 +1,30 @@
+/**
+ * ============================================================
+ * FICHIER     : help-contact.scss
+ * COMPOSANT   : HelpContact
+ * DESCRIPTION : Styles du widget sidebar d'aide au contact.
+ *               Utilise les variables CSS globales pour les
+ *               couleurs turquoise et gris.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Couleur turquoise (numéro de téléphone)
+ *   2. Couleur titre (gris moyen)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. COULEUR TURQUOISE
+   Appliquée au numéro de téléphone du support
+   ============================================== */
 .turquoise {
-    color: var(--turquoise);
+  color: var(--turquoise);
 }
 
+/* ==============================================
+   2. COULEUR TITRE
+   Gris moyen pour le titre du widget
+   ============================================== */
 .titre {
-    color: var(--gris-moyen);
+  color: var(--gris-moyen);
 }

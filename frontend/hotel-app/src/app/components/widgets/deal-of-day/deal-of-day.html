@@ -1,48 +1,72 @@
+<!--
+  ============================================================
+  FICHIER     : deal-of-day.html
+  COMPOSANT   : DealOfDay
+  DESCRIPTION : Template du widget sidebar "Offre du jour".
+                Carte compacte avec image, nom hôtel, étoiles,
+                prix minimum et note moyenne.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - Titre "Deal of the day" (h3 uppercase + bordure basse)
+    - État loading (spinner petit)
+    - Contenu (si hôtel chargé) :
+      - Image cliquable → fiche hôtel
+      - Nom de l'hôtel (lien turquoise)
+      - Étoiles dorées
+      - Prix minimum ("À partir de X €/nuit")
+      - Badge note moyenne (vert)
+    - Message si aucune offre trouvée
+  ============================================================
+-->
+
 <aside class="deal-of-day card p-3 mb-4 border-0 shadow-sm">
+  <!-- Titre du widget -->
   <h3 class="h6 text-uppercase fw-bold pb-2 border-bottom">
     {{ 'sidebar.dealOfDay' | translate }}
   </h3>
 
-  <!-- Loading -->
+  <!-- État loading (spinner petit) -->
   <div *ngIf="loading" class="text-center py-3">
     <div class="spinner-border spinner-border-sm text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
 
-  <!-- Contenu -->
+  <!-- ====== CONTENU DE L'OFFRE DU JOUR ====== -->
   <div *ngIf="!loading && hotel" class="deal-content mt-2">
-    <!-- Image -->
+    <!-- Image cliquable vers la fiche de l'hôtel -->
     <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="deal-img-link">
       <img [src]="hotel.img_hotel" [alt]="hotel.nom_hotel" class="deal-img rounded w-100">
     </a>
 
-    <!-- Infos -->
+    <!-- Informations de l'hôtel -->
     <div class="deal-info mt-2">
+      <!-- Nom de l'hôtel (lien vers fiche) -->
       <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="deal-name text-decoration-none">
         {{ hotel.nom_hotel }}
       </a>
 
-      <!-- Étoiles -->
+      <!-- Étoiles dorées générées dynamiquement -->
       <div class="deal-stars">
         <i *ngFor="let star of getStars(hotel.nbre_etoile_hotel)" class="bi bi-star-fill text-warning small"></i>
       </div>
 
-      <!-- Prix -->
+      <!-- Prix minimum par nuit -->
       <div class="deal-price small">
         <span class="text-muted">{{ 'sidebar.from' | translate }}</span>
         <span class="fw-bold text-primary"> {{ hotel.prix_min | appCurrency }}</span>
         <span class="text-muted">/ {{ 'sidebar.perNight' | translate }}</span>
       </div>
 
-      <!-- Note -->
+      <!-- Badge note moyenne (vert) -->
       <div class="deal-rating mt-1">
         <span class="badge bg-success">{{ hotel.note_moy_hotel }}/10</span>
       </div>
     </div>
   </div>
 
-  <!-- Aucun résultat -->
+  <!-- Message si aucune offre trouvée -->
   <p *ngIf="!loading && !hotel" class="small text-muted mt-2">
     {{ 'sidebar.noDealsFound' | translate }}
   </p>

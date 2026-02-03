@@ -1,3 +1,30 @@
+<!--
+  ============================================================
+  FICHIER     : payment.html
+  COMPOSANT   : Payment
+  DESCRIPTION : Template de la page de paiement (étape 2). Affiche
+                selon l'état : spinner loading, erreur, confirmation
+                de succès, ou formulaire de paiement avec résumé
+                latéral de la réservation.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - État loading (spinner)
+    - État erreur (alert + lien accueil)
+    - Confirmation succès (icône check, n° confirmation, liens)
+    - Formulaire de paiement :
+      - Breadcrumb de navigation
+      - Indicateur d'étapes (01 complétée → 02 active)
+      - Colonne gauche (col-lg-8) : formulaire carte bancaire
+        - Type, numéro, nom, expiration, CVV
+        - Cartes de test (acceptées / refusées)
+        - Checkbox conditions + boutons
+      - Colonne droite (col-lg-4) : résumé réservation sticky
+        - Infos hôtel, chambre, dates, prix total
+        - Box d'aide téléphonique
+  ============================================================
+-->
+
 <!-- LOADING -->
 <div *ngIf="loading" class="text-center py-5">
   <div class="spinner-border text-turquoise" role="status">
@@ -16,25 +43,29 @@
   </div>
 </div>
 
-<!-- CONFIRMATION SUCCESS -->
+<!-- ====== CONFIRMATION DE SUCCÈS ====== -->
 <main *ngIf="paymentSuccess && !loading" class="payment-page py-5">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="card border-0 shadow-lg p-5 text-center success-card">
+          <!-- Icône de succès -->
           <i class="bi bi-check-circle-fill text-success mb-4" style="font-size: 5rem;"></i>
           <h1 class="h3 mb-3">{{ 'payment.success' | translate }}</h1>
           <p class="lead mb-4">{{ 'booking.confirmationText' | translate }}</p>
 
+          <!-- Numéro de confirmation -->
           <div class="alert alert-info mb-4">
             <strong>{{ 'booking.confirmationNumber' | translate }}</strong><br>
             <span class="h4 text-turquoise">{{ confirmationNumber }}</span>
           </div>
 
+          <!-- Email de confirmation -->
           <p *ngIf="bookingData.client_email" class="text-muted mb-4">
             {{ 'booking.emailConfirmation' | translate }} <strong>{{ bookingData.client_email }}</strong>
           </p>
 
+          <!-- Liens : accueil et mes réservations -->
           <div class="d-flex gap-3 justify-content-center">
             <a [routerLink]="['/']" class="btn btn-primary">
               <i class="bi bi-house me-2"></i>{{ 'booking.backHome' | translate }}
@@ -49,23 +80,26 @@
   </div>
 </main>
 
-<!-- FORMULAIRE DE PAIEMENT -->
+<!-- ====== FORMULAIRE DE PAIEMENT ====== -->
 <main *ngIf="!loading && !error && bookingData && !paymentSuccess" class="payment-page py-5">
   <div class="container">
 
-    <!-- BREADCRUMB -->
+    <!-- Fil d'Ariane (breadcrumb) -->
     <nav aria-label="breadcrumb" class="mb-4">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a [routerLink]="['/']">{{ 'nav.home' | translate }}</a></li>
         <li class="breadcrumb-item"><a [routerLink]="['/hotels', offre.ville_hotel]">{{ offre.ville_hotel }}</a></li>
-        <li class="breadcrumb-item"><a [routerLink]="['/hotels', offre.ville_hotel, offre.id_hotel]">{{ offre.nom_hotel }}</a></li>
-        <li class="breadcrumb-item" *ngIf="!isExistingReservation"><a [routerLink]="['/booking', offreId]">{{ 'booking.title' | translate }}</a></li>
-        <li class="breadcrumb-item" *ngIf="isExistingReservation"><a [routerLink]="['/reservations', reservationId]">{{ 'booking.title' | translate }}</a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/hotels', offre.ville_hotel, offre.id_hotel]">{{ offre.nom_hotel
+            }}</a></li>
+        <li class="breadcrumb-item" *ngIf="!isExistingReservation"><a [routerLink]="['/booking', offreId]">{{
+            'booking.title' | translate }}</a></li>
+        <li class="breadcrumb-item" *ngIf="isExistingReservation"><a [routerLink]="['/reservations', reservationId]">{{
+            'booking.title' | translate }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{{ 'payment.title' | translate }}</li>
       </ol>
     </nav>
 
-    <!-- ÉTAPES -->
+    <!-- Indicateur d'étapes : 01 complétée → 02 active -->
     <div class="steps-indicator mb-4">
       <div class="step completed">
         <span class="step-number">01</span>
@@ -80,7 +114,7 @@
 
     <div class="row">
 
-      <!-- FORMULAIRE PAIEMENT -->
+      <!-- ====== COLONNE GAUCHE : FORMULAIRE CARTE BANCAIRE ====== -->
       <div class="col-lg-8">
         <div class="card border-0 shadow-sm mb-4">
           <div class="card-body p-4">
@@ -88,13 +122,13 @@
               <span class="step-number-inline">02</span> {{ 'payment.title' | translate }}
             </h2>
 
-            <!-- ERREUR DE PAIEMENT -->
+            <!-- Erreur de paiement (carte refusée, etc.) -->
             <div *ngIf="paymentError" class="alert alert-danger mb-4">
               <i class="bi bi-x-circle me-2"></i>{{ paymentError }}
             </div>
 
             <div class="row">
-              <!-- Type de carte -->
+              <!-- Type de carte (select) -->
               <div class="col-md-6 mb-3">
                 <label class="form-label">{{ 'payment.cardType' | translate }}</label>
                 <select class="form-select" [(ngModel)]="cardType" required>
@@ -106,7 +140,7 @@
                 </select>
               </div>
 
-              <!-- Numéro de carte -->
+              <!-- Numéro de carte (formatage automatique) -->
               <div class="col-md-6 mb-3">
                 <label class="form-label">{{ 'payment.cardNumber' | translate }}</label>
                 <input type="text" class="form-control" [(ngModel)]="cardNumber" (input)="formatCardNumber($event)"
@@ -121,7 +155,7 @@
                 <input type="text" class="form-control" [(ngModel)]="cardName" placeholder="Jean Dupont" required>
               </div>
 
-              <!-- Date d'expiration -->
+              <!-- Date d'expiration (MM/AA avec icône calendrier) -->
               <div class="col-md-4 mb-3">
                 <label class="form-label">{{ 'payment.expiration' | translate }}</label>
                 <div class="input-group">
@@ -133,7 +167,7 @@
                 </div>
               </div>
 
-              <!-- CVV -->
+              <!-- Code CVV -->
               <div class="col-md-4 mb-3">
                 <label class="form-label">{{ 'payment.cvv' | translate }}</label>
                 <input type="text" class="form-control" [(ngModel)]="cvv" (input)="formatCVV($event)" placeholder="123"
@@ -141,10 +175,11 @@
               </div>
             </div>
 
-            <!-- CARTES DE TEST (INFO) -->
+            <!-- Cartes de test : acceptées et refusées (aide à la démonstration) -->
             <div class="alert alert-light border mb-4">
               <h6 class="mb-2"><i class="bi bi-info-circle me-2"></i>{{ 'payment.testCards' | translate }}</h6>
               <div class="row">
+                <!-- Cartes acceptées -->
                 <div class="col-md-6">
                   <small class="text-success fw-bold">✅ {{ 'payment.accepted' | translate }} :</small>
                   <ul class="small text-muted mb-0 ps-3">
@@ -154,6 +189,7 @@
                     <li>6011 0000 0000 0004 (Discover) - 12/26 - CVV: 123</li>
                   </ul>
                 </div>
+                <!-- Cartes refusées -->
                 <div class="col-md-6">
                   <small class="text-danger fw-bold">❌ {{ 'payment.declined' | translate }} :</small>
                   <ul class="small text-muted mb-0 ps-3">
@@ -167,15 +203,16 @@
               </div>
             </div>
 
-            <!-- Conditions -->
+            <!-- Checkbox d'acceptation des conditions -->
             <div class="form-check mt-4 mb-4">
               <input class="form-check-input" type="checkbox" id="acceptConditions" [(ngModel)]="acceptConditions">
               <label class="form-check-label" for="acceptConditions">
-                {{ 'payment.acceptTermsPrefix' | translate }} <a href="#" class="text-turquoise">{{ 'payment.bookingConditions' | translate }}</a>.
+                {{ 'payment.acceptTermsPrefix' | translate }} <a href="#" class="text-turquoise">{{
+                  'payment.bookingConditions' | translate }}</a>.
               </label>
             </div>
 
-            <!-- Boutons -->
+            <!-- Boutons : retour + confirmer le paiement -->
             <div class="d-flex gap-3">
               <button class="btn btn-outline-secondary" (click)="goBack()">
                 <i class="bi bi-arrow-left me-2"></i>{{ 'common.back' | translate }}
@@ -195,21 +232,22 @@
         </div>
       </div>
 
-      <!-- RÉSUMÉ -->
+      <!-- ====== COLONNE DROITE : RÉSUMÉ DE LA RÉSERVATION ====== -->
       <div class="col-lg-4">
         <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
           <div class="card-body p-4">
+            <!-- Nom et localisation de l'hôtel -->
             <h2 class="h5 mb-3">{{ offre.nom_hotel }}</h2>
             <p class="small text-muted mb-3">
               <i class="bi bi-geo-alt me-1"></i>{{ offre.ville_hotel }}, {{ offre.pays_hotel }}
             </p>
 
-            <!-- Image hôtel -->
+            <!-- Image de l'hôtel -->
             <img [src]="offre.img_hotel" [alt]="offre.nom_hotel" class="img-fluid rounded mb-3">
 
             <hr>
 
-            <!-- Détails réservation -->
+            <!-- Détails de la réservation -->
             <div class="reservation-details">
               <div class="detail-row">
                 <span class="label">{{ 'booking.room' | translate }}</span>
@@ -233,19 +271,21 @@
 
               <div class="detail-row">
                 <span class="label">{{ 'booking.stay' | translate }}</span>
-                <span class="value">{{ bookingData.nbre_nuits }} {{ 'booking.nights' | translate }}, 1 {{ 'booking.room' | translate | lowercase }}, max. {{ bookingData.nbre_adults }} {{ 'payment.persons' | translate }}</span>
+                <span class="value">{{ bookingData.nbre_nuits }} {{ 'booking.nights' | translate }}, 1 {{ 'booking.room'
+                  | translate | lowercase }}, max. {{ bookingData.nbre_adults }} {{ 'payment.persons' | translate
+                  }}</span>
               </div>
             </div>
 
             <hr>
 
-            <!-- Prix total -->
+            <!-- Prix total avec TVA -->
             <div class="total-price">
               <h3 class="h4 mb-1">{{ 'booking.total' | translate }} : {{ bookingData.total_price | appCurrency }}</h3>
               <small class="text-muted">{{ 'booking.vatIncluded' | translate }}</small>
             </div>
 
-            <!-- Aide -->
+            <!-- Box d'aide téléphonique -->
             <div class="help-box mt-4 p-3 bg-light rounded">
               <h4 class="h6 mb-2">{{ 'payment.needHelp' | translate }}</h4>
               <p class="small text-muted mb-2">

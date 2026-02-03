@@ -1,9 +1,31 @@
+<!--
+  ============================================================
+  FICHIER     : help-contact.html
+  COMPOSANT   : HelpContact
+  DESCRIPTION : Template du widget sidebar d'aide au contact.
+                Carte compacte avec icône info, texte d'aide
+                et numéro de téléphone du support.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - Titre "Need Help Booking?" (h3 centré + icône info)
+    - Texte d'aide (paragraphe traduit)
+    - Numéro de téléphone du support (turquoise, gras)
+  ============================================================
+-->
+
 <aside class="card p-3 mb-4 border-0 shadow-sm bg-light">
+  <!-- Titre du widget avec icône info -->
   <h3 class="h6 text-uppercase fw-bold text-center titre pb-2 border-bottom">
     <i class="bi bi-info-circle-fill me-2"></i>{{ 'sidebar.helpContact' | translate }}
   </h3>
+
+  <!-- Contenu centré : texte d'aide + numéro de support -->
   <div class="pt-3 text-muted text-center">
+    <!-- Message d'aide traduit -->
     <p class="small">{{ 'sidebar.helpText' | translate }}</p>
+
+    <!-- Numéro de téléphone du support (turquoise) -->
     <p class="fw-bold turquoise">
       <i class="bi bi-telephone-fill me-1"></i>{{ 'header.support' | translate }}<br>
       1-555-555-5555

@@ -1,3 +1,35 @@
+/**
+ * ============================================================
+ * FICHIER     : payment.ts
+ * COMPOSANT   : Payment
+ * DESCRIPTION : Page de paiement (étape 2 du processus de réservation).
+ *               Gère le formulaire de carte bancaire avec validation
+ *               complète : format des champs, algorithme de Luhn,
+ *               vérification du préfixe carte, date d'expiration et
+ *               CVV. Supporte deux flux : nouvelle réservation (données
+ *               depuis sessionStorage) et paiement différé d'une
+ *               réservation existante (chargée via API). Simule le
+ *               traitement du paiement avec des cartes de test.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SERVICES    : ReservationService (création/mise à jour de réservation)
+ *               AuthService (récupération utilisateur connecté)
+ *               ActivatedRoute (paramètres offreId, reservationId)
+ *               Router (navigation retour et redirection)
+ *               ChangeDetectorRef (détection manuelle OnPush)
+ * PIPES       : CurrencyPipe (formatage du prix total)
+ * FONCTIONNALITÉS :
+ *   - Formulaire carte bancaire (type, numéro, nom, expiration, CVV)
+ *   - Formatage automatique des champs (espaces, MM/AA)
+ *   - Validation algorithme de Luhn + préfixe carte
+ *   - Vérification date d'expiration (non expirée)
+ *   - Cartes de test acceptées et refusées (simulation)
+ *   - Deux flux : nouvelle réservation / paiement différé
+ *   - Confirmation avec numéro de réservation
+ *   - Indicateur d'étapes (01 Traveller info → 02 Payment)
+ * ============================================================
+ */
+
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -12,48 +44,86 @@ import { CurrencyPipe } from '../../pipes/currency.pipe';
   imports: [CommonModule, RouterLink, FormsModule, TranslateModule, CurrencyPipe],
   templateUrl: './payment.html',
   styleUrl: './payment.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Payment implements OnInit {
-
+  /** ID de l'offre (depuis les paramètres de route) */
   offreId: number = 0;
+
+  /** ID de la réservation existante (paiement différé, depuis queryParams) */
   reservationId: number | null = null;
+
+  /** Données de la réservation en cours (formulaire étape 1 ou BDD) */
   bookingData: any = null;
+
+  /** Informations de l'offre/hôtel pour le résumé latéral */
   offre: any = null;
+
+  /** Indicateur de chargement initial */
   loading: boolean = true;
+
+  /** Message d'erreur de chargement */
   error: string = '';
 
-  // Données carte bancaire
+  // === Données du formulaire carte bancaire ===
+
+  /** Type de carte sélectionné (Visa, MasterCard, etc.) */
   cardType: string = '';
+
+  /** Numéro de carte formaté avec espaces */
   cardNumber: string = '';
+
+  /** Nom du titulaire de la carte */
   cardName: string = '';
+
+  /** Date d'expiration au format MM/AA */
   expirationDate: string = '';
+
+  /** Code de vérification CVV (3-4 chiffres) */
   cvv: string = '';
+
+  /** Acceptation des conditions de réservation */
   acceptConditions: boolean = false;
 
-  // États
+  // === États du processus de paiement ===
+
+  /** Indicateur de soumission en cours */
   submitting: boolean = false;
+
+  /** Numéro de confirmation reçu après création */
   confirmationNumber: string = '';
+
+  /** Paiement réussi → affichage page de succès */
   paymentSuccess: boolean = false;
+
+  /** Message d'erreur de paiement (carte refusée, etc.) */
   paymentError: string = '';
+
+  /** true si paiement d'une réservation existante (flux différé) */
   isExistingReservation: boolean = false;
 
-  // Types de cartes disponibles
+  /** Liste des types de cartes disponibles */
   cardTypes: string[] = ['Visa', 'MasterCard', 'American Express', 'Discover'];
 
-  // Cartes de test acceptées avec leur CVV attendu
+  /**
+   * Dictionnaire des cartes de test acceptées
+   * Clé : numéro sans espaces → type de carte + CVV attendu
+   */
   private validTestCards: { [key: string]: { type: string; cvv: string } } = {
     '4111111111111111': { type: 'Visa', cvv: '123' },
     '5500000000000004': { type: 'MasterCard', cvv: '123' },
     '340000000000009': { type: 'American Express', cvv: '1234' },
-    '6011000000000004': { type: 'Discover', cvv: '123' }
+    '6011000000000004': { type: 'Discover', cvv: '123' },
   };
 
-  // Cartes de test refusées avec messages d'erreur
+  /**
+   * Dictionnaire des cartes de test refusées
+   * Clé : numéro sans espaces → message d'erreur
+   */
   private declinedTestCards: { [key: string]: string } = {
     '4000000000000002': 'Paiement refusé : fonds insuffisants',
     '4000000000000119': 'Paiement refusé : erreur de traitement',
-    '4000000000000135': 'Paiement refusé : carte volée'
+    '4000000000000135': 'Paiement refusé : carte volée',
   };
 
   constructor(
@@ -61,15 +131,20 @@ export class Payment implements OnInit {
     private router: Router,
     private reservationService: ReservationService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
-  ) { }
+    private cdr: ChangeDetectorRef,
+  ) {}
 
+  /**
+   * Initialisation : récupère offreId depuis les params de route
+   * et reservationId depuis les queryParams pour déterminer le flux
+   * (nouvelle réservation ou paiement différé)
+   */
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.offreId = +params['offreId'];
     });
 
-    this.route.queryParams.subscribe(queryParams => {
+    this.route.queryParams.subscribe((queryParams) => {
       if (queryParams['reservationId']) {
         this.reservationId = +queryParams['reservationId'];
         this.isExistingReservation = true;
@@ -82,6 +157,8 @@ export class Payment implements OnInit {
 
   /**
    * Charge les données depuis une réservation existante (paiement différé)
+   * Appelle ReservationService.getReservationById() puis construit
+   * bookingData et offre à partir de la réponse
    */
   loadExistingReservation() {
     const user = this.authService.currentUser();
@@ -96,7 +173,8 @@ export class Payment implements OnInit {
     this.reservationService.getReservationById(this.reservationId!, user.id_user).subscribe({
       next: (response) => {
         const reservation = response.data;
-        
+
+        // Construction de bookingData depuis la réservation existante
         this.bookingData = {
           id_user: reservation.id_user,
           id_offre: reservation.id_offre,
@@ -115,16 +193,17 @@ export class Payment implements OnInit {
           client_nom: '',
           client_email: '',
           client_telephone: '',
-          pension: reservation.pension
+          pension: reservation.pension,
         };
 
+        // Construction des infos hôtel pour le résumé latéral
         this.offre = {
           id_hotel: reservation.id_hotel,
           nom_hotel: reservation.nom_hotel,
           ville_hotel: reservation.ville_hotel,
           pays_hotel: reservation.pays_hotel,
           img_hotel: reservation.img_hotel,
-          type_room: reservation.type_room
+          type_room: reservation.type_room,
         };
 
         this.confirmationNumber = reservation.num_confirmation;
@@ -136,12 +215,13 @@ export class Payment implements OnInit {
         this.error = 'Réservation non trouvée';
         this.loading = false;
         this.cdr.markForCheck();
-      }
+      },
     });
   }
 
   /**
    * Charge les données depuis sessionStorage (nouvelle réservation)
+   * Les données ont été stockées par le composant Booking à l'étape 1
    */
   loadBookingData() {
     const storedData = sessionStorage.getItem('pendingBooking');
@@ -167,6 +247,8 @@ export class Payment implements OnInit {
 
   /**
    * Formate le numéro de carte avec des espaces tous les 4 chiffres
+   * Limite à 16 chiffres max. Efface l'erreur de paiement à chaque saisie
+   * @param event - Événement input du champ
    */
   formatCardNumber(event: any) {
     let value = event.target.value.replace(/\s/g, '').replace(/\D/g, '');
@@ -176,14 +258,15 @@ export class Payment implements OnInit {
     const formatted = value.replace(/(\d{4})(?=\d)/g, '$1 ');
     this.cardNumber = formatted;
     event.target.value = formatted;
-    
-    // Effacer l'erreur de paiement quand on modifie le numéro
+
     this.paymentError = '';
     this.cdr.markForCheck();
   }
 
   /**
-   * Formate la date d'expiration MM/YY
+   * Formate la date d'expiration au format MM/AA
+   * Insère automatiquement le séparateur "/" après 2 chiffres
+   * @param event - Événement input du champ
    */
   formatExpirationDate(event: any) {
     let value = event.target.value.replace(/\D/g, '');
@@ -195,14 +278,15 @@ export class Payment implements OnInit {
     }
     this.expirationDate = value;
     event.target.value = value;
-    
-    // Effacer l'erreur de paiement quand on modifie la date
+
     this.paymentError = '';
     this.cdr.markForCheck();
   }
 
   /**
-   * Limite le CVV à 3-4 chiffres
+   * Limite le CVV à 3-4 chiffres selon le type de carte
+   * American Express : 4 chiffres, autres : 3 chiffres
+   * @param event - Événement input du champ
    */
   formatCVV(event: any) {
     let value = event.target.value.replace(/\D/g, '');
@@ -212,14 +296,14 @@ export class Payment implements OnInit {
     }
     this.cvv = value;
     event.target.value = value;
-    
-    // Effacer l'erreur de paiement quand on modifie le CVV
+
     this.paymentError = '';
     this.cdr.markForCheck();
   }
 
   /**
-   * Valide le formulaire de paiement
+   * Vérifie que tous les champs du formulaire sont valides
+   * @returns true si formulaire complet et conditions acceptées
    */
   isFormValid(): boolean {
     return (
@@ -234,27 +318,26 @@ export class Payment implements OnInit {
 
   /**
    * Vérifie si la date d'expiration est valide (non expirée)
+   * Compare mois/année avec la date courante
+   * @returns Objet { valid, error? }
    */
   isExpirationDateValid(): { valid: boolean; error?: string } {
     if (this.expirationDate.length !== 5) {
-      return { valid: false, error: 'Date d\'expiration invalide' };
+      return { valid: false, error: "Date d'expiration invalide" };
     }
 
     const parts = this.expirationDate.split('/');
     const month = parseInt(parts[0], 10);
     const year = parseInt('20' + parts[1], 10);
 
-    // Vérifier que le mois est valide (1-12)
     if (month < 1 || month > 12) {
-      return { valid: false, error: 'Mois d\'expiration invalide' };
+      return { valid: false, error: "Mois d'expiration invalide" };
     }
 
-    // Obtenir la date actuelle
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
     const currentYear = now.getFullYear();
 
-    // Vérifier si la carte est expirée
     if (year < currentYear || (year === currentYear && month < currentMonth)) {
       return { valid: false, error: 'Paiement refusé : carte expirée' };
     }
@@ -263,8 +346,10 @@ export class Payment implements OnInit {
   }
 
   /**
-   * Valide le numéro de carte bancaire
-   * Retourne { valid: boolean, error?: string }
+   * Validation complète du numéro de carte bancaire
+   * Vérifie dans l'ordre : cartes de test refusées, cartes de test
+   * valides (type + CVV), puis algorithme de Luhn + préfixe
+   * @returns Objet { valid, error? }
    */
   validateCard(): { valid: boolean; error?: string } {
     const cardNumberClean = this.cardNumber.replace(/\s/g, '');
@@ -277,26 +362,27 @@ export class Payment implements OnInit {
     // Vérifier si c'est une carte de test valide
     if (this.validTestCards[cardNumberClean]) {
       const testCard = this.validTestCards[cardNumberClean];
-      
-      // Vérifier que le type de carte correspond
+
       if (this.cardType !== testCard.type) {
-        return { valid: false, error: `Type de carte incorrect. Cette carte est une ${testCard.type}.` };
+        return {
+          valid: false,
+          error: `Type de carte incorrect. Cette carte est une ${testCard.type}.`,
+        };
       }
-      
-      // Vérifier que le CVV correspond
+
       if (this.cvv !== testCard.cvv) {
         return { valid: false, error: 'Paiement refusé : CVV incorrect' };
       }
-      
+
       return { valid: true };
     }
 
-    // Pour les autres numéros, on vérifie avec l'algorithme de Luhn
+    // Validation par algorithme de Luhn pour les autres numéros
     if (!this.luhnCheck(cardNumberClean)) {
       return { valid: false, error: 'Numéro de carte invalide' };
     }
 
-    // Vérifier le préfixe selon le type de carte sélectionné
+    // Vérification du préfixe selon le type sélectionné
     const prefixValid = this.validateCardPrefix(cardNumberClean);
     if (!prefixValid) {
       return { valid: false, error: 'Le numéro de carte ne correspond pas au type sélectionné' };
@@ -306,7 +392,10 @@ export class Payment implements OnInit {
   }
 
   /**
-   * Algorithme de Luhn pour valider les numéros de carte
+   * Algorithme de Luhn pour valider les numéros de carte bancaire
+   * Parcourt les chiffres de droite à gauche, double un chiffre sur deux
+   * @param cardNumber - Numéro de carte sans espaces
+   * @returns true si le numéro passe la vérification Luhn
    */
   private luhnCheck(cardNumber: string): boolean {
     let sum = 0;
@@ -330,7 +419,11 @@ export class Payment implements OnInit {
   }
 
   /**
-   * Vérifie que le préfixe de la carte correspond au type sélectionné
+   * Vérifie que le préfixe du numéro correspond au type de carte
+   * Visa : commence par 4 / MasterCard : 51-55 ou 22-27
+   * Amex : 34 ou 37 / Discover : 6011, 65, 644-649
+   * @param cardNumber - Numéro de carte sans espaces
+   * @returns true si le préfixe correspond au type sélectionné
    */
   private validateCardPrefix(cardNumber: string): boolean {
     switch (this.cardType) {
@@ -341,14 +434,21 @@ export class Payment implements OnInit {
       case 'American Express':
         return /^3[47]/.test(cardNumber);
       case 'Discover':
-        return cardNumber.startsWith('6011') || cardNumber.startsWith('65') || /^64[4-9]/.test(cardNumber);
+        return (
+          cardNumber.startsWith('6011') ||
+          cardNumber.startsWith('65') ||
+          /^64[4-9]/.test(cardNumber)
+        );
       default:
         return true;
     }
   }
 
   /**
-   * Soumet le paiement et crée/met à jour la réservation
+   * Soumet le paiement après validation complète du formulaire
+   * Vérifie : formulaire valide → date expiration → carte valide
+   * Simule un délai de traitement (1.5s) puis crée ou met à jour
+   * la réservation selon le flux (nouveau ou existant)
    */
   submitPayment() {
     if (!this.isFormValid()) {
@@ -356,14 +456,13 @@ export class Payment implements OnInit {
       return;
     }
 
-    // Réinitialiser l'erreur
     this.paymentError = '';
     this.cdr.markForCheck();
 
     // Valider la date d'expiration
     const expirationValidation = this.isExpirationDateValid();
     if (!expirationValidation.valid) {
-      this.paymentError = expirationValidation.error || 'Date d\'expiration invalide';
+      this.paymentError = expirationValidation.error || "Date d'expiration invalide";
       this.cdr.markForCheck();
       return;
     }
@@ -379,7 +478,7 @@ export class Payment implements OnInit {
     this.submitting = true;
     this.cdr.markForCheck();
 
-    // Simuler un délai de traitement du paiement
+    // Simuler un délai de traitement du paiement (1.5s)
     setTimeout(() => {
       if (this.isExistingReservation) {
         this.updateExistingReservation();
@@ -390,28 +489,31 @@ export class Payment implements OnInit {
   }
 
   /**
-   * Met à jour le statut d'une réservation existante à "Confirmée"
+   * Met à jour le statut d'une réservation existante à "Confirmée" (id_statut = 2)
+   * Utilisé pour le flux de paiement différé
    */
   updateExistingReservation() {
-  this.reservationService.updateReservationStatus(this.reservationId!, 2).subscribe({
-    next: () => {
-      console.log('✅ Réservation confirmée');
-      this.paymentSuccess = true;
-      this.submitting = false;
-      this.cdr.markForCheck();
-      this.cdr.detectChanges();
-    },
+    this.reservationService.updateReservationStatus(this.reservationId!, 2).subscribe({
+      next: () => {
+        console.log('✅ Réservation confirmée');
+        this.paymentSuccess = true;
+        this.submitting = false;
+        this.cdr.markForCheck();
+        this.cdr.detectChanges();
+      },
       error: (err) => {
         console.error('❌ Erreur:', err);
         this.paymentError = 'Erreur lors de la confirmation. Veuillez réessayer.';
         this.submitting = false;
         this.cdr.markForCheck();
-      }
+      },
     });
   }
 
   /**
    * Crée une nouvelle réservation après validation du paiement
+   * Construit l'objet reservationData, appelle createReservation(),
+   * stocke le numéro de confirmation et supprime le sessionStorage
    */
   processReservation() {
     const reservationData = {
@@ -433,7 +535,7 @@ export class Payment implements OnInit {
       client_email: this.bookingData.client_email,
       client_telephone: this.bookingData.client_telephone,
       services: this.bookingData.services || [],
-      id_statut: 2
+      id_statut: 2,
     };
 
     console.log('📦 Données réservation:', reservationData);
@@ -445,6 +547,7 @@ export class Payment implements OnInit {
         this.paymentSuccess = true;
         this.submitting = false;
 
+        // Nettoyage du sessionStorage après succès
         sessionStorage.removeItem('pendingBooking');
 
         this.cdr.markForCheck();
@@ -454,12 +557,14 @@ export class Payment implements OnInit {
         this.paymentError = 'Erreur lors de la réservation. Veuillez réessayer.';
         this.submitting = false;
         this.cdr.markForCheck();
-      }
+      },
     });
   }
 
   /**
    * Retour à l'étape précédente
+   * Redirige vers le détail de réservation (flux existant)
+   * ou vers le formulaire booking (flux nouveau)
    */
   goBack() {
     if (this.isExistingReservation) {

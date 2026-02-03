@@ -1,14 +1,40 @@
-<!-- PAGE RÉSULTATS DE RECHERCHE -->
+<!--
+  ============================================================
+  FICHIER     : search-results.html
+  COMPOSANT   : SearchResults
+  DESCRIPTION : Template de la page de résultats de recherche.
+                Affiche une grille de cartes hôtels avec pagination.
+                Même design que la page hotels-list.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - En-tête (titre avec terme de recherche + compteur résultats)
+    - État loading (spinner)
+    - État erreur (alerte danger)
+    - État aucun résultat (icône loupe + message + lien accueil)
+    - Grille des hôtels (3 colonnes desktop, 2 tablette, 1 mobile) :
+      - Image de l'hôtel
+      - Nom, étoiles, description (tronquée 3 lignes)
+      - Localisation (ville, pays)
+      - Note moyenne (badge turquoise)
+      - Bouton voir les chambres → /hotels/:ville/:id
+    - Pagination (précédent / numéros / suivant + info page)
+  ============================================================
+-->
+
+<!-- ====== PAGE RÉSULTATS DE RECHERCHE ====== -->
 <section class="hotels-list-section py-5">
   <div class="container">
-    
-    <!-- En-tête de page -->
+
+    <!-- EN-TÊTE : titre avec terme de recherche surligné + compteur -->
     <div class="mb-4">
-      <h1 class="page-title">{{ 'searchResults.title' | translate }} "<span class="text-turquoise">{{ query }}</span>"</h1>
-      <p class="page-subtitle" *ngIf="!loading && !error">{{ totalResults }} {{ 'searchResults.hotelsFound' | translate }}</p>
+      <h1 class="page-title">{{ 'searchResults.title' | translate }} "<span class="text-turquoise">{{ query }}</span>"
+      </h1>
+      <p class="page-subtitle" *ngIf="!loading && !error">{{ totalResults }} {{ 'searchResults.hotelsFound' | translate
+        }}</p>
     </div>
 
-    <!-- État de chargement -->
+    <!-- ====== ÉTAT LOADING ====== -->
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
@@ -16,12 +42,12 @@
       <p class="mt-3">{{ 'searchResults.searching' | translate }}</p>
     </div>
 
-    <!-- Message d'erreur -->
+    <!-- ====== ÉTAT ERREUR ====== -->
     <div *ngIf="error && !loading" class="alert alert-danger" role="alert">
       {{ error }}
     </div>
 
-    <!-- Aucun résultat trouvé -->
+    <!-- ====== AUCUN RÉSULTAT ====== -->
     <div *ngIf="!loading && !error && results.length === 0 && query" class="text-center py-5">
       <i class="bi bi-search display-1 text-muted"></i>
       <h3 class="mt-3">{{ 'searchResults.noResults' | translate }}</h3>
@@ -29,13 +55,13 @@
       <a routerLink="/" class="btn btn-primary mt-3">{{ 'booking.backHome' | translate }}</a>
     </div>
 
-    <!-- Grille des hôtels -->
+    <!-- ====== GRILLE DES HÔTELS ====== -->
     <div *ngIf="!loading && !error && results.length > 0" class="row g-4">
-      
+
       <div *ngFor="let hotel of results" class="col-12 col-md-6 col-lg-4">
         <div class="hotel-card">
-          
-          <!-- Image de l'hôtel -->
+
+          <!-- Image de l'hôtel (placeholder si absente) -->
           <div class="hotel-card-image">
             <img [src]="hotel.img_hotel || 'images/hotel-placeholder.jpg'" [alt]="hotel.nom_hotel">
           </div>
@@ -43,29 +69,30 @@
           <!-- Corps de la carte -->
           <div class="hotel-card-body">
             <h3 class="hotel-card-title">{{ hotel.nom_hotel }}</h3>
-            
-            <!-- Étoiles -->
+
+            <!-- Étoiles (générées dynamiquement selon nbre_etoile_hotel) -->
             <div class="hotel-stars mb-2">
               <i class="bi bi-star-fill" *ngFor="let star of [].constructor(hotel.nbre_etoile_hotel)"></i>
             </div>
 
-            <!-- Description -->
+            <!-- Description (tronquée à 3 lignes via CSS) -->
             <p class="hotel-card-text">{{ hotel.description_hotel }}</p>
 
-            <!-- Localisation -->
+            <!-- Localisation : ville + pays -->
             <p class="hotel-location">
               <i class="bi bi-geo-alt"></i>
               {{ hotel.ville_hotel }}, {{ hotel.pays_hotel }}
             </p>
 
-            <!-- Note moyenne -->
+            <!-- Note moyenne (affichée si renseignée) -->
             <div class="hotel-rating" *ngIf="hotel.note_moy_hotel">
               <span class="rating-badge">{{ hotel.note_moy_hotel }}/10</span>
               <span class="rating-text">{{ 'hotel.excellent' | translate }}</span>
             </div>
 
-            <!-- Bouton voir détails -->
-            <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">{{ 'hotel.viewRooms' | translate }}</a>
+            <!-- Bouton voir les chambres → /hotels/:ville/:id -->
+            <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">{{
+              'hotel.viewRooms' | translate }}</a>
           </div>
 
         </div>
@@ -73,34 +100,34 @@
 
     </div>
 
-    <!-- PAGINATION -->
-    <nav *ngIf="!loading && totalPages > 1" class="mt-5" [attr.aria-label]="'searchResults.paginationLabel' | translate">
+    <!-- ====== PAGINATION ====== -->
+    <nav *ngIf="!loading && totalPages > 1" class="mt-5"
+      [attr.aria-label]="'searchResults.paginationLabel' | translate">
       <ul class="pagination justify-content-center">
-        
-        <!-- Bouton Précédent -->
+
+        <!-- Bouton Précédent (désactivé si page 1) -->
         <li class="page-item" [class.disabled]="currentPage === 1">
           <button class="page-link" (click)="previousPage()" [disabled]="currentPage === 1">
             <i class="bi bi-chevron-left"></i> {{ 'common.previous' | translate }}
           </button>
         </li>
-        
-        <!-- Numéros de pages -->
-        <li class="page-item" 
-            *ngFor="let page of [].constructor(totalPages); let i = index"
-            [class.active]="currentPage === i + 1">
+
+        <!-- Numéros de pages (générés dynamiquement) -->
+        <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+          [class.active]="currentPage === i + 1">
           <button class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</button>
         </li>
-        
-        <!-- Bouton Suivant -->
+
+        <!-- Bouton Suivant (désactivé si dernière page) -->
         <li class="page-item" [class.disabled]="currentPage === totalPages">
           <button class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages">
             {{ 'common.next' | translate }} <i class="bi bi-chevron-right"></i>
           </button>
         </li>
-        
+
       </ul>
-      
-      <!-- Info pagination -->
+
+      <!-- Indicateur page courante / total -->
       <p class="text-center text-muted mt-2">
         {{ 'searchResults.page' | translate }} {{ currentPage }} {{ 'searchResults.of' | translate }} {{ totalPages }}
       </p>

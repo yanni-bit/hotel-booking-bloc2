@@ -1,9 +1,32 @@
+<!--
+  ============================================================
+  FICHIER     : hotel-offers.html
+  COMPOSANT   : HotelOffers
+  DESCRIPTION : Template de l'onglet Offres d'un hôtel. Affiche la
+                liste des chambres avec image, caractéristiques,
+                badges d'offres, prix minimum et lien vers le détail.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - Titre de section avec icône
+    - État de chargement (spinner)
+    - État d'erreur (alerte)
+    - État liste vide (alerte info)
+    - Liste des chambres :
+      - Image chambre (4/12)
+      - Contenu (8/12) : nom, type, description, caractéristiques,
+        badges offres, prix minimum, bouton détail
+  ============================================================
+-->
+
 <div class="hotel-offers">
+
+  <!-- Titre de la section -->
   <h2 class="h4 mb-4 border-bottom pb-2 text-secondary">
     <i class="bi bi-tag me-2"></i>{{ 'hotel.roomsAndOffers' | translate }}
   </h2>
 
-  <!-- LOADING -->
+  <!-- ======================== LOADING ======================== -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border" role="status">
       <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
@@ -11,19 +34,20 @@
     <p class="mt-3 text-muted">{{ 'hotel.loadingRooms' | translate }}</p>
   </div>
 
-  <!-- ERROR -->
+  <!-- ======================== ERROR ======================== -->
   <div *ngIf="error && !loading" class="alert alert-danger">
     {{ error }}
   </div>
 
-  <!-- AUCUNE CHAMBRE -->
+  <!-- ======================== AUCUNE CHAMBRE ======================== -->
   <div *ngIf="!loading && !error && chambres.length === 0" class="alert alert-info">
     <i class="bi bi-info-circle me-2"></i>{{ 'hotel.noRoomsAvailable' | translate }}
   </div>
 
-  <!-- LISTE DES CHAMBRES -->
+  <!-- ======================== LISTE DES CHAMBRES ======================== -->
   <div *ngIf="!loading && !error && chambres.length > 0" class="chambres-list">
 
+    <!-- Carte chambre : itération sur la liste des chambres -->
     <div *ngFor="let chambre of chambres" class="chambre-card mb-4 bg-white border rounded shadow-sm">
       <div class="row g-0">
 
@@ -36,7 +60,7 @@
         <div class="col-md-8">
           <div class="card-body p-4">
 
-            <!-- Nom de la chambre -->
+            <!-- Nom et catégorie de la chambre -->
             <h3 class="h5 mb-2">{{ chambre.type_room }} - {{ chambre.cat_room }}</h3>
 
             <!-- Type de chambre -->
@@ -44,31 +68,37 @@
               <i class="bi bi-house-door me-1"></i>{{ chambre.type_room || ('hotel.typeNotSpecified' | translate) }}
             </p>
 
-            <!-- Description courte -->
+            <!-- Description courte (tronquée à 150 caractères) -->
             <p class="text-muted mb-3" *ngIf="chambre.description_room">
               {{ chambre.description_room | slice:0:150 }}{{ chambre.description_room.length > 150 ? '...' : '' }}
             </p>
 
-            <!-- Caractéristiques -->
+            <!-- Caractéristiques de la chambre (grille 2 colonnes) -->
             <div class="row mb-3">
+              <!-- Nombre d'adultes max -->
               <div class="col-6">
                 <small class="text-muted">
                   <i class="bi bi-people me-1"></i>
-                  <strong class="varnombre">{{ chambre.nbre_adults_max || 2 }}</strong> {{ 'hotel.adultsMax' | translate }}
+                  <strong class="varnombre">{{ chambre.nbre_adults_max || 2 }}</strong> {{ 'hotel.adultsMax' | translate
+                  }}
                 </small>
               </div>
+              <!-- Nombre d'enfants max -->
               <div class="col-6" *ngIf="chambre.nbre_children_max > 0">
                 <small class="text-muted">
                   <i class="bi bi-person me-1"></i>
-                  <strong class="varnombre">{{ chambre.nbre_children_max }}</strong> {{ 'hotel.childrenMax' | translate }}
+                  <strong class="varnombre">{{ chambre.nbre_children_max }}</strong> {{ 'hotel.childrenMax' | translate
+                  }}
                 </small>
               </div>
+              <!-- Surface en m² -->
               <div class="col-6" *ngIf="chambre.surface_m2">
                 <small class="text-muted">
                   <i class="bi bi-arrows-angle-expand me-1"></i>
                   <strong class="varnombre">{{ chambre.surface_m2 }}m²</strong>
                 </small>
               </div>
+              <!-- Nombre de lits -->
               <div class="col-6" *ngIf="chambre.nbre_lit">
                 <small class="text-muted">
                   <i class="bi bi-moon me-1"></i>
@@ -79,17 +109,20 @@
 
             <hr>
 
-            <!-- Offres et Prix -->
+            <!-- Offres et Prix : badges + prix minimum par nuit -->
             <div class="d-flex justify-content-between align-items-center">
               <div>
+                <!-- Badge nombre d'offres disponibles -->
                 <span class="badge bg-success me-2" *ngIf="chambre.nombre_offres > 0">
                   {{ chambre.nombre_offres }} {{ 'hotel.offersAvailable' | translate }}
                 </span>
+                <!-- Badge aucune offre active -->
                 <span class="badge bg-secondary" *ngIf="!chambre.nombre_offres || chambre.nombre_offres === 0">
                   {{ 'hotel.noActiveOffer' | translate }}
                 </span>
               </div>
 
+              <!-- Prix minimum par nuit avec pipe CurrencyPipe -->
               <div class="text-end">
                 <p class="mb-0" *ngIf="chambre.prix_minimum">
                   <small class="text-muted">{{ 'hotel.from' | translate }}</small><br>
@@ -99,7 +132,7 @@
               </div>
             </div>
 
-            <!-- Bouton Voir détails -->
+            <!-- Bouton navigation vers les offres détaillées de la chambre -->
             <div class="mt-3">
               <a [routerLink]="['/hotels', ville, hotelId, 'rooms', chambre.id_chambre]" class="btn btn-primary w-100">
                 <i class="bi bi-eye me-2"></i>{{ 'hotel.viewDetailedOffers' | translate }}

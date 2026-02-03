@@ -1,7 +1,35 @@
+<!--
+  ============================================================
+  FICHIER     : reservation-detail.html
+  COMPOSANT   : ReservationDetail
+  DESCRIPTION : Template de la page de détail d'une réservation.
+                Layout deux colonnes : informations détaillées à
+                gauche, récapitulatif prix et actions à droite.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - État loading (spinner)
+    - État error (icône + message + bouton retour)
+    - Contenu principal :
+      - Breadcrumb (Accueil > Réservations > N° confirmation)
+      - Header (titre + badge statut)
+      - Colonne gauche (col-lg-8) :
+        - Carte Hébergement (image hôtel + infos chambre/offre)
+        - Carte Dates & Voyageurs (3 date-box + compteurs)
+        - Carte Demandes spéciales (conditionnel)
+        - Carte Services additionnels (table, conditionnel @if)
+        - Carte Informations de réservation (date, n° confirmation, statut)
+      - Colonne droite (col-lg-4) :
+        - Récapitulatif prix (nuit × nuits + services + total)
+        - Actions (retour, payer si statut 1, annuler)
+        - Carte Aide (téléphone)
+  ============================================================
+-->
+
 <main class="reservation-detail-page py-5">
     <div class="container">
 
-        <!-- LOADING -->
+        <!-- ====== ÉTAT LOADING ====== -->
         <div *ngIf="loading" class="text-center py-5">
             <div class="spinner-border text-turquoise" role="status">
                 <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
@@ -9,7 +37,7 @@
             <p class="mt-3">{{ 'reservations.loadingReservation' | translate }}</p>
         </div>
 
-        <!-- ERROR -->
+        <!-- ====== ÉTAT ERREUR ====== -->
         <div *ngIf="error && !loading" class="text-center py-5">
             <i class="bi bi-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
             <h2 class="h4 mt-3">{{ error }}</h2>
@@ -18,10 +46,10 @@
             </button>
         </div>
 
-        <!-- DÉTAIL RÉSERVATION -->
+        <!-- ====== CONTENU PRINCIPAL (DÉTAIL RÉSERVATION) ====== -->
         <div *ngIf="!loading && !error && reservation">
 
-            <!-- BREADCRUMB -->
+            <!-- BREADCRUMB : Accueil > Réservations > N° confirmation -->
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a [routerLink]="['/']">{{ 'nav.home' | translate }}</a></li>
@@ -31,7 +59,7 @@
                 </ol>
             </nav>
 
-            <!-- HEADER -->
+            <!-- HEADER : Titre + badge de statut coloré -->
             <div class="d-flex justify-content-between align-items-start mb-4">
                 <div>
                     <h1 class="h3 text-turquoise mb-2">
@@ -42,6 +70,7 @@
                             reservation.num_confirmation }}</strong>
                     </p>
                 </div>
+                <!-- Badge statut avec couleur dynamique depuis la BDD -->
                 <span class="badge fs-6" [ngClass]="getStatusBadgeClass(reservation.couleur_statut)">
                     {{ reservation.nom_statut }}
                 </span>
@@ -49,10 +78,10 @@
 
             <div class="row">
 
-                <!-- COLONNE GAUCHE -->
+                <!-- ====== COLONNE GAUCHE : INFORMATIONS DÉTAILLÉES ====== -->
                 <div class="col-lg-8">
 
-                    <!-- HÔTEL -->
+                    <!-- CARTE HÉBERGEMENT : image + infos hôtel/chambre/offre -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
                             <h2 class="h5 mb-4 text-turquoise">
@@ -60,10 +89,12 @@
                             </h2>
 
                             <div class="row">
+                                <!-- Image de l'hôtel -->
                                 <div class="col-md-4">
                                     <img [src]="reservation.img_hotel" [alt]="reservation.nom_hotel"
                                         class="img-fluid rounded">
                                 </div>
+                                <!-- Détails hôtel, chambre, offre + lien vers fiche hôtel -->
                                 <div class="col-md-8">
                                     <h3 class="h5 mb-2">{{ reservation.nom_hotel }}</h3>
                                     <p class="text-muted mb-3">
@@ -83,6 +114,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Lien vers la fiche de l'hôtel -->
                                     <a [routerLink]="['/hotels', reservation.ville_hotel, reservation.id_hotel]"
                                         class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye me-1"></i>{{ 'reservations.viewHotel' | translate }}
@@ -92,7 +124,7 @@
                         </div>
                     </div>
 
-                    <!-- DATES & VOYAGEURS -->
+                    <!-- CARTE DATES & VOYAGEURS : 3 date-box + compteurs adultes/enfants -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
                             <h2 class="h5 mb-4 text-turquoise">
@@ -100,6 +132,7 @@
                                 }}
                             </h2>
 
+                            <!-- 3 boîtes : Arrivée / Départ / Durée -->
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="date-box text-center p-3 bg-light rounded mb-3">
@@ -122,6 +155,7 @@
                                 </div>
                             </div>
 
+                            <!-- Compteur voyageurs : adultes + enfants (si > 0) -->
                             <div class="mt-3">
                                 <p class="mb-2">
                                     <i class="bi bi-people me-2 text-turquoise"></i>
@@ -136,7 +170,7 @@
                         </div>
                     </div>
 
-                    <!-- DEMANDES SPÉCIALES -->
+                    <!-- CARTE DEMANDES SPÉCIALES (affichée uniquement si renseignées) -->
                     <div class="card border-0 shadow-sm mb-4" *ngIf="reservation.special_requests">
                         <div class="card-body p-4">
                             <h2 class="h5 mb-3 text-turquoise">
@@ -146,7 +180,7 @@
                         </div>
                     </div>
 
-                    <!-- SERVICES ADDITIONNELS -->
+                    <!-- CARTE SERVICES ADDITIONNELS (affichée si services présents) -->
                     @if (services.length > 0) {
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
@@ -154,6 +188,7 @@
                                 <i class="bi bi-plus-circle me-2"></i>{{ 'booking.additionalServices' | translate }}
                             </h2>
 
+                            <!-- Tableau des services : nom, quantité, prix unitaire, sous-total -->
                             <div class="table-responsive">
                                 <table class="table table-sm mb-0">
                                     <thead class="table-light">
@@ -179,6 +214,7 @@
                                         </tr>
                                         }
                                     </tbody>
+                                    <!-- Total des services -->
                                     <tfoot class="table-light">
                                         <tr>
                                             <td colspan="3" class="text-end"><strong>Total services :</strong></td>
@@ -192,7 +228,7 @@
                     </div>
                     }
 
-                    <!-- INFORMATIONS DE RÉSERVATION -->
+                    <!-- CARTE INFORMATIONS DE RÉSERVATION : date, n° confirmation, statut -->
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
                             <h2 class="h5 mb-4 text-turquoise">
@@ -228,7 +264,7 @@
 
                 </div>
 
-                <!-- COLONNE DROITE -->
+                <!-- ====== COLONNE DROITE : RÉCAPITULATIF & ACTIONS ====== -->
                 <div class="col-lg-4">
 
                     <!-- RÉCAPITULATIF PRIX -->
@@ -236,6 +272,7 @@
                         <div class="card-body p-4">
                             <h2 class="h5 mb-4">{{ 'reservations.summary' | translate }}</h2>
 
+                            <!-- Détail : prix/nuit × nombre de nuits + services -->
                             <div class="price-detail mb-3">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>{{ 'reservations.pricePerNight' | translate }}</span>
@@ -245,8 +282,8 @@
                                     <span>{{ 'reservations.numberOfNights' | translate }}</span>
                                     <span>x {{ reservation.nbre_nuits }}</span>
                                 </div>
-                                
-                                <!-- Services additionnels -->
+
+                                <!-- Services additionnels (si présents) -->
                                 @if (services.length > 0) {
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Services additionnels</span>
@@ -257,6 +294,7 @@
 
                             <hr>
 
+                            <!-- Prix total avec TVA -->
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <strong class="h5 mb-0">{{ 'booking.total' | translate }}</strong>
                                 <strong class="h4 mb-0 text-turquoise">{{ reservation.total_price | appCurrency
@@ -267,18 +305,20 @@
                                 <i class="bi bi-shield-check me-1"></i>{{ 'booking.vatIncluded' | translate }}
                             </p>
 
-                            <!-- ACTIONS -->
+                            <!-- BOUTONS D'ACTIONS -->
                             <div class="d-grid gap-2">
+                                <!-- Retour à la liste -->
                                 <button (click)="goBack()" class="btn btn-outline-primary">
                                     <i class="bi bi-arrow-left me-2"></i>{{ 'common.back' | translate }}
                                 </button>
 
-                                <!-- BOUTON PAYER (si en attente) -->
+                                <!-- Payer maintenant (affiché si statut = 1 : en attente) -->
                                 <button *ngIf="reservation.id_statut === 1" (click)="goToPayment()"
                                     class="btn btn-success">
                                     <i class="bi bi-credit-card me-2"></i>{{ 'reservations.payNow' | translate }}
                                 </button>
 
+                                <!-- Annuler (affiché si annulation possible) -->
                                 <button *ngIf="canCancel()" (click)="cancelReservation()"
                                     class="btn btn-outline-danger">
                                     <i class="bi bi-x-circle me-2"></i>{{ 'reservations.cancel' | translate }}
@@ -287,7 +327,7 @@
                         </div>
                     </div>
 
-                    <!-- AIDE -->
+                    <!-- CARTE AIDE : téléphone support -->
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-4">
                             <h3 class="h6 mb-3">

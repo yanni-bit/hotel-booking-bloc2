@@ -1,33 +1,58 @@
+<!--
+  ============================================================
+  FICHIER     : hotel-location.html
+  COMPOSANT   : HotelLocation
+  DESCRIPTION : Template de l'onglet Localisation d'un hôtel.
+                Affiche une carte interactive Leaflet, les informations
+                d'adresse et de contact, ainsi que les infos pratiques.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - Titre de section avec icône
+    - État de chargement (spinner)
+    - Contenu principal :
+      - Carte interactive Leaflet/OpenStreetMap
+      - Deux colonnes (6/6) :
+        - Adresse & localisation (aéroport, navette)
+        - Contact (email, téléphone, site web)
+      - Informations pratiques (check-in, check-out, paiement)
+      - Note informative
+  ============================================================
+-->
+
 <div class="hotel-location">
+
+  <!-- Titre de la section -->
   <h2 class="h4 mb-4 border-bottom pb-2 text-secondary">
     <i class="bi bi-geo-alt me-2"></i>{{ 'hotel.locationContact' | translate }}
   </h2>
-  
-  <!-- LOADING -->
+
+  <!-- ======================== LOADING ======================== -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-turquoise" role="status">
       <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
     </div>
     <p class="mt-3 text-gris-moyen">{{ 'hotel.loadingInfo' | translate }}</p>
   </div>
-  
-  <!-- CONTENU -->
+
+  <!-- ======================== CONTENU ======================== -->
   <div *ngIf="!loading && hotel" class="location-content">
-    
-    <!-- CARTE INTERACTIVE -->
-<div class="map-container mb-4 bg-white border rounded shadow-sm overflow-hidden">
-  <div id="map" class="leaflet-map"></div>
-</div>
-    
+
+    <!-- CARTE INTERACTIVE LEAFLET / OPENSTREETMAP -->
+    <div class="map-container mb-4 bg-white border rounded shadow-sm overflow-hidden">
+      <div id="map" class="leaflet-map"></div>
+    </div>
+
     <div class="row">
-      
-      <!-- ADRESSE & LOCALISATION -->
+
+      <!-- ====== ADRESSE & LOCALISATION (6/12) ====== -->
       <div class="col-md-6 mb-4">
         <div class="info-card p-4 bg-white border rounded shadow-sm h-100">
           <h3 class="h5 mb-3 text-turquoise">
             <i class="bi bi-house-door me-2"></i>{{ 'hotel.address' | translate }}
           </h3>
-          
+
+          <!-- Détails de l'adresse -->
           <div class="mb-3 text-gris-moyen">
             <p class="mb-1"><strong>{{ hotel.nom_hotel }}</strong></p>
             <p class="text-gris-moyen mb-1" *ngIf="hotel.adresse_hotel">
@@ -40,9 +65,10 @@
               <i class="bi bi-mailbox me-2"></i>{{ hotel.code_postal_hotel }}
             </p>
           </div>
-          
+
           <hr>
-          
+
+          <!-- Informations transport (aéroport, navette) -->
           <div>
             <p class="small text-gris-moyen mb-2">
               <i class="bi bi-airplane me-2"></i>
@@ -57,14 +83,15 @@
           </div>
         </div>
       </div>
-      
-      <!-- CONTACT -->
+
+      <!-- ====== CONTACT (6/12) ====== -->
       <div class="col-md-6 mb-4">
         <div class="info-card p-4 bg-white border rounded shadow-sm h-100">
           <h3 class="h5 mb-3 text-turquoise">
             <i class="bi bi-telephone me-2"></i>{{ 'hotel.contactInfo' | translate }}
           </h3>
-          
+
+          <!-- Email -->
           <div class="contact-item mb-3">
             <div class="d-flex align-items-start">
               <i class="bi bi-envelope-fill text-turquoise me-3 fs-5"></i>
@@ -77,7 +104,8 @@
               </div>
             </div>
           </div>
-          
+
+          <!-- Téléphone -->
           <div class="contact-item mb-3">
             <div class="d-flex align-items-start">
               <i class="bi bi-telephone-fill text-turquoise me-3 fs-5"></i>
@@ -86,11 +114,13 @@
                 <a *ngIf="hotel.telephone_hotel" [href]="'tel:' + hotel.telephone_hotel" class="text-gris-moyen">
                   {{ hotel.telephone_hotel }}
                 </a>
-                <span *ngIf="!hotel.telephone_hotel" class="text-gris-moyen">{{ 'hotel.notProvided' | translate }}</span>
+                <span *ngIf="!hotel.telephone_hotel" class="text-gris-moyen">{{ 'hotel.notProvided' | translate
+                  }}</span>
               </div>
             </div>
           </div>
-          
+
+          <!-- Site web -->
           <div class="contact-item mb-3">
             <div class="d-flex align-items-start">
               <i class="bi bi-globe text-turquoise me-3 fs-5"></i>
@@ -103,9 +133,10 @@
               </div>
             </div>
           </div>
-          
+
           <hr>
-          
+
+          <!-- Alerte réception 24h -->
           <div class="alert alert-info mb-0">
             <small>
               <i class="bi bi-clock me-2"></i>
@@ -115,16 +146,17 @@
           </div>
         </div>
       </div>
-      
+
     </div>
-    
-    <!-- INFORMATIONS PRATIQUES -->
+
+    <!-- ====== INFORMATIONS PRATIQUES ====== -->
     <div class="practical-info p-4 bg-white border rounded shadow-sm">
       <h3 class="h5 mb-3 text-turquoise">
         <i class="bi bi-info-circle me-2"></i>{{ 'hotel.practicalInfo' | translate }}
       </h3>
-      
+
       <div class="row">
+        <!-- Check-in -->
         <div class="col-md-4 mb-3">
           <div class="info-box p-3 bg-light rounded">
             <i class="bi bi-clock text-turquoise fs-4 mb-2 d-block"></i>
@@ -132,7 +164,8 @@
             <small class="text-gris-moyen">{{ 'hotel.checkInTime' | translate }}</small>
           </div>
         </div>
-        
+
+        <!-- Check-out -->
         <div class="col-md-4 mb-3">
           <div class="info-box p-3 bg-light rounded">
             <i class="bi bi-clock-history text-turquoise fs-4 mb-2 d-block"></i>
@@ -140,7 +173,8 @@
             <small class="text-gris-moyen">{{ 'hotel.checkOutTime' | translate }}</small>
           </div>
         </div>
-        
+
+        <!-- Paiement -->
         <div class="col-md-4 mb-3">
           <div class="info-box p-3 bg-light rounded">
             <i class="bi bi-credit-card text-turquoise fs-4 mb-2 d-block"></i>
@@ -150,14 +184,14 @@
         </div>
       </div>
     </div>
-    
-    <!-- NOTE -->
+
+    <!-- Note informative -->
     <div class="alert alert-light mt-4">
       <small class="text-gris-moyen">
         <i class="bi bi-exclamation-circle me-2"></i>
         {{ 'hotel.contactNote' | translate }}
       </small>
     </div>
-    
+
   </div>
 </div>

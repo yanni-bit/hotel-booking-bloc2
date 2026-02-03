@@ -15,7 +15,7 @@
   font-weight: 700;
   color: var(--gris-fonce);
   margin-bottom: 10px;
-  
+
   .text-turquoise {
     color: var(--turquoise);
   }
@@ -85,6 +85,7 @@
   flex: 1;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -160,7 +161,7 @@
   color: var(--gris-fonce);
   padding: 8px 15px;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: var(--turquoise);
     border-color: var(--turquoise);
@@ -185,7 +186,7 @@
   .page-title {
     font-size: 24px;
   }
-  
+
   .hotel-card-image {
     height: 180px;
   }

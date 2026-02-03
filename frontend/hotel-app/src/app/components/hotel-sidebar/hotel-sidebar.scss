@@ -1,11 +1,36 @@
+/**
+ * ============================================================
+ * FICHIER     : hotel-sidebar.scss
+ * COMPOSANT   : HotelSidebar
+ * DESCRIPTION : Styles de la barre de navigation latérale (onglets)
+ *               de la page hôtel. Gère l'apparence des nav-pills
+ *               verticales avec états par défaut, hover et actif,
+ *               et le passage en mode horizontal sur tablette.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Conteneur sidebar (positionnement)
+ *   2. Navigation par onglets (nav-pills)
+ *   3. Responsive (tablette ≤ 768px)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. CONTENEUR SIDEBAR
+   Position sticky désactivée (commentée)
+   ============================================== */
 .sidebar-nav-container {
   // position: sticky;
   top: 20px;
 }
 
+/* ==============================================
+   2. NAVIGATION PAR ONGLETS (NAV-PILLS)
+   Onglets verticaux avec icônes et transitions
+   ============================================== */
 .nav-pills {
   gap: 0.25rem;
-  
+
   .nav-link {
     color: var(--gris-fonce);
     font-weight: 500;
@@ -15,21 +40,24 @@
     display: flex;
     align-items: center;
     background-color: var(--marron);
-    
+
+    /* Taille des icônes Bootstrap Icons */
     i {
       font-size: 1.1rem;
     }
-    
+
+    /* État hover : fond turquoise clair */
     &:hover {
       background-color: var(--turquoise-light);
       color: var(--turquoise-hover);
     }
-    
+
+    /* État actif : fond turquoise plein + texte blanc */
     &.active {
       background-color: var(--turquoise);
       color: white;
       font-weight: 600;
-      
+
       i {
         color: white;
       }
@@ -37,21 +65,26 @@
   }
 }
 
-// Responsive
+/* ==============================================
+   3. RESPONSIVE - TABLETTE (≤ 768px)
+   Passage en navigation horizontale avec wrap
+   ============================================== */
 @media (max-width: 768px) {
+  /* Désactivation du positionnement sticky */
   .sidebar-nav-container {
     position: relative;
     top: 0;
   }
-  
+
+  /* Onglets en ligne avec retour à la ligne */
   .nav-pills {
     flex-direction: row;
     flex-wrap: wrap;
-    
+
     .nav-link {
       font-size: 0.9rem;
       padding: 0.5rem 0.75rem;
-      
+
       i {
         font-size: 1rem;
       }

@@ -1,27 +1,49 @@
+<!--
+  ============================================================
+  FICHIER     : hotel-info-card.html
+  COMPOSANT   : HotelInfoCard
+  DESCRIPTION : Template du widget sidebar résumant les infos
+                d'un hôtel. Carte compacte avec nom, étoiles,
+                localisation, note et description tronquée.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - Ligne 1 : nom de l'hôtel (h2) + étoiles dorées (droite)
+    - Ligne 2 : localisation (ville, pays) + note /10 (droite)
+    - Séparateur horizontal
+    - Description tronquée à 150 caractères
+  ============================================================
+-->
+
 <aside class="card p-3 mb-4 border-0 shadow-sm">
-  
-  <!-- Nom hôtel + Étoiles -->
+
+  <!-- ====== NOM DE L'HÔTEL + ÉTOILES ====== -->
   <div class="d-flex justify-content-between align-items-start mb-2">
+    <!-- Nom de l'hôtel -->
     <h2 class="h5 fw-bold mb-0">{{ hotel.nom_hotel }}</h2>
+    <!-- Étoiles dorées générées dynamiquement -->
     <div class="text-warning" *ngIf="hotel.nbre_etoile_hotel">
       <i class="bi bi-star-fill" *ngFor="let star of [].constructor(hotel.nbre_etoile_hotel)"></i>
     </div>
   </div>
-  
-  <!-- Localisation + Note -->
+
+  <!-- ====== LOCALISATION + NOTE MOYENNE ====== -->
   <div class="d-flex justify-content-between align-items-center mb-2">
+    <!-- Ville et pays avec icône géolocalisation -->
     <p class="small text-muted mb-0">
       <i class="bi bi-geo-alt"></i> {{ hotel.ville_hotel }}, {{ hotel.pays_hotel }}
     </p>
+    <!-- Note moyenne sur 10 (affichée si disponible) -->
     <div class="small text-muted" *ngIf="hotel.note_moyenne">
       <i class="bi bi-hand-thumbs-up"></i>
       <span class="fw-semibold">{{ hotel.note_moyenne | number:'1.1-1' }}/10</span>
     </div>
   </div>
-  
+
+  <!-- Séparateur -->
   <hr>
-  
-  <!-- Description courte -->
+
+  <!-- Description tronquée à 150 caractères -->
   <p class="small text-muted">{{ hotel.description_hotel | slice:0:150 }}...</p>
-  
+
 </aside>

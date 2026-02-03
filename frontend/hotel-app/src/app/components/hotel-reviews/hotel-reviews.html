@@ -1,72 +1,97 @@
+<!--
+  ============================================================
+  FICHIER     : hotel-reviews.html
+  COMPOSANT   : HotelReviews
+  DESCRIPTION : Template de l'onglet Avis d'un hôtel. Affiche les
+                statistiques des avis, la liste des avis clients et
+                un formulaire de création/modification d'avis pour
+                les utilisateurs connectés.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - Titre de section avec icône
+    - État de chargement / erreur
+    - Section ajout d'avis :
+      - Message de succès
+      - Bouton "Laisser un avis" (si connecté)
+      - Message "Connectez-vous" (si non connecté)
+      - Formulaire (note, type séjour, pays, titre, commentaire)
+    - État aucun avis (alerte info)
+    - Contenu avis :
+      - Statistiques (note moyenne, nombre d'avis)
+      - Liste des avis (pseudo, date, note, titre, commentaire, meta)
+      - Note de bas de page
+  ============================================================
+-->
+
 <div class="hotel-reviews">
+
+  <!-- Titre de la section -->
   <h2 class="h4 mb-4 border-bottom pb-2 text-secondary">
     <i class="bi bi-chat-left-text me-2"></i>{{ 'hotel.customerReviews' | translate }}
   </h2>
-  
-  <!-- LOADING -->
+
+  <!-- ======================== LOADING ======================== -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-turquoise" role="status">
       <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
     </div>
     <p class="mt-3 text-muted">{{ 'hotel.loadingReviews' | translate }}</p>
   </div>
-  
-  <!-- ERROR -->
+
+  <!-- ======================== ERROR ======================== -->
   <div *ngIf="error && !loading" class="alert alert-danger">
     {{ error }}
   </div>
-  
+
   <!-- ========================================
-       BOUTON / FORMULAIRE AJOUTER UN AVIS
+       SECTION AJOUT / MODIFICATION D'AVIS
        ======================================== -->
   <div *ngIf="!loading" class="add-review-section mb-4">
-    
-    <!-- Message succès -->
+
+    <!-- Message de succès après soumission -->
     <div *ngIf="submitSuccess" class="alert alert-success alert-dismissible fade show">
       <i class="bi bi-check-circle me-2"></i>
       {{ editingAvis ? 'Votre avis a été modifié avec succès.' : 'Merci ! Votre avis a été publié avec succès.' }}
       <button type="button" class="btn-close" (click)="submitSuccess = false"></button>
     </div>
-    
-    <!-- Bouton pour afficher le formulaire (utilisateur connecté) -->
+
+    <!-- Bouton "Laisser un avis" : visible si connecté et formulaire masqué -->
     <div *ngIf="authService.isAuthenticated() && !showForm" class="text-center mb-4">
       <button class="btn btn-turquoise" (click)="toggleForm()">
         <i class="bi bi-plus-circle me-2"></i>Laisser un avis
       </button>
     </div>
-    
-    <!-- Message si non connecté -->
+
+    <!-- Message invitation à se connecter -->
     <div *ngIf="!authService.isAuthenticated()" class="alert alert-info mb-4">
       <i class="bi bi-info-circle me-2"></i>
       <a routerLink="/login" class="alert-link">Connectez-vous</a> pour laisser un avis sur cet hôtel.
     </div>
-    
-    <!-- FORMULAIRE -->
+
+    <!-- ====== FORMULAIRE CRÉATION / MODIFICATION D'AVIS ====== -->
     <div *ngIf="showForm" class="review-form card border-0 shadow-sm mb-4">
+
+      <!-- En-tête du formulaire -->
       <div class="card-header bg-turquoise text-white">
         <h5 class="mb-0">
           <i class="bi bi-pencil-square me-2"></i>
           {{ editingAvis ? 'Modifier votre avis' : 'Donner votre avis' }}
         </h5>
       </div>
+
       <div class="card-body p-4">
-        
-        <!-- Erreur -->
+
+        <!-- Erreur de soumission -->
         <div *ngIf="submitError" class="alert alert-danger">
           <i class="bi bi-exclamation-triangle me-2"></i>{{ submitError }}
         </div>
-        
-        <!-- Note -->
+
+        <!-- Champ note : slider range 1-10 avec badge affichage -->
         <div class="mb-4">
           <label class="form-label fw-bold">Note globale *</label>
           <div class="d-flex align-items-center gap-3">
-            <input 
-              type="range" 
-              class="form-range flex-grow-1" 
-              [(ngModel)]="newAvis.note"
-              min="1" 
-              max="10" 
-              step="0.1">
+            <input type="range" class="form-range flex-grow-1" [(ngModel)]="newAvis.note" min="1" max="10" step="0.1">
             <span class="badge bg-turquoise fs-5" style="min-width: 70px;">
               {{ newAvis.note | number:'1.1-1' }}/10
             </span>
@@ -77,9 +102,9 @@
             <span>Excellent</span>
           </div>
         </div>
-        
+
         <div class="row">
-          <!-- Type de voyageur -->
+          <!-- Select type de voyageur -->
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">Type de séjour *</label>
             <select class="form-select" [(ngModel)]="newAvis.type_voyageur">
@@ -88,8 +113,8 @@
               </option>
             </select>
           </div>
-          
-          <!-- Pays -->
+
+          <!-- Select pays d'origine -->
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">Votre pays *</label>
             <select class="form-select" [(ngModel)]="newAvis.pays_origine">
@@ -99,37 +124,26 @@
             </select>
           </div>
         </div>
-        
-        <!-- Titre (optionnel) -->
+
+        <!-- Titre de l'avis (optionnel) -->
         <div class="mb-3">
           <label class="form-label fw-bold">Titre de l'avis <small class="text-muted">(optionnel)</small></label>
-          <input 
-            type="text" 
-            class="form-control" 
-            [(ngModel)]="newAvis.titre_avis"
-            placeholder="Ex: Séjour exceptionnel !"
-            maxlength="100">
+          <input type="text" class="form-control" [(ngModel)]="newAvis.titre_avis"
+            placeholder="Ex: Séjour exceptionnel !" maxlength="100">
         </div>
-        
-        <!-- Commentaire -->
+
+        <!-- Commentaire avec compteur de caractères -->
         <div class="mb-4">
           <label class="form-label fw-bold">Votre commentaire *</label>
-          <textarea 
-            class="form-control" 
-            [(ngModel)]="newAvis.commentaire"
-            rows="4"
-            placeholder="Décrivez votre expérience dans cet hôtel (minimum 10 caractères)..."
-            minlength="10"
+          <textarea class="form-control" [(ngModel)]="newAvis.commentaire" rows="4"
+            placeholder="Décrivez votre expérience dans cet hôtel (minimum 10 caractères)..." minlength="10"
             maxlength="1000"></textarea>
           <small class="text-muted">{{ newAvis.commentaire.length }}/1000 caractères</small>
         </div>
-        
-        <!-- Boutons -->
+
+        <!-- Boutons soumission / annulation -->
         <div class="d-flex gap-2">
-          <button 
-            class="btn btn-turquoise"
-            [disabled]="submitting"
-            (click)="submitAvis()">
+          <button class="btn btn-turquoise" [disabled]="submitting" (click)="submitAvis()">
             <span *ngIf="!submitting">
               <i class="bi bi-send me-2"></i>
               {{ editingAvis ? 'Enregistrer les modifications' : 'Publier mon avis' }}
@@ -138,28 +152,25 @@
               <span class="spinner-border spinner-border-sm me-2"></span>Envoi en cours...
             </span>
           </button>
-          <button 
-            class="btn btn-outline-secondary"
-            [disabled]="submitting"
-            (click)="cancelForm()">
+          <button class="btn btn-outline-secondary" [disabled]="submitting" (click)="cancelForm()">
             Annuler
           </button>
         </div>
-        
+
       </div>
     </div>
-    
+
   </div>
-  
-  <!-- AUCUN AVIS -->
+
+  <!-- ======================== AUCUN AVIS ======================== -->
   <div *ngIf="!loading && !error && avis.length === 0" class="alert alert-info">
     <i class="bi bi-info-circle me-2"></i>{{ 'hotel.noReviews' | translate }}
   </div>
-  
-  <!-- CONTENU -->
+
+  <!-- ======================== CONTENU AVIS ======================== -->
   <div *ngIf="!loading && !error && avis.length > 0" class="reviews-content">
-    
-    <!-- STATISTIQUES -->
+
+    <!-- ====== STATISTIQUES GLOBALES ====== -->
     <div class="reviews-stats mb-4 p-4 bg-white border rounded shadow-sm">
       <div class="row align-items-center">
         <div class="col-md-6">
@@ -178,51 +189,50 @@
         </div>
       </div>
     </div>
-    
-    <!-- LISTE DES AVIS -->
+
+    <!-- ====== LISTE DES AVIS ====== -->
     <div class="reviews-list">
       <div *ngFor="let review of avis" class="review-card mb-3 p-4 bg-white border rounded shadow-sm">
-        
-        <!-- En-tête avis -->
+
+        <!-- En-tête : pseudo, date, bouton modifier, note -->
         <div class="d-flex justify-content-between align-items-start mb-3">
           <div>
-            <h4 class="h6 mb-1 fw-bold text-grismoyen">{{ review.pseudo_user || ('hotel.anonymousUser' | translate) }}</h4>
+            <h4 class="h6 mb-1 fw-bold text-grismoyen">{{ review.pseudo_user || ('hotel.anonymousUser' | translate) }}
+            </h4>
             <small class="text-muted">
               <i class="bi bi-calendar3 me-1"></i>{{ review.date_formatted || review.date_avis }}
             </small>
           </div>
           <div class="text-end d-flex align-items-center gap-2">
-            <!-- Bouton modifier (visible uniquement pour le créateur) -->
-            <button 
-              *ngIf="canEditAvis(review)"
-              class="btn btn-sm btn-outline-primary"
-              title="Modifier mon avis"
+            <!-- Bouton modifier : visible uniquement pour l'auteur de l'avis -->
+            <button *ngIf="canEditAvis(review)" class="btn btn-sm btn-outline-primary" title="Modifier mon avis"
               (click)="editAvis(review)">
               <i class="bi bi-pencil"></i>
             </button>
+            <!-- Badge note -->
             <div class="review-note badge bg-turquoise">
               {{ review.note }}/10
             </div>
           </div>
         </div>
-        
-        <!-- Titre avis -->
+
+        <!-- Titre de l'avis (optionnel, en italique) -->
         <h5 class="h6 mb-2 text-turquoise" *ngIf="review.titre_avis">
           "{{ review.titre_avis }}"
         </h5>
-        
+
         <!-- Commentaire -->
         <p class="text-muted mb-2" *ngIf="review.commentaire">
           {{ review.commentaire }}
         </p>
-        
-        <!-- Infos supplémentaires -->
+
+        <!-- Métadonnées : type de voyageur + pays d'origine -->
         <div class="review-meta mt-3 pt-3 border-top">
           <div class="row">
             <div class="col-md-6">
               <small class="text-muted">
                 <i class="bi bi-person me-1"></i>
-                {{ 'hotel.travelerType' | translate }} : 
+                {{ 'hotel.travelerType' | translate }} :
                 <strong class="text-grismoyen">{{ review.type_voyageur || ('hotel.notSpecified' | translate) }}</strong>
               </small>
             </div>
@@ -234,17 +244,17 @@
             </div>
           </div>
         </div>
-        
+
       </div>
     </div>
-    
-    <!-- NOTE DE BAS DE PAGE -->
+
+    <!-- Note de bas de page : avis vérifiés -->
     <div class="alert alert-light mt-4">
       <small class="text-muted">
         <i class="bi bi-shield-check me-2"></i>
         {{ 'hotel.reviewsVerifiedNote' | translate }}
       </small>
     </div>
-    
+
   </div>
 </div>

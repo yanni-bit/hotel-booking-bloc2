@@ -1,3 +1,22 @@
+/**
+ * ============================================================
+ * FICHIER     : offres.ts
+ * COMPOSANT   : Offres
+ * DESCRIPTION : Section "Nos dernières offres" affichée sur la page
+ *               d'accueil. Présente 4 offres promotionnelles sous
+ *               forme de cartes cliquables redirigeant vers la page
+ *               détail de l'hôtel correspondant. Les données des
+ *               offres sont définies en dur (statiques).
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * FONCTIONNALITÉS :
+ *   - Affichage de 4 offres promotionnelles en grille responsive
+ *   - Chaque carte contient : image, badge promo, titre, description
+ *   - Navigation vers la page hôtel au clic (ville + hotelId)
+ *   - Données statiques (pas d'appel API)
+ * ============================================================
+ */
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -7,10 +26,14 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-offres',
   imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './offres.html',
-  styleUrl: './offres.scss'
+  styleUrl: './offres.scss',
 })
 export class Offres {
-  
+  /**
+   * Tableau des 4 offres promotionnelles affichées sur l'accueil
+   * Chaque offre contient : id, titre, description, image, badge,
+   * couleur du badge, ville de destination et id de l'hôtel
+   */
   offres = [
     {
       id: 1,
@@ -20,7 +43,7 @@ export class Offres {
       badge: '30% OFF',
       badgeColor: '#5fc8c2',
       ville: 'Cancun',
-      hotelId: 65
+      hotelId: 65,
     },
     {
       id: 2,
@@ -30,17 +53,17 @@ export class Offres {
       badge: 'PROMO',
       badgeColor: '#5fc8c2',
       ville: 'Paris',
-      hotelId: 1
+      hotelId: 1,
     },
     {
       id: 3,
       title: 'Une Nuit de Noces Paradisiaque',
-      description: 'Nuit de Noces aux Maldives, luxe total face à l\'océan',
+      description: "Nuit de Noces aux Maldives, luxe total face à l'océan",
       image: 'images/nuit_de_noces.jpg',
       badge: 'HOT DEAL',
       badgeColor: '#5fc8c2',
       ville: 'Maldives',
-      hotelId: 52
+      hotelId: 52,
     },
     {
       id: 4,
@@ -50,7 +73,7 @@ export class Offres {
       badge: 'NOUVEAU',
       badgeColor: '#5fc8c2',
       ville: 'Tahiti',
-      hotelId: 35
-    }
+      hotelId: 35,
+    },
   ];
 }

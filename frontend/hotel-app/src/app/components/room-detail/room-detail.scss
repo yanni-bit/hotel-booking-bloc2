@@ -1,3 +1,29 @@
+/**
+ * ============================================================
+ * FICHIER     : room-detail.scss
+ * COMPOSANT   : RoomDetail
+ * DESCRIPTION : Styles de la page de détail chambre. Classes
+ *               utilitaires turquoise/gris, breadcrumb, feature-box,
+ *               cartes d'offres avec hover, prix en gros caractères,
+ *               sidebar avec prix minimum et responsive mobile.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Classes utilitaires (turquoise, gris, bg)
+ *   2. Conteneur de page
+ *   3. Breadcrumb (séparateur ›, liens turquoise)
+ *   4. Feature-box (caractéristiques chambre)
+ *   5. Liste des offres (cartes hover + prix + bouton)
+ *   6. Sidebar (prix minimum + alerte info)
+ *   7. Items d'information (liens turquoise)
+ *   8. Responsive (≤768px)
+ * ============================================================
+ */
+
+/* ==============================================
+   1. CLASSES UTILITAIRES
+   Turquoise texte, gris moyen, fond turquoise
+   ============================================== */
 .text-turquoise {
   color: var(--turquoise);
 }
@@ -10,21 +36,31 @@
   background-color: var(--turquoise);
 }
 
+/* ==============================================
+   2. CONTENEUR DE PAGE
+   Fond marron clair, hauteur minimum 60vh
+   ============================================== */
 .room-detail-page {
   min-height: 60vh;
   background-color: var(--marron-clair);
 }
 
+/* ==============================================
+   3. BREADCRUMB
+   Fond transparent, séparateur ›, liens turquoise
+   ============================================== */
 .breadcrumb {
   background-color: transparent;
   padding: 0.5rem 0;
 }
 
+/* Séparateur personnalisé : chevron › */
 .breadcrumb-item + .breadcrumb-item::before {
   content: '›';
   color: var(--gris-moyen);
 }
 
+/* Liens turquoise dans le breadcrumb */
 .breadcrumb-item a {
   color: var(--turquoise);
   text-decoration: none;
@@ -35,11 +71,16 @@
   text-decoration: underline;
 }
 
+/* Élément actif en gris foncé */
 .breadcrumb-item.active {
   color: var(--gris-fonce);
 }
 
-// Header chambre
+/* ==============================================
+   4. FEATURE-BOX
+   Boîtes de caractéristiques (adultes, surface, lits)
+   Fond gris clair, coins arrondis
+   ============================================== */
 .feature-box {
   background-color: var(--gris-clair);
   padding: 0.5rem 1rem;
@@ -51,16 +92,22 @@
   }
 }
 
-// Liste des offres
+/* ==============================================
+   5. LISTE DES OFFRES
+   Cartes avec hover élévation, prix en gros,
+   détails de l'offre et bouton réserver
+   ============================================== */
 .offres-list {
   .offre-card {
     transition: all 0.2s ease;
 
+    /* Hover : élévation -2px + ombre renforcée */
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
     }
 
+    /* Prix par nuit en gros caractères turquoise */
     .price-tag {
       text-align: right;
 
@@ -77,6 +124,7 @@
       }
     }
 
+    /* Détails offre : pension, remboursable, etc. */
     .offre-feature {
       font-size: 0.9rem;
       color: var(--gris-moyen);
@@ -86,6 +134,7 @@
       }
     }
 
+    /* Bouton réserver turquoise avec hover élévation */
     .btn-primary {
       background-color: var(--turquoise);
       border-color: var(--turquoise);
@@ -102,13 +151,17 @@
   }
 }
 
-// Sidebar
+/* ==============================================
+   6. SIDEBAR
+   Prix minimum en display-4, alerte info turquoise
+   ============================================== */
 .sidebar-top {
   .display-4 {
     font-size: 3rem;
     line-height: 1;
   }
 
+  /* Alerte info avec fond turquoise clair */
   .alert-info {
     background-color: var(--turquoise-light);
     border-color: var(--turquoise);
@@ -116,6 +169,10 @@
   }
 }
 
+/* ==============================================
+   7. ITEMS D'INFORMATION (sidebar)
+   Icônes turquoise, liens turquoise avec hover
+   ============================================== */
 .info-item {
   i {
     color: var(--turquoise);
@@ -130,7 +187,10 @@
   }
 }
 
-// Responsive
+/* ==============================================
+   8. RESPONSIVE (≤768px)
+   Feature-box espacées, prix réduit, display-4 réduit
+   ============================================== */
 @media (max-width: 768px) {
   .feature-box {
     margin-bottom: 0.5rem;

@@ -1,42 +1,63 @@
+<!--
+  ============================================================
+  FICHIER     : popular-hotels.html
+  COMPOSANT   : PopularHotels
+  DESCRIPTION : Template du widget sidebar listant les hôtels
+                populaires d'un pays. Chaque hôtel est affiché
+                en ligne horizontale avec miniature et infos.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - Titre "Popular hotels in [pays]" (h3 uppercase)
+    - État loading (spinner petit)
+    - Liste des hôtels (chaque item en d-flex) :
+      - Miniature image (lien vers fiche)
+      - Infos : nom, étoiles, prix min, badge note
+    - Message si aucun hôtel trouvé
+  ============================================================
+-->
+
 <aside class="popular-hotels card p-3 mb-4 border-0 shadow-sm">
+  <!-- Titre du widget avec nom du pays -->
   <h3 class="h6 text-uppercase fw-bold pb-2 border-bottom">
     {{ 'sidebar.popularHotelsIn' | translate }} {{ country }}
   </h3>
 
-  <!-- Loading -->
+  <!-- État loading (spinner petit) -->
   <div *ngIf="loading" class="text-center py-3">
     <div class="spinner-border spinner-border-sm text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
 
-  <!-- Liste des hôtels -->
+  <!-- ====== LISTE DES HÔTELS POPULAIRES ====== -->
   <div *ngIf="!loading && hotels.length > 0" class="hotels-list">
     <div *ngFor="let hotel of hotels" class="hotel-item d-flex py-2 border-bottom">
-      <!-- Image -->
+      <!-- Miniature image cliquable vers la fiche hôtel -->
       <a [routerLink]="['/hotel', hotel.id_hotel]" class="hotel-img-link">
         <img [src]="hotel.img_hotel" [alt]="hotel.nom_hotel" class="hotel-thumb rounded">
       </a>
 
-      <!-- Infos -->
+      <!-- Informations de l'hôtel -->
       <div class="hotel-info ms-2 flex-grow-1">
+        <!-- Nom de l'hôtel (lien turquoise) -->
         <a [routerLink]="['/hotel', hotel.id_hotel]" class="hotel-name text-decoration-none">
           {{ hotel.nom_hotel }}
         </a>
 
-        <!-- Étoiles -->
+        <!-- Étoiles dorées générées dynamiquement -->
         <div class="hotel-stars">
           <i *ngFor="let star of getStars(hotel.nbre_etoile_hotel)" class="bi bi-star-fill text-warning small"></i>
         </div>
 
-        <!-- Prix -->
+        <!-- Prix minimum par nuit -->
         <div class="hotel-price small">
           <span class="text-muted">{{ 'sidebar.from' | translate }}</span>
           <span class="fw-bold text-primary"> {{ hotel.prix_min | appCurrency }}</span>
           <span class="text-muted">/ {{ 'sidebar.perNight' | translate }}</span>
         </div>
 
-        <!-- Note -->
+        <!-- Badge note moyenne (vert) -->
         <div class="hotel-rating">
           <span class="badge bg-success">{{ hotel.note_moy_hotel }}/10</span>
         </div>
@@ -44,7 +65,7 @@
     </div>
   </div>
 
-  <!-- Aucun résultat -->
+  <!-- Message si aucun hôtel trouvé -->
   <p *ngIf="!loading && hotels.length === 0" class="small text-muted mt-2">
     {{ 'sidebar.noHotelsFound' | translate }}
   </p>

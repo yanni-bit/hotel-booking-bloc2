@@ -1,42 +1,81 @@
+/**
+ * ============================================================
+ * FICHIER     : login.scss
+ * COMPOSANT   : Login
+ * DESCRIPTION : Styles de la page de connexion. Définit le fond de
+ *               page, la classe utilitaire turquoise, le style des
+ *               champs de formulaire avec focus turquoise, le bouton
+ *               de connexion et les liens.
+ * AUTEUR      : Yannick
+ * DATE        : 2025
+ * SECTIONS    :
+ *   1. Conteneur de page
+ *   2. Classe utilitaire turquoise
+ *   3. Champs de formulaire (focus)
+ *   4. Bouton de connexion
+ *   5. Liens
+ * ============================================================
+ */
+
+/* ==============================================
+   1. CONTENEUR DE PAGE
+   ============================================== */
 .login-page {
   min-height: 80vh;
   background-color: var(--marron-clair);
 }
 
+/* ==============================================
+   2. CLASSE UTILITAIRE TURQUOISE
+   ============================================== */
 .text-turquoise {
   color: var(--turquoise) !important;
 }
 
+/* ==============================================
+   3. CHAMPS DE FORMULAIRE
+   Bordure grise par défaut, turquoise au focus
+   ============================================== */
 .form-control {
   border-color: #ddd;
-  
+
   &:focus {
     border-color: var(--turquoise);
     box-shadow: 0 0 0 0.2rem rgba(95, 200, 194, 0.25);
   }
 }
 
+/* ==============================================
+   4. BOUTON DE CONNEXION
+   Style turquoise avec hover et état désactivé
+   ============================================== */
 .btn-primary {
   background-color: var(--turquoise);
   border-color: var(--turquoise);
   font-weight: 500;
   transition: all 0.2s ease;
-  
+
+  /* Hover : turquoise foncé + légère élévation */
   &:hover:not(:disabled) {
     background-color: var(--turquoise-hover);
     border-color: var(--turquoise-hover);
     transform: translateY(-1px);
   }
-  
+
+  /* État désactivé pendant le chargement */
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
 }
 
+/* ==============================================
+   5. LIENS
+   Sans soulignement par défaut, souligné au hover
+   ============================================== */
 a {
   text-decoration: none;
-  
+
   &:hover {
     text-decoration: underline;
   }

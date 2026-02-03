@@ -1,14 +1,38 @@
+<!--
+  ============================================================
+  FICHIER     : hotels-list.html
+  COMPOSANT   : HotelsList
+  DESCRIPTION : Template de la page listant les hôtels d'une ville.
+                Affiche une grille responsive de cartes hôtel avec
+                image, étoiles, description, localisation, note
+                moyenne et bouton vers le détail.
+  AUTEUR      : Yannick
+  DATE        : 2025
+  STRUCTURE   :
+    - En-tête de page (titre ville + nombre d'établissements)
+    - État de chargement (spinner)
+    - État d'erreur (alerte)
+    - État liste vide (alerte info)
+    - Grille des hôtels (12/6/4 colonnes selon breakpoint) :
+      - Image de l'hôtel
+      - Nom, étoiles, description, localisation
+      - Note moyenne avec badge
+      - Bouton "Voir les chambres"
+  ============================================================
+-->
+
 <!-- PAGE LISTE DES HÔTELS -->
 <section class="hotels-list-section py-5">
   <div class="container">
-    
-    <!-- En-tête de page -->
+
+    <!-- En-tête : titre de la ville + compteur d'établissements -->
     <div class="mb-4">
       <h1 class="page-title">{{ 'hotel.hotelsIn' | translate }} {{ ville }}</h1>
-      <p class="page-subtitle" *ngIf="!loading && !error">{{ hotels.length }} {{ 'hotel.establishmentsFound' | translate }}</p>
+      <p class="page-subtitle" *ngIf="!loading && !error">{{ hotels.length }} {{ 'hotel.establishmentsFound' | translate
+        }}</p>
     </div>
 
-    <!-- État de chargement -->
+    <!-- ======================== LOADING ======================== -->
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
@@ -16,22 +40,23 @@
       <p class="mt-3">{{ 'hotel.loadingHotels' | translate }}</p>
     </div>
 
-    <!-- Message d'erreur -->
+    <!-- ======================== ERROR ======================== -->
     <div *ngIf="error" class="alert alert-danger" role="alert">
       {{ error }}
     </div>
 
-    <!-- Aucun hôtel trouvé -->
+    <!-- ======================== AUCUN HÔTEL ======================== -->
     <div *ngIf="!loading && !error && hotels.length === 0" class="alert alert-info" role="alert">
       {{ 'hotel.noHotelsFound' | translate }} {{ ville }}.
     </div>
 
-    <!-- Grille des hôtels -->
+    <!-- ======================== GRILLE DES HÔTELS ======================== -->
     <div *ngIf="!loading && !error && hotels.length > 0" class="row g-4">
-      
+
+      <!-- Carte hôtel : itération sur la liste filtrée -->
       <div *ngFor="let hotel of hotels" class="col-12 col-md-6 col-lg-4">
         <div class="hotel-card">
-          
+
           <!-- Image de l'hôtel -->
           <div class="hotel-card-image">
             <img [src]="hotel.img_hotel" [alt]="hotel.nom_hotel">
@@ -39,30 +64,33 @@
 
           <!-- Corps de la carte -->
           <div class="hotel-card-body">
+
+            <!-- Nom de l'hôtel -->
             <h3 class="hotel-card-title">{{ hotel.nom_hotel }}</h3>
-            
-            <!-- Étoiles -->
+
+            <!-- Étoiles de l'hôtel (boucle dynamique) -->
             <div class="hotel-stars mb-2">
               <i class="bi bi-star-fill" *ngFor="let star of [].constructor(hotel.nbre_etoile_hotel)"></i>
             </div>
 
-            <!-- Description -->
+            <!-- Description (tronquée à 3 lignes via CSS) -->
             <p class="hotel-card-text">{{ hotel.description_hotel }}</p>
 
-            <!-- Localisation -->
+            <!-- Localisation : ville + pays -->
             <p class="hotel-location">
               <i class="bi bi-geo-alt"></i>
               {{ hotel.ville_hotel }}, {{ hotel.pays_hotel }}
             </p>
 
-            <!-- Note moyenne -->
+            <!-- Note moyenne avec badge turquoise -->
             <div class="hotel-rating" *ngIf="hotel.note_moy_hotel">
               <span class="rating-badge">{{ hotel.note_moy_hotel }}/10</span>
               <span class="rating-text">{{ 'hotel.excellent' | translate }}</span>
             </div>
 
-            <!-- Bouton voir détails -->
-            <a [routerLink]="['/hotels', ville, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">{{ 'hotel.viewRooms' | translate }}</a>
+            <!-- Bouton navigation vers le détail de l'hôtel -->
+            <a [routerLink]="['/hotels', ville, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">{{ 'hotel.viewRooms'
+              | translate }}</a>
           </div>
 
         </div>
