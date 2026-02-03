@@ -1,76 +1,141 @@
+// ============================================
+// FICHIER : reservation.ts
+// DESCRIPTION : Service de gestion des réservations.
+//               Fournit les méthodes pour créer, consulter, annuler
+//               des réservations côté client, ainsi que les méthodes
+//               d'administration (liste complète, changement de statut).
+//               Gère aussi la récupération des offres et services liés.
+// AUTEUR : Yannick
+// DATE : 2025
+// SERVICES UTILISÉS : HttpClient (requêtes HTTP vers l'API backend)
+// FONCTIONNALITÉS :
+//   - Récupération des détails d'une offre (getOffreDetails)
+//   - Création d'une réservation (createReservation)
+//   - Récupération des services additionnels d'un hôtel (getHotelServices)
+//   - Récupération des réservations d'un utilisateur (getUserReservations)
+//   - Récupération d'une réservation par ID (getReservationById)
+//   - Annulation d'une réservation (cancelReservation)
+//   - Récupération des services d'une réservation (getReservationServices)
+//   - [ADMIN] Récupération de toutes les réservations (getAllReservations)
+//   - [ADMIN] Changement de statut d'une réservation (updateReservationStatus)
+// API : http://localhost:3000/api
+// ============================================
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+/**
+ * Service injectable pour la gestion des réservations.
+ * Utilisé côté client pour le processus de réservation complet
+ * et côté admin pour le suivi et la gestion des statuts.
+ */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReservationService {
-
+  /** URL de base de l'API */
   private apiUrl = 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) { }
+  /**
+   * Constructeur : injection du client HTTP Angular.
+   * @param http - Client HTTP pour les appels API
+   */
+  constructor(private http: HttpClient) {}
+
+  // ============================================================================
+  // OFFRES ET SERVICES
+  // ============================================================================
 
   /**
-   * Récupère les détails d'une offre pour la réservation
+   * Récupère les détails d'une offre pour préparer la réservation.
+   * @param offreId - Identifiant de l'offre sélectionnée
+   * @returns {Observable<any>} Observable contenant les détails de l'offre
    */
   getOffreDetails(offreId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/offres/${offreId}`);
   }
 
   /**
-   * Crée une nouvelle réservation
-   */
-  createReservation(reservationData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reservations`, reservationData);
-  }
-
-  /**
-   * Récupère les services additionnels d'un hôtel
+   * Récupère les services additionnels disponibles pour un hôtel.
+   * @param hotelId - Identifiant de l'hôtel
+   * @returns {Observable<any>} Observable contenant la liste des services
    */
   getHotelServices(hotelId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/hotels/${hotelId}/services`);
   }
 
   /**
-   * Récupère les réservations d'un utilisateur
+   * Récupère les services additionnels associés à une réservation.
+   * @param reservationId - Identifiant de la réservation
+   * @returns {Observable<any>} Observable contenant les services de la réservation
+   */
+  getReservationServices(reservationId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservations/${reservationId}/services`);
+  }
+
+  // ============================================================================
+  // RÉSERVATIONS CÔTÉ CLIENT
+  // ============================================================================
+
+  /**
+   * Crée une nouvelle réservation.
+   * @param reservationData - Données complètes de la réservation à créer
+   * @returns {Observable<any>} Observable contenant la réponse de création
+   */
+  createReservation(reservationData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reservations`, reservationData);
+  }
+
+  /**
+   * Récupère toutes les réservations d'un utilisateur.
+   * @param userId - Identifiant de l'utilisateur
+   * @returns {Observable<any>} Observable contenant la liste des réservations
    */
   getUserReservations(userId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/reservations/user/${userId}`);
   }
 
   /**
-   * Récupère une réservation par son ID
+   * Récupère une réservation spécifique par son ID.
+   * Nécessite l'userId pour vérification de propriété côté backend.
+   * @param reservationId - Identifiant de la réservation
+   * @param userId - Identifiant de l'utilisateur (vérification de propriété)
+   * @returns {Observable<any>} Observable contenant les détails de la réservation
    */
   getReservationById(reservationId: number, userId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/reservations/${reservationId}?userId=${userId}`);
   }
 
   /**
-   * Annule une réservation
+   * Annule une réservation existante.
+   * @param reservationId - Identifiant de la réservation à annuler
+   * @param userId - Identifiant de l'utilisateur (vérification de propriété)
+   * @returns {Observable<any>} Observable contenant la réponse d'annulation
    */
   cancelReservation(reservationId: number, userId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/reservations/${reservationId}/cancel`, { userId });
   }
 
+  // ============================================================================
+  // MÉTHODES ADMIN
+  // ============================================================================
+
   /**
-   * Récupère TOUTES les réservations (admin)
+   * Récupère toutes les réservations de la plateforme (ADMIN uniquement).
+   * @returns {Observable<any>} Observable contenant toutes les réservations
    */
   getAllReservations(): Observable<any> {
     return this.http.get(`${this.apiUrl}/reservations/all`);
   }
 
   /**
-   * Change le statut d'une réservation (admin)
+   * Change le statut d'une réservation (ADMIN uniquement).
+   * @param reservationId - Identifiant de la réservation
+   * @param newStatusId - Identifiant du nouveau statut à appliquer
+   * @returns {Observable<any>} Observable contenant la réponse de mise à jour
    */
   updateReservationStatus(reservationId: number, newStatusId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/reservations/${reservationId}/status`, { newStatusId });
-  }
-
-  /**
- * Récupère les services additionnels d'une réservation
- */
-  getReservationServices(reservationId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/reservations/${reservationId}/services`);
   }
 }

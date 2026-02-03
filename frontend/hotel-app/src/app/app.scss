@@ -1,3 +1,16 @@
+// ============================================
+// FICHIER : app.scss
+// DESCRIPTION : Styles globaux du composant racine App.
+//               Définit les styles par défaut pour les titres
+//               et paragraphes de l'application.
+// AUTEUR : Yannick
+// DATE : 2025
+// SECTIONS :
+//   - Styles des titres h1
+//   - Styles des paragraphes p
+// ============================================
+
+// --- Titres principaux ---
 h1 {
   color: #2c3e50;
   text-align: center;
@@ -5,6 +18,7 @@ h1 {
   margin-top: 50px;
 }
 
+// --- Paragraphes ---
 p {
   text-align: center;
   color: #7f8c8d;

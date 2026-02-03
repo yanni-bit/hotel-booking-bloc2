@@ -1,13 +1,27 @@
-/* ==========================================================
-   BASE.CSS - Hôtel Booking (Bloc 1)
-   ----------------------------------------------------------
-   Contient :
-   1. Variables globales (couleurs, typographies, espacements)
-   2. Police dyslexie (OpenDyslexic - Critère WCAG Cr 1.c.2)
-   3. Reset CSS (Eric Meyer)
-   4. Styles généraux (body, titres, textes, liens)
-   5. Utilitaires CSS (flexbox, overflow, alignements)
-   ========================================================== */
+// ============================================
+// FICHIER : styles.scss
+// DESCRIPTION : Feuille de styles globale de l'application "Book Your Travel".
+//               Contient les variables CSS, le reset, les styles de base,
+//               les utilitaires, les styles spécifiques aux pages (room, booking,
+//               contact) et l'ensemble des media queries responsive.
+// AUTEUR : Yannick
+// DATE : 2025
+// SECTIONS :
+//   1. Variables globales (couleurs, typographies, espacements)
+//   2. Police dyslexie OpenDyslexic (accessibilité WCAG Cr 1.c.2)
+//   3. Reset CSS (Eric Meyer)
+//   4. Styles généraux (body, typographie, liens, images)
+//   5. Utilitaires CSS (flexbox, overflow, alignements, espacements)
+//   6. Styles principaux (titres de sections, contenu principal)
+//   7. Calendrier Flatpickr (styles de base + surcharges room)
+//   8. Formulaire mobile alternatif au calendrier
+//   9. Modal global (lightbox carrousel)
+//  10. Page Room (sidebar, onglets, galerie, avis, offres)
+//  11. Responsive : tablettes (≤991px), mobiles (≤767px, ≤575px, ≤390px, ≤359px)
+//  12. Responsive : carrousel room (≤768px)
+//  13. Améliorations tactiles (touch devices)
+//  14. Responsive pages spécifiques (booking, contact)
+// ============================================
 
 
 /* ==========================================================

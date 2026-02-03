@@ -1,18 +1,37 @@
+<!-- ============================================
+     FICHIER : index.html
+     DESCRIPTION : Page HTML principale de l'application Angular.
+                   Point d'entrée du navigateur qui charge le composant
+                   racine <app-root>. Inclut les métadonnées de base,
+                   le favicon et le CSS de la librairie Leaflet
+                   pour les cartes interactives (page contact/localisation).
+     AUTEUR : Yannick
+     DATE : 2025
+     DÉPENDANCES EXTERNES :
+       - Leaflet CSS v1.9.4 (cartes interactives)
+     STRUCTURE :
+       - <head> : Meta charset, viewport, titre, favicon, CSS Leaflet
+       - <body> : Composant racine Angular <app-root>
+     ============================================ -->
+
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>HotelApp</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  
-  <!-- Leaflet CSS -->
+
+  <!-- Leaflet CSS : librairie de cartes interactives (utilisée sur la page contact et localisation hôtel) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""/>
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 </head>
+
 <body>
+  <!-- Composant racine Angular : point de montage de l'application -->
   <app-root></app-root>
 </body>
+
 </html>

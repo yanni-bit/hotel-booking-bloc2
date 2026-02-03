@@ -1,6 +1,23 @@
+<!-- ============================================
+     FICHIER : app.html
+     DESCRIPTION : Template racine de l'application.
+                   Affiche le Header en haut, le contenu dynamique
+                   des routes au centre (router-outlet), et le Footer en bas.
+     AUTEUR : Yannick
+     DATE : 2025
+     STRUCTURE :
+       - <app-header> : Barre de navigation principale
+       - <main> : Contenu dynamique via router-outlet
+       - <app-footer> : Pied de page
+     ============================================ -->
+
+<!-- === HEADER : Barre de navigation principale === -->
 <app-header></app-header>
 
+<!-- === CONTENU PRINCIPAL : Affichage dynamique des routes === -->
 <main>
   <router-outlet></router-outlet>
 </main>
+
+<!-- === FOOTER : Pied de page === -->
 <app-footer></app-footer>
