@@ -53,6 +53,10 @@ codes de statut HTTP.
 - Jetons JWT porteurs du rôle (administrateur, client), validité par défaut 7 jours
 - Réinitialisation de mot de passe par jeton à usage unique, valable deux heures
 - Guards Angular : `authGuard`, `adminGuard`
+- 43 routes protégées sur 63, dont 23 réservées aux administrateurs. Les 20 routes
+  publiques couvrent le catalogue (hôtels, chambres, destinations, recherche,
+  services, avis d'un hôtel), l'envoi du formulaire de contact et les quatre points
+  d'entrée d'authentification.
 
 ### Réservations
 
@@ -217,10 +221,23 @@ Trois écarts par rapport à une application de production méritent d'être
 signalés explicitement, car ils découlent des contraintes de l'exercice.
 
 **Pas de middleware global.** Sans Express, il n'existe pas de chaîne de
-middlewares. Chaque gestionnaire de route qui nécessite une authentification lit
-lui-même l'en-tête `Authorization`, en extrait le jeton et appelle
-`User.verifyToken()`. La vérification est donc explicite et répétée, là où un
-framework l'aurait centralisée.
+middlewares : rien ne s'exécute automatiquement avant un gestionnaire de route. Le
+contrôle d'accès est donc appelé explicitement. `backend/utils/auth.js` expose
+`requireAuth(req, res)` et `requireAdmin(req, res)`, qui lisent l'en-tête
+`Authorization`, extraient le jeton, appellent `User.verifyToken()` et répondent
+401 ou 403 en cas d'échec. Chaque gestionnaire protégé commence par :
+
+```js
+const auth = requireAuth(req, res);
+if (!auth) return;
+```
+
+Le retour `null` signifie que la réponse d'erreur est déjà envoyée. Le fichier
+`authRoutes.js` fait exception : ses douze routes protégées appellent
+`User.verifyToken()` directement, sans passer par ce module.
+
+Conséquence de ce choix : l'identité de l'utilisateur ne vient jamais du client. Un
+`id_user` transmis dans le corps d'une requête est écrasé par celui du jeton signé.
 
 **Transmission manuelle du lien de réinitialisation.** Le mécanisme de
 réinitialisation de mot de passe est complet en base : jeton aléatoire,
