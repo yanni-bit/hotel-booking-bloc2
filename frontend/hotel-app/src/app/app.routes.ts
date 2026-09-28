@@ -67,6 +67,9 @@ export const routes: Routes = [
   /** Page d'accueil */
   { path: '', component: Home },
 
+  /** Liste complète des hôtels, toutes villes confondues */
+  { path: 'hotels', component: HotelsList },
+
   /** Liste des hôtels par ville */
   { path: 'hotels/:ville', component: HotelsList },
 

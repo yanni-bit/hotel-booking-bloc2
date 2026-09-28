@@ -22,7 +22,14 @@
  * ============================================================
  */
 
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -48,7 +55,10 @@ export class PopularHotels implements OnInit, OnChanges {
   /** Indicateur de chargement */
   loading: boolean = false;
 
-  constructor(private hotelService: HotelService) {}
+  constructor(
+    private hotelService: HotelService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   /** Chargement initial des hôtels populaires */
   ngOnInit(): void {
@@ -79,10 +89,15 @@ export class PopularHotels implements OnInit, OnChanges {
           this.hotels = response.data;
         }
         this.loading = false;
+        // Le composant parent est en OnPush : sans markForCheck, la
+        // traversee de detection ne descend pas jusqu'ici et la vue
+        // reste bloquee sur le spinner malgre les donnees recues.
+        this.cdr.markForCheck();
       },
       error: (err: any) => {
         console.error('Erreur chargement hôtels populaires:', err);
         this.loading = false;
+        this.cdr.markForCheck();
       },
     });
   }

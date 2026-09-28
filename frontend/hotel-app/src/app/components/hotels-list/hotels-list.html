@@ -27,7 +27,10 @@
 
     <!-- En-tête : titre de la ville + compteur d'établissements -->
     <div class="mb-4">
-      <h1 class="page-title">{{ 'hotel.hotelsIn' | translate }} {{ ville }}</h1>
+      <h1 class="page-title">
+        <ng-container *ngIf="ville">{{ 'hotel.hotelsIn' | translate }} {{ ville }}</ng-container>
+        <ng-container *ngIf="!ville">{{ 'nav.hotels' | translate }}</ng-container>
+      </h1>
       <p class="page-subtitle" *ngIf="!loading && !error">{{ hotels.length }} {{ 'hotel.establishmentsFound' | translate
         }}</p>
     </div>
@@ -47,7 +50,7 @@
 
     <!-- ======================== AUCUN HÔTEL ======================== -->
     <div *ngIf="!loading && !error && hotels.length === 0" class="alert alert-info" role="alert">
-      {{ 'hotel.noHotelsFound' | translate }} {{ ville }}.
+      {{ 'hotel.noHotelsFound' | translate }}<span *ngIf="ville"> {{ ville }}</span>.
     </div>
 
     <!-- ======================== GRILLE DES HÔTELS ======================== -->
@@ -89,7 +92,8 @@
             </div>
 
             <!-- Bouton navigation vers le détail de l'hôtel -->
-            <a [routerLink]="['/hotels', ville, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">{{ 'hotel.viewRooms'
+            <a [routerLink]="['/hotels', hotel.ville_hotel, hotel.id_hotel]" class="btn btn-primary w-100 mt-3">{{
+              'hotel.viewRooms'
               | translate }}</a>
           </div>
 

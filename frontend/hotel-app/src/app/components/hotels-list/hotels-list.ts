@@ -62,15 +62,16 @@ export class HotelsList implements OnInit {
   ngOnInit() {
     // Récupérer le paramètre ville depuis l'URL
     this.route.params.subscribe((params) => {
-      this.ville = params['ville'];
-      console.log('🏙️ Ville sélectionnée:', this.ville);
+      // Le parametre est absent sur /hotels : chaine vide = toutes les villes
+      this.ville = params['ville'] || '';
       this.loadHotels();
     });
   }
 
   /**
-   * Charge tous les hôtels depuis l'API puis filtre par ville
-   * Utilise getAllHotels() et filtre côté client sur ville_hotel
+   * Charge les hôtels depuis l'API.
+   * Si une ville est presente dans l'URL, la liste est filtree sur
+   * ville_hotel ; sinon tous les hôtels sont affiches.
    * Utilise markForCheck() pour la stratégie de détection OnPush
    */
   loadHotels() {
@@ -78,7 +79,9 @@ export class HotelsList implements OnInit {
 
     this.hotelService.getAllHotels().subscribe({
       next: (response) => {
-        this.hotels = response.data.filter((hotel: any) => hotel.ville_hotel === this.ville);
+        this.hotels = this.ville
+          ? response.data.filter((hotel: any) => hotel.ville_hotel === this.ville)
+          : response.data;
 
         this.loading = false;
         this.cdr.markForCheck();
