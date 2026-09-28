@@ -9,6 +9,7 @@
 //   - GET  /api/reservations/user/:userId     → Réservations d'un utilisateur
 //   - GET  /api/reservations/:id              → Détail d'une réservation
 //   - GET  /api/reservations/:id/services     → Services d'une réservation
+//   - PUT  /api/reservations/:id              → Modifier une réservation
 //   - PUT  /api/reservations/:id/cancel       → Annuler une réservation
 //
 // ROUTES ADMIN :
@@ -277,6 +278,103 @@ function reservationRoutes(req, res) {
             }),
           );
         });
+      } catch (error) {
+        res.statusCode = 400;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: "Données invalides",
+          }),
+        );
+      }
+    });
+    return;
+  }
+
+  // ----------------------------------------
+  // PUT /api/reservations/:id - Modifier une réservation non payée
+  // ----------------------------------------
+  if (pathname.match(/^\/api\/reservations\/\d+$/) && method === "PUT") {
+    const reservationId = pathname.split("/")[3];
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on("end", () => {
+      try {
+        const { userId, check_in, check_out, nbre_adults, nbre_children } =
+          JSON.parse(body);
+
+        if (!userId) {
+          res.statusCode = 400;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: false,
+              message: "ID utilisateur requis",
+            }),
+          );
+          return;
+        }
+
+        if (!check_in || !check_out) {
+          res.statusCode = 400;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: false,
+              message: "Dates de séjour requises : check_in, check_out",
+            }),
+          );
+          return;
+        }
+
+        // Le modèle applique les règles métier : propriété, statut, dates,
+        // capacité, disponibilité, puis recalcule le total depuis l'offre.
+        Reservation.update(
+          reservationId,
+          userId,
+          { check_in, check_out, nbre_adults, nbre_children },
+          (err, result) => {
+            if (err) {
+              console.error("Erreur modification réservation:", err);
+
+              if (err.message === "Réservation non trouvée ou accès refusé") {
+                res.statusCode = 403;
+              } else if (
+                err.message ===
+                "Cette chambre n'est plus disponible sur les dates demandées"
+              ) {
+                res.statusCode = 409;
+              } else {
+                // Dates incohérentes, capacité dépassée, réservation déjà payée
+                res.statusCode = 400;
+              }
+
+              res.setHeader("Content-Type", "application/json");
+              res.end(
+                JSON.stringify({
+                  success: false,
+                  message: err.message || "Erreur lors de la modification",
+                }),
+              );
+              return;
+            }
+
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.end(
+              JSON.stringify({
+                success: true,
+                message: "Réservation modifiée avec succès",
+                data: result,
+              }),
+            );
+          },
+        );
       } catch (error) {
         res.statusCode = 400;
         res.setHeader("Content-Type", "application/json");

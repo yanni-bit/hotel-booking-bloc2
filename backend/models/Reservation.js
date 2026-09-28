@@ -413,6 +413,315 @@ class Reservation {
       });
     });
   }
+  // ==========================================================================
+  // MÉTHODE DE MODIFICATION (UPDATE)
+  // ==========================================================================
+
+  /**
+   * Modifie les dates et le nombre de voyageurs d'une réservation non payée.
+   *
+   * Le client n'exprime qu'un souhait : les dates et le nombre de voyageurs.
+   * Le prix à la nuit vient de l'OFFRE, le nombre de nuits est déduit des
+   * dates, et le total est recomposé ici. Rien de ce qui engage un montant
+   * n'est repris du corps de la requête.
+   *
+   * Cinq contrôles précèdent toute écriture :
+   *   1. la réservation appartient bien à l'utilisateur ;
+   *   2. elle est encore au statut 1 (En attente) — une fois payée, on annule ;
+   *   3. les dates sont cohérentes et ne sont pas dans le passé ;
+   *   4. la capacité de la chambre est respectée ;
+   *   5. la chambre est libre sur la nouvelle période.
+   *
+   * @param {number} reservationId - ID de la réservation
+   * @param {number} userId - ID de l'utilisateur (vérification de propriété)
+   * @param {Object} data - Nouvelles valeurs souhaitées
+   * @param {string} data.check_in - Date d'arrivée (YYYY-MM-DD)
+   * @param {string} data.check_out - Date de départ (YYYY-MM-DD)
+   * @param {number} data.nbre_adults - Nombre d'adultes
+   * @param {number} [data.nbre_children] - Nombre d'enfants
+   * @param {function} callback - Fonction de rappel (err, result)
+   */
+  static update(reservationId, userId, data, callback) {
+    // ------------------------------------------------------------------
+    // Étape 1 : lire la réservation, son offre et sa chambre
+    // ------------------------------------------------------------------
+    const checkQuery = `
+      SELECT
+        r.id_reservation,
+        r.id_statut,
+        r.id_chambre,
+        o.prix_nuit,
+        c.nbre_adults_max,
+        c.nbre_children_max
+      FROM RESERVATION r
+      INNER JOIN OFFRE o ON r.id_offre = o.id_offre
+      INNER JOIN CHAMBRE c ON r.id_chambre = c.id_chambre
+      WHERE r.id_reservation = ? AND r.id_user = ?
+    `;
+
+    db.query(checkQuery, [reservationId, userId], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+
+      if (!results || results.length === 0) {
+        return callback(
+          new Error("Réservation non trouvée ou accès refusé"),
+          null,
+        );
+      }
+
+      const reservation = results[0];
+
+      // Étape 2 : seule une réservation non payée est modifiable
+      if (reservation.id_statut !== 1) {
+        return callback(
+          new Error("Seule une réservation en attente peut être modifiée"),
+          null,
+        );
+      }
+
+      // ------------------------------------------------------------------
+      // Étape 3 : validation des dates
+      // ------------------------------------------------------------------
+      const checkIn = new Date(data.check_in);
+      const checkOut = new Date(data.check_out);
+
+      if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
+        return callback(new Error("Dates invalides"), null);
+      }
+
+      if (checkOut <= checkIn) {
+        return callback(
+          new Error(
+            "La date de départ doit être postérieure à la date d'arrivée",
+          ),
+          null,
+        );
+      }
+
+      const aujourdhui = new Date();
+      aujourdhui.setHours(0, 0, 0, 0);
+
+      if (checkIn < aujourdhui) {
+        return callback(
+          new Error("La date d'arrivée ne peut pas être dans le passé"),
+          null,
+        );
+      }
+
+      // Le nombre de nuits est déduit des dates, jamais repris du client
+      const MS_PAR_JOUR = 1000 * 60 * 60 * 24;
+      const nbreNuits = Math.round(
+        (checkOut.getTime() - checkIn.getTime()) / MS_PAR_JOUR,
+      );
+
+      // ------------------------------------------------------------------
+      // Étape 4 : capacité de la chambre
+      // ------------------------------------------------------------------
+      const nbreAdults = parseInt(data.nbre_adults, 10);
+      const nbreChildren = parseInt(data.nbre_children, 10) || 0;
+
+      if (!Number.isInteger(nbreAdults) || nbreAdults < 1) {
+        return callback(new Error("Nombre d'adultes invalide"), null);
+      }
+
+      if (nbreAdults > reservation.nbre_adults_max) {
+        return callback(
+          new Error(
+            `Cette chambre accueille au maximum ${reservation.nbre_adults_max} adulte(s)`,
+          ),
+          null,
+        );
+      }
+
+      if (nbreChildren > reservation.nbre_children_max) {
+        return callback(
+          new Error(
+            `Cette chambre accueille au maximum ${reservation.nbre_children_max} enfant(s)`,
+          ),
+          null,
+        );
+      }
+
+      // ------------------------------------------------------------------
+      // Étape 5 : la chambre est-elle libre sur la nouvelle période ?
+      //
+      // Deux séjours se chevauchent dès que l'un commence avant que l'autre
+      // ne finisse. Les comparaisons sont strictes : une chambre libérée le
+      // matin peut être reprise le soir même. La réservation en cours de
+      // modification s'exclut elle-même, sans quoi elle se déclarerait en
+      // conflit avec ses propres nouvelles dates.
+      // ------------------------------------------------------------------
+      const STATUTS_BLOQUANTS = [1, 2, 6]; // En attente, Confirmée, En cours
+
+      const conflitQuery = `
+        SELECT id_reservation
+        FROM RESERVATION
+        WHERE id_chambre = ?
+          AND id_reservation <> ?
+          AND id_statut IN (?)
+          AND check_in < ?
+          AND check_out > ?
+        LIMIT 1
+      `;
+
+      db.query(
+        conflitQuery,
+        [
+          reservation.id_chambre,
+          reservationId,
+          STATUTS_BLOQUANTS,
+          data.check_out,
+          data.check_in,
+        ],
+        (err, conflits) => {
+          if (err) {
+            return callback(err, null);
+          }
+
+          if (conflits && conflits.length > 0) {
+            return callback(
+              new Error(
+                "Cette chambre n'est plus disponible sur les dates demandées",
+              ),
+              null,
+            );
+          }
+
+          // ----------------------------------------------------------
+          // Étape 6 : recalcul des services additionnels
+          // Un service journalier suit le nombre de nuits, un service
+          // par personne suit les nuits et les adultes : changer les
+          // dates change donc aussi leur sous-total.
+          // ----------------------------------------------------------
+          const servicesQuery = `
+            SELECT
+              rs.id_reservation_service,
+              rs.prix_unitaire,
+              sa.type_service
+            FROM RESERVATION_SERVICES rs
+            INNER JOIN HOTEL_SERVICES hs
+              ON rs.id_hotel_service = hs.id_hotel_service
+            INNER JOIN SERVICES_ADDITIONNELS sa
+              ON hs.id_service = sa.id_service
+            WHERE rs.id_reservation = ?
+          `;
+
+          db.query(servicesQuery, [reservationId], (err, services) => {
+            if (err) {
+              return callback(err, null);
+            }
+
+            const prixNuit = parseFloat(reservation.prix_nuit);
+            let totalPrice = prixNuit * nbreNuits;
+
+            const majServices = (services || []).map((service) => {
+              const prixUnitaire = parseFloat(service.prix_unitaire) || 0;
+              let quantite = 1;
+              let sousTotal = prixUnitaire;
+
+              if (service.type_service === "journalier") {
+                quantite = nbreNuits;
+                sousTotal = prixUnitaire * nbreNuits;
+              } else if (service.type_service === "par_personne") {
+                quantite = nbreNuits * nbreAdults;
+                sousTotal = prixUnitaire * nbreNuits * nbreAdults;
+              }
+              // 'sejour' et 'unitaire' : prix fixe
+
+              totalPrice += sousTotal;
+
+              return {
+                id: service.id_reservation_service,
+                quantite,
+                sousTotal,
+              };
+            });
+
+            // Arrondi au centime : on manipule des euros
+            totalPrice = Math.round(totalPrice * 100) / 100;
+
+            // ----------------------------------------------------------
+            // Étape 7 : écriture
+            // ----------------------------------------------------------
+            const updateQuery = `
+              UPDATE RESERVATION
+              SET check_in = ?,
+                  check_out = ?,
+                  nbre_nuits = ?,
+                  nbre_adults = ?,
+                  nbre_children = ?,
+                  total_price = ?
+              WHERE id_reservation = ?
+            `;
+
+            db.query(
+              updateQuery,
+              [
+                data.check_in,
+                data.check_out,
+                nbreNuits,
+                nbreAdults,
+                nbreChildren,
+                totalPrice,
+                reservationId,
+              ],
+              (err) => {
+                if (err) {
+                  return callback(err, null);
+                }
+
+                if (majServices.length === 0) {
+                  return callback(null, {
+                    id_reservation: reservationId,
+                    nbre_nuits: nbreNuits,
+                    total_price: totalPrice,
+                  });
+                }
+
+                // Mise à jour des sous-totaux, une ligne à la fois
+                let restants = majServices.length;
+                let erreurServices = null;
+
+                majServices.forEach((service) => {
+                  const majQuery = `
+                    UPDATE RESERVATION_SERVICES
+                    SET quantite = ?, sous_total = ?
+                    WHERE id_reservation_service = ?
+                  `;
+
+                  db.query(
+                    majQuery,
+                    [service.quantite, service.sousTotal, service.id],
+                    (err) => {
+                      if (err && !erreurServices) {
+                        erreurServices = err;
+                      }
+
+                      restants -= 1;
+
+                      if (restants === 0) {
+                        if (erreurServices) {
+                          return callback(erreurServices, null);
+                        }
+
+                        callback(null, {
+                          id_reservation: reservationId,
+                          nbre_nuits: nbreNuits,
+                          total_price: totalPrice,
+                        });
+                      }
+                    },
+                  );
+                });
+              },
+            );
+          });
+        },
+      );
+    });
+  }
 }
 
 module.exports = Reservation;
