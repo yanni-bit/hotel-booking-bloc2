@@ -22,12 +22,14 @@
  *   - Badge de statut coloré selon couleur BDD
  *   - Calcul total des services additionnels
  *   - Annulation avec confirmation (sauf statuts 3 et 5)
+ *   - Modification des dates et voyageurs (statut 1 uniquement)
  *   - Redirection paiement avec queryParam reservationId
  * ============================================================
  */
 
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ReservationService } from '../../services/reservation';
@@ -36,7 +38,7 @@ import { CurrencyPipe } from '../../pipes/currency.pipe';
 
 @Component({
   selector: 'app-reservation-detail',
-  imports: [CommonModule, RouterLink, TranslateModule, CurrencyPipe],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule, CurrencyPipe],
   templateUrl: './reservation-detail.html',
   styleUrl: './reservation-detail.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,6 +58,23 @@ export class ReservationDetail implements OnInit {
 
   /** Message d'erreur */
   error: string = '';
+
+  /** Formulaire de modification ouvert ou non */
+  editing: boolean = false;
+
+  /** Valeurs saisies dans le formulaire de modification */
+  editForm = {
+    check_in: '',
+    check_out: '',
+    nbre_adults: 1,
+    nbre_children: 0,
+  };
+
+  /** Message d'erreur propre au formulaire de modification */
+  editError: string = '';
+
+  /** Envoi de la modification en cours */
+  saving: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -209,6 +228,89 @@ export class ReservationDetail implements OnInit {
         error: (err) => {
           console.error('❌ Erreur annulation:', err);
           alert(err.error?.message || "Erreur lors de l'annulation");
+        },
+      });
+  }
+
+  /**
+   * Vérifie si la réservation peut encore être modifiée.
+   * Seul le statut 1 (en attente de paiement) l'autorise : une fois payée,
+   * le client annule et réserve à nouveau. Le serveur applique la même règle.
+   * @returns true si la modification est possible
+   */
+  canEdit(): boolean {
+    return this.reservation && this.reservation.id_statut === 1;
+  }
+
+  /**
+   * Date du jour au format YYYY-MM-DD, utilisée comme borne minimale
+   * des champs de date du formulaire.
+   */
+  get todayInput(): string {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  /**
+   * Convertit une date de l'API au format attendu par <input type="date">
+   * @param date - Chaîne de date ISO
+   * @returns Date au format YYYY-MM-DD
+   */
+  private toInputDate(date: string): string {
+    return new Date(date).toISOString().split('T')[0];
+  }
+
+  /**
+   * Ouvre le formulaire de modification, pré-rempli avec les valeurs actuelles
+   */
+  startEdit() {
+    this.editForm = {
+      check_in: this.toInputDate(this.reservation.check_in),
+      check_out: this.toInputDate(this.reservation.check_out),
+      nbre_adults: this.reservation.nbre_adults,
+      nbre_children: this.reservation.nbre_children || 0,
+    };
+    this.editError = '';
+    this.editing = true;
+  }
+
+  /**
+   * Ferme le formulaire sans enregistrer
+   */
+  cancelEdit() {
+    this.editing = false;
+    this.editError = '';
+  }
+
+  /**
+   * Envoie la modification à l'API.
+   * Aucun montant n'est transmis : le serveur recalcule le total depuis
+   * l'offre, vérifie la disponibilité de la chambre sur les nouvelles dates
+   * et refuse si elles ne conviennent pas. Le message d'erreur renvoyé est
+   * affiché tel quel, sous le formulaire.
+   */
+  submitEdit() {
+    const user = this.authService.currentUser();
+
+    if (!user) {
+      this.editError = 'Utilisateur non connecté';
+      return;
+    }
+
+    this.saving = true;
+    this.editError = '';
+
+    this.reservationService
+      .updateReservation(this.reservation.id_reservation, user.id_user, this.editForm)
+      .subscribe({
+        next: () => {
+          this.saving = false;
+          this.editing = false;
+          this.loadReservation();
+        },
+        error: (err) => {
+          this.saving = false;
+          this.editError = err.error?.message || 'Erreur lors de la modification';
+          this.cdr.markForCheck();
         },
       });
   }

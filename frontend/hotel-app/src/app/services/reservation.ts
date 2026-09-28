@@ -15,6 +15,7 @@
 //   - Récupération des réservations d'un utilisateur (getUserReservations)
 //   - Récupération d'une réservation par ID (getReservationById)
 //   - Annulation d'une réservation (cancelReservation)
+//   - Modification d'une réservation non payée (updateReservation)
 //   - Récupération des services d'une réservation (getReservationServices)
 //   - [ADMIN] Récupération de toutes les réservations (getAllReservations)
 //   - [ADMIN] Changement de statut d'une réservation (updateReservationStatus)
@@ -115,6 +116,20 @@ export class ReservationService {
    */
   cancelReservation(reservationId: number, userId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/reservations/${reservationId}/cancel`, { userId });
+  }
+
+  /**
+   * Modifie les dates et le nombre de voyageurs d'une réservation non payée.
+   * Le serveur revérifie la propriété, le statut, la disponibilité de la
+   * chambre, puis recalcule le total depuis l'offre : les valeurs envoyées
+   * ici expriment un souhait, elles ne fixent aucun montant.
+   * @param reservationId - Identifiant de la réservation à modifier
+   * @param userId - Identifiant de l'utilisateur (vérification de propriété)
+   * @param data - Nouvelles dates et nombre de voyageurs
+   * @returns {Observable<any>} Observable contenant la réservation mise à jour
+   */
+  updateReservation(reservationId: number, userId: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/reservations/${reservationId}`, { userId, ...data });
   }
 
   // ============================================================================
