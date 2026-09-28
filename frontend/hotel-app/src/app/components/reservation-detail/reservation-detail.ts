@@ -247,16 +247,25 @@ export class ReservationDetail implements OnInit {
    * des champs de date du formulaire.
    */
   get todayInput(): string {
-    return new Date().toISOString().split('T')[0];
+    return this.toInputDate(new Date());
   }
 
   /**
-   * Convertit une date de l'API au format attendu par <input type="date">
-   * @param date - Chaîne de date ISO
-   * @returns Date au format YYYY-MM-DD
+   * Convertit une date au format attendu par <input type="date">.
+   *
+   * On lit les composants en heure locale plutôt que de passer par
+   * toISOString(), qui convertit en UTC : une date du 8 novembre à minuit
+   * en heure française devient le 7 novembre à 23 h en UTC, et le champ
+   * afficherait la veille.
+   *
+   * @param date - Date ou chaîne de date renvoyée par l'API
+   * @returns Date au format YYYY-MM-DD, en heure locale
    */
-  private toInputDate(date: string): string {
-    return new Date(date).toISOString().split('T')[0];
+  private toInputDate(date: string | Date): string {
+    const d = new Date(date);
+    const mois = String(d.getMonth() + 1).padStart(2, '0');
+    const jour = String(d.getDate()).padStart(2, '0');
+    return `${d.getFullYear()}-${mois}-${jour}`;
   }
 
   /**
