@@ -18,6 +18,7 @@
 // ============================================================================
 
 const Contact = require("../models/Contact");
+const { requireAdmin } = require("../utils/auth");
 
 // ============================================================================
 // FONCTION PRINCIPALE - ROUTEUR CONTACT
@@ -153,6 +154,8 @@ function contactRoutes(req, res) {
   // GET /api/contact/messages - Tous les messages (admin)
   // ----------------------------------------
   if (pathname === "/api/contact/messages" && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     Contact.getAll((err, messages) => {
       if (err) {
         console.error("Erreur lors de la récupération des messages:", err);
@@ -183,6 +186,8 @@ function contactRoutes(req, res) {
   // GET /api/contact/messages/unread - Messages non lus (admin)
   // ----------------------------------------
   if (pathname === "/api/contact/messages/unread" && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     Contact.getUnread((err, messages) => {
       if (err) {
         console.error("Erreur lors de la récupération des messages:", err);
@@ -213,6 +218,8 @@ function contactRoutes(req, res) {
   // GET /api/contact/messages/count - Nombre de messages non lus (admin)
   // ----------------------------------------
   if (pathname === "/api/contact/messages/count" && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     Contact.countUnread((err, count) => {
       if (err) {
         console.error("Erreur lors du comptage:", err);
@@ -243,6 +250,8 @@ function contactRoutes(req, res) {
   // GET /api/contact/messages/:id - Détail d'un message (admin)
   // ----------------------------------------
   if (pathname.match(/^\/api\/contact\/messages\/\d+$/) && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const messageId = pathname.split("/")[4];
 
     Contact.getById(messageId, (err, message) => {
@@ -284,6 +293,8 @@ function contactRoutes(req, res) {
     pathname.match(/^\/api\/contact\/messages\/\d+\/read$/) &&
     method === "PUT"
   ) {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const messageId = pathname.split("/")[4];
 
     Contact.markAsRead(messageId, (err, result) => {
@@ -319,6 +330,8 @@ function contactRoutes(req, res) {
     pathname.match(/^\/api\/contact\/messages\/\d+\/treated$/) &&
     method === "PUT"
   ) {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const messageId = pathname.split("/")[4];
 
     Contact.markAsTreated(messageId, (err, result) => {
@@ -354,6 +367,8 @@ function contactRoutes(req, res) {
     pathname.match(/^\/api\/contact\/messages\/\d+$/) &&
     method === "DELETE"
   ) {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const messageId = pathname.split("/")[4];
 
     Contact.delete(messageId, (err, result) => {

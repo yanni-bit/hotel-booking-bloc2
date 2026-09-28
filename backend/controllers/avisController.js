@@ -162,7 +162,7 @@ class AvisController {
    * @body {number} note - Note entre 1 et 10 (requis)
    * @body {string} commentaire - Minimum 10 caractères (requis)
    */
-  static createAvis(req, res) {
+  static createAvis(req, res, auth) {
     let body = "";
 
     req.on("data", (chunk) => {
@@ -172,6 +172,11 @@ class AvisController {
     req.on("end", () => {
       try {
         const avisData = JSON.parse(body);
+
+        // L'auteur est celui du jeton : un id_user present dans le corps
+        // de la requete est ignore, pour empecher de publier sous un
+        // autre nom que le sien.
+        avisData.id_user = auth.id_user;
 
         // Validation des champs obligatoires
         if (
@@ -271,7 +276,7 @@ class AvisController {
    * @body {number} note - Note entre 1 et 10 (requis)
    * @body {string} commentaire - Minimum 10 caractères (requis)
    */
-  static updateAvis(req, res, avisId) {
+  static updateAvis(req, res, avisId, auth) {
     let body = "";
 
     req.on("data", (chunk) => {
@@ -281,6 +286,10 @@ class AvisController {
     req.on("end", () => {
       try {
         const avisData = JSON.parse(body);
+
+        // Seul le proprietaire modifie son avis : l'identite vient du
+        // jeton, et Avis.update refuse si l'avis appartient a un autre.
+        avisData.id_user = auth.id_user;
 
         // Validation des champs obligatoires
         if (!avisData.id_user || !avisData.note || !avisData.commentaire) {

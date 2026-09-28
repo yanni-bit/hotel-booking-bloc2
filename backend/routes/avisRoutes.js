@@ -13,9 +13,17 @@
 //   - GET    /api/avis/recent  → Avis récents
 //   - GET    /api/avis/count   → Nombre de nouveaux avis
 //   - DELETE /api/avis/:id     → Supprimer un avis
+//
+// SECURITE :
+//   Creation et modification exigent un jeton JWT valide ; l'auteur de
+//   l'avis est lu dans le jeton et non dans le corps de la requete.
+//   Les quatre routes de moderation exigent le role "admin".
+//   L'affichage public des avis passe par GET /api/hotels/:id/avis,
+//   qui reste accessible sans authentification.
 // ============================================================================
 
 const AvisController = require("../controllers/avisController");
+const { requireAuth, requireAdmin } = require("../utils/auth");
 
 // ============================================================================
 // FONCTION PRINCIPALE - ROUTEUR AVIS
@@ -41,7 +49,10 @@ function avisRoutes(req, res) {
   // POST /api/avis - Créer un avis (utilisateur connecté)
   // ----------------------------------------
   if (pathname === "/api/avis" && method === "POST") {
-    AvisController.createAvis(req, res);
+    const auth = requireAuth(req, res);
+    if (!auth) return;
+
+    AvisController.createAvis(req, res, auth);
     return;
   }
 
@@ -49,8 +60,11 @@ function avisRoutes(req, res) {
   // PUT /api/avis/:id - Modifier un avis (utilisateur propriétaire)
   // ----------------------------------------
   if (pathname.match(/^\/api\/avis\/\d+$/) && method === "PUT") {
+    const auth = requireAuth(req, res);
+    if (!auth) return;
+
     const avisId = pathname.split("/")[3];
-    AvisController.updateAvis(req, res, avisId);
+    AvisController.updateAvis(req, res, avisId, auth);
     return;
   }
 
@@ -62,6 +76,9 @@ function avisRoutes(req, res) {
   // GET /api/avis - Tous les avis (admin)
   // ----------------------------------------
   if (pathname === "/api/avis" && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
     AvisController.getAllAvis(req, res);
     return;
   }
@@ -70,6 +87,9 @@ function avisRoutes(req, res) {
   // GET /api/avis/recent - Avis récents (admin)
   // ----------------------------------------
   if (pathname === "/api/avis/recent" && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
     AvisController.getRecentAvis(req, res);
     return;
   }
@@ -78,6 +98,9 @@ function avisRoutes(req, res) {
   // GET /api/avis/count - Nombre de nouveaux avis (admin)
   // ----------------------------------------
   if (pathname === "/api/avis/count" && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
     AvisController.countNewAvis(req, res);
     return;
   }
@@ -86,6 +109,9 @@ function avisRoutes(req, res) {
   // DELETE /api/avis/:id - Supprimer un avis (admin)
   // ----------------------------------------
   if (pathname.match(/^\/api\/avis\/\d+$/) && method === "DELETE") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
     const avisId = pathname.split("/")[3];
     AvisController.deleteAvis(req, res, avisId);
     return;

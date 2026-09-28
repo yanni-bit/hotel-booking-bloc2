@@ -20,6 +20,7 @@
 // ============================================================================
 
 const Service = require("../models/Service");
+const { requireAdmin } = require("../utils/auth");
 
 // ============================================================================
 // FONCTION PRINCIPALE - ROUTEUR SERVICES
@@ -122,6 +123,8 @@ function serviceRoutes(req, res) {
   // GET /api/services/admin - Tous les services (admin, inclut inactifs)
   // ----------------------------------------
   if (pathname === "/api/services/admin" && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     Service.getAllAdmin((err, services) => {
       if (err) {
         console.error("Erreur récupération services admin:", err);
@@ -142,6 +145,8 @@ function serviceRoutes(req, res) {
   // POST /api/services - Créer un service (admin)
   // ----------------------------------------
   if (pathname === "/api/services" && method === "POST") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     let body = "";
 
     req.on("data", (chunk) => {
@@ -200,6 +205,8 @@ function serviceRoutes(req, res) {
   // PUT /api/services/:id - Modifier un service (admin)
   // ----------------------------------------
   if (pathname.match(/^\/api\/services\/\d+$/) && method === "PUT") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const serviceId = pathname.split("/")[3];
     let body = "";
 
@@ -246,6 +253,8 @@ function serviceRoutes(req, res) {
   // PATCH /api/services/:id/toggle - Activer/Désactiver (admin)
   // ----------------------------------------
   if (pathname.match(/^\/api\/services\/\d+\/toggle$/) && method === "PATCH") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const serviceId = pathname.split("/")[3];
     let body = "";
 
@@ -292,6 +301,8 @@ function serviceRoutes(req, res) {
   // DELETE /api/services/:id - Supprimer un service (admin)
   // ----------------------------------------
   if (pathname.match(/^\/api\/services\/\d+$/) && method === "DELETE") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const serviceId = pathname.split("/")[3];
 
     Service.delete(serviceId, (err, result) => {
@@ -326,6 +337,8 @@ function serviceRoutes(req, res) {
     pathname.match(/^\/api\/hotels\/\d+\/services\/admin$/) &&
     method === "GET"
   ) {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const hotelId = pathname.split("/")[3];
 
     Service.getByHotelIdAdmin(hotelId, (err, services) => {
@@ -348,6 +361,8 @@ function serviceRoutes(req, res) {
   // PUT /api/hotels/:id/services - Mettre à jour les prix des services (admin)
   // ----------------------------------------
   if (pathname.match(/^\/api\/hotels\/\d+\/services$/) && method === "PUT") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const hotelId = pathname.split("/")[3];
     const db = require("../config/database");
     let body = "";

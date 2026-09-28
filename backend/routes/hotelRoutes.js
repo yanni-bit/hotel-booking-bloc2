@@ -32,6 +32,7 @@ const ChambreController = require("../controllers/chambreController");
 const AvisController = require("../controllers/avisController");
 const Hotel = require("../models/Hotel");
 const db = require("../config/database");
+const { requireAdmin } = require("../utils/auth");
 
 // ============================================================================
 // FONCTION PRINCIPALE - ROUTEUR HÔTELS
@@ -362,6 +363,8 @@ function hotelRoutes(req, res) {
   // POST /api/hotels - Créer un hôtel (admin)
   // ----------------------------------------
   if (pathname === "/api/hotels" && method === "POST") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     let body = "";
 
     req.on("data", (chunk) => {
@@ -414,6 +417,8 @@ function hotelRoutes(req, res) {
   // PUT /api/hotels/:id - Mettre à jour un hôtel (admin)
   // ----------------------------------------
   if (pathname.match(/^\/api\/hotels\/\d+$/) && method === "PUT") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const hotelId = pathname.split("/")[3];
     let body = "";
 
@@ -466,6 +471,8 @@ function hotelRoutes(req, res) {
   // DELETE /api/hotels/:id - Supprimer un hôtel (admin)
   // ----------------------------------------
   if (pathname.match(/^\/api\/hotels\/\d+$/) && method === "DELETE") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
     const hotelId = pathname.split("/")[3];
 
     Hotel.delete(hotelId, (err, result) => {

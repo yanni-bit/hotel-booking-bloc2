@@ -15,9 +15,17 @@
 // ROUTES ADMIN :
 //   - GET /api/reservations/all               → Toutes les réservations
 //   - PUT /api/reservations/:id/status        → Changer le statut
+//
+// SECURITE :
+//   Toutes les routes de ce fichier exigent un jeton JWT valide dans
+//   l'en-tete Authorization. L'identite de l'appelant est lue dans le jeton,
+//   jamais dans le corps ou la chaine de requete : un client ne peut donc
+//   pas agir au nom d'un autre utilisateur en modifiant sa requete.
+//   Les deux routes d'administration exigent en plus le role "admin".
 // ============================================================================
 
 const Reservation = require("../models/Reservation");
+const { requireAuth, requireAdmin } = require("../utils/auth");
 
 // ============================================================================
 // FONCTION PRINCIPALE - ROUTEUR RÉSERVATIONS
@@ -43,6 +51,9 @@ function reservationRoutes(req, res) {
   // POST /api/reservations - Créer une réservation
   // ----------------------------------------
   if (pathname === "/api/reservations" && method === "POST") {
+    const auth = requireAuth(req, res);
+    if (!auth) return;
+
     let body = "";
 
     req.on("data", (chunk) => {
@@ -52,6 +63,10 @@ function reservationRoutes(req, res) {
     req.on("end", () => {
       try {
         const reservationData = JSON.parse(body);
+
+        // L'identite vient du jeton signe, pas du corps de la requete :
+        // un id_user envoye par le client est volontairement ecrase.
+        reservationData.id_user = auth.id_user;
 
         reservationData.num_confirmation =
           Reservation.generateConfirmationNumber();
@@ -102,7 +117,23 @@ function reservationRoutes(req, res) {
   // GET /api/reservations/user/:userId - Réservations d'un utilisateur
   // ----------------------------------------
   if (pathname.match(/^\/api\/reservations\/user\/\d+$/) && method === "GET") {
+    const auth = requireAuth(req, res);
+    if (!auth) return;
+
     const userId = pathname.split("/")[4];
+
+    // Un client ne consulte que son propre historique ; l'admin voit tout.
+    if (String(auth.id_user) !== userId && auth.role !== "admin") {
+      res.statusCode = 403;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Acces refuse a l'historique d'un autre utilisateur",
+        }),
+      );
+      return;
+    }
 
     Reservation.getByUserId(userId, (err, reservations) => {
       if (err) {
@@ -138,30 +169,64 @@ function reservationRoutes(req, res) {
     pathname.match(/^\/api\/reservations\/\d+\/services$/) &&
     method === "GET"
   ) {
+    const auth = requireAuth(req, res);
+    if (!auth) return;
+
     const reservationId = pathname.split("/")[3];
 
-    Reservation.getServicesByReservationId(reservationId, (err, services) => {
+    /**
+     * Envoie les services de la reservation.
+     * Appelee une fois la propriete etablie, pour ne pas dupliquer
+     * le bloc de reponse entre le cas admin et le cas client.
+     */
+    const envoyerServices = () => {
+      Reservation.getServicesByReservationId(reservationId, (err, services) => {
+        if (err) {
+          console.error("Erreur récupération services:", err);
+          res.statusCode = 500;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: false,
+              message: "Erreur serveur",
+            }),
+          );
+          return;
+        }
+
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: true,
+            data: services,
+          }),
+        );
+      });
+    };
+
+    // L'admin accede a toutes les reservations. Le client doit prouver
+    // qu'il est proprietaire : getById filtre sur l'id utilisateur et
+    // renvoie une erreur si la reservation ne lui appartient pas.
+    if (auth.role === "admin") {
+      envoyerServices();
+      return;
+    }
+
+    Reservation.getById(reservationId, auth.id_user, (err) => {
       if (err) {
-        console.error("Erreur récupération services:", err);
-        res.statusCode = 500;
+        res.statusCode = 403;
         res.setHeader("Content-Type", "application/json");
         res.end(
           JSON.stringify({
             success: false,
-            message: "Erreur serveur",
+            message: "Acces refuse a cette reservation",
           }),
         );
         return;
       }
 
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.end(
-        JSON.stringify({
-          success: true,
-          data: services,
-        }),
-      );
+      envoyerServices();
     });
     return;
   }
@@ -170,22 +235,14 @@ function reservationRoutes(req, res) {
   // GET /api/reservations/:id - Détail d'une réservation
   // ----------------------------------------
   if (pathname.match(/^\/api\/reservations\/\d+$/) && method === "GET") {
+    const auth = requireAuth(req, res);
+    if (!auth) return;
+
     const reservationId = pathname.split("/")[3];
-    const userId = req.query.userId;
 
-    if (!userId) {
-      res.statusCode = 400;
-      res.setHeader("Content-Type", "application/json");
-      res.end(
-        JSON.stringify({
-          success: false,
-          message: "ID utilisateur requis",
-        }),
-      );
-      return;
-    }
-
-    Reservation.getById(reservationId, userId, (err, reservation) => {
+    // getById filtre sur l'utilisateur : une reservation qui ne lui
+    // appartient pas remonte comme "non trouvee", donc en 404.
+    Reservation.getById(reservationId, auth.id_user, (err, reservation) => {
       if (err) {
         console.error("Erreur lors de la récupération de la réservation:", err);
 
@@ -224,6 +281,9 @@ function reservationRoutes(req, res) {
     pathname.match(/^\/api\/reservations\/\d+\/cancel$/) &&
     method === "PUT"
   ) {
+    const auth = requireAuth(req, res);
+    if (!auth) return;
+
     const reservationId = pathname.split("/")[3];
     let body = "";
 
@@ -233,21 +293,10 @@ function reservationRoutes(req, res) {
 
     req.on("end", () => {
       try {
-        const { userId } = JSON.parse(body);
+        // Le corps n'est plus lu pour l'identite : seul le jeton fait foi.
+        JSON.parse(body);
 
-        if (!userId) {
-          res.statusCode = 400;
-          res.setHeader("Content-Type", "application/json");
-          res.end(
-            JSON.stringify({
-              success: false,
-              message: "ID utilisateur requis",
-            }),
-          );
-          return;
-        }
-
-        Reservation.cancel(reservationId, userId, (err, result) => {
+        Reservation.cancel(reservationId, auth.id_user, (err, result) => {
           if (err) {
             console.error("Erreur annulation:", err);
 
@@ -296,6 +345,9 @@ function reservationRoutes(req, res) {
   // PUT /api/reservations/:id - Modifier une réservation non payée
   // ----------------------------------------
   if (pathname.match(/^\/api\/reservations\/\d+$/) && method === "PUT") {
+    const auth = requireAuth(req, res);
+    if (!auth) return;
+
     const reservationId = pathname.split("/")[3];
     let body = "";
 
@@ -305,20 +357,8 @@ function reservationRoutes(req, res) {
 
     req.on("end", () => {
       try {
-        const { userId, check_in, check_out, nbre_adults, nbre_children } =
+        const { check_in, check_out, nbre_adults, nbre_children } =
           JSON.parse(body);
-
-        if (!userId) {
-          res.statusCode = 400;
-          res.setHeader("Content-Type", "application/json");
-          res.end(
-            JSON.stringify({
-              success: false,
-              message: "ID utilisateur requis",
-            }),
-          );
-          return;
-        }
 
         if (!check_in || !check_out) {
           res.statusCode = 400;
@@ -336,7 +376,7 @@ function reservationRoutes(req, res) {
         // capacité, disponibilité, puis recalcule le total depuis l'offre.
         Reservation.update(
           reservationId,
-          userId,
+          auth.id_user,
           { check_in, check_out, nbre_adults, nbre_children },
           (err, result) => {
             if (err) {
@@ -397,6 +437,9 @@ function reservationRoutes(req, res) {
   // GET /api/reservations/all - Toutes les réservations (admin)
   // ----------------------------------------
   if (pathname === "/api/reservations/all" && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
     Reservation.getAll((err, reservations) => {
       if (err) {
         console.error("Erreur lors de la récupération des réservations:", err);
@@ -430,6 +473,9 @@ function reservationRoutes(req, res) {
     pathname.match(/^\/api\/reservations\/\d+\/status$/) &&
     method === "PUT"
   ) {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
     const reservationId = pathname.split("/")[3];
     let body = "";
 
