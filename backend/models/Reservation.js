@@ -49,6 +49,73 @@ class Reservation {
   static create(reservationData, callback) {
     const numConfirmation = this.generateConfirmationNumber();
 
+    // ------------------------------------------------------------------
+    // Controle de disponibilite
+    //
+    // Deux sejours se chevauchent des que l'un commence avant que l'autre
+    // ne finisse. Les comparaisons sont strictes : une chambre liberee le
+    // matin peut etre reprise le soir meme. Seuls les statuts qui occupent
+    // reellement la chambre bloquent : une reservation annulee, refusee ou
+    // terminee laisse la periode libre.
+    //
+    // Cette verification reprend celle de update(). Sans elle, deux clients
+    // pouvaient reserver la meme chambre aux memes dates.
+    // ------------------------------------------------------------------
+    const STATUTS_BLOQUANTS = [1, 2, 6]; // En attente, Confirmee, En cours
+
+    const conflitQuery = `
+      SELECT id_reservation
+      FROM RESERVATION
+      WHERE id_chambre = ?
+        AND id_statut IN (?)
+        AND check_in < ?
+        AND check_out > ?
+      LIMIT 1
+    `;
+
+    db.query(
+      conflitQuery,
+      [
+        reservationData.id_chambre,
+        STATUTS_BLOQUANTS,
+        reservationData.check_out,
+        reservationData.check_in,
+      ],
+      (errConflit, conflits) => {
+        if (errConflit) {
+          console.error(
+            "Erreur lors du controle de disponibilite:",
+            errConflit,
+          );
+          return callback(errConflit, null);
+        }
+
+        if (conflits && conflits.length > 0) {
+          return callback(
+            new Error(
+              "Cette chambre n'est plus disponible sur les dates demandées",
+            ),
+            null,
+          );
+        }
+
+        Reservation.insererReservation(
+          reservationData,
+          numConfirmation,
+          callback,
+        );
+      },
+    );
+  }
+
+  /**
+   * Insere la reservation et ses services, une fois la disponibilite
+   * confirmee par create(). Separee pour garder create() lisible.
+   * @param {Object} reservationData - Donnees de la reservation
+   * @param {string} numConfirmation - Numero de confirmation genere
+   * @param {function} callback - Fonction de rappel (err, result)
+   */
+  static insererReservation(reservationData, numConfirmation, callback) {
     const query = `
       INSERT INTO RESERVATION (
         id_user,

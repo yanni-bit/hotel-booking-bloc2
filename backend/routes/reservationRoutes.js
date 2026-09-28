@@ -74,12 +74,25 @@ function reservationRoutes(req, res) {
         Reservation.create(reservationData, (err, result) => {
           if (err) {
             console.error("Erreur lors de la création de la réservation:", err);
-            res.statusCode = 500;
+
+            // 409 Conflict : la chambre est deja occupee sur la periode.
+            // Meme code que sur la modification, pour que le client
+            // distingue un conflit metier d'une panne serveur.
+            if (
+              err.message ===
+              "Cette chambre n'est plus disponible sur les dates demandées"
+            ) {
+              res.statusCode = 409;
+            } else {
+              res.statusCode = 500;
+            }
+
             res.setHeader("Content-Type", "application/json");
             res.end(
               JSON.stringify({
                 success: false,
-                message: "Erreur lors de la création de la réservation",
+                message:
+                  err.message || "Erreur lors de la création de la réservation",
               }),
             );
             return;

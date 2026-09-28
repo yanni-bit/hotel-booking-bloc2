@@ -419,7 +419,7 @@ export class Booking implements OnInit {
       id_statut: 1, // Statut "En attente" - paiement non effectué
     };
 
-    console.log('📦 Création réservation (En attente):', reservationData);
+    console.log('Création réservation (En attente):', reservationData);
 
     // -------------------------------------------------------------------------
     // Créer la réservation en base de données
@@ -429,7 +429,7 @@ export class Booking implements OnInit {
         console.log('✅ Réservation créée:', response);
 
         const reservationId = response.data.id_reservation || response.data.id;
-        console.log('🔑 Reservation ID:', reservationId);
+        console.log('Reservation ID:', reservationId);
         this.confirmationNumber = response.data.num_confirmation;
 
         // Rediriger vers la page de paiement avec l'ID de la réservation
@@ -438,8 +438,13 @@ export class Booking implements OnInit {
         });
       },
       error: (err) => {
-        console.error('❌ Erreur réservation:', err);
-        alert('Erreur lors de la création de la réservation. Veuillez réessayer.');
+        console.error('Erreur réservation:', err);
+        // Le back-end renvoie un message explicite (409 = conflit de dates,
+        // 403 = acces refuse). On l'affiche tel quel quand il existe.
+        const message =
+          err?.error?.message ||
+          'Erreur lors de la création de la réservation. Veuillez réessayer.';
+        alert(message);
         this.submitting = false;
         this.cdr.markForCheck();
       },
