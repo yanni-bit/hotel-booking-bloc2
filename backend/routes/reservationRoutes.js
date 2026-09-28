@@ -288,6 +288,56 @@ function reservationRoutes(req, res) {
   }
 
   // ----------------------------------------
+  // PUT /api/reservations/:id/pay - Confirmer le paiement (client)
+  //
+  // Route distincte de PUT /:id/status, qui reste reservee aux
+  // administrateurs. Ici le statut vise est fixe : 1 vers 2. La reservation
+  // est designee par l'URL, le payeur par le jeton, et le corps de la
+  // requete n'est pas lu.
+  // ----------------------------------------
+  if (pathname.match(/^\/api\/reservations\/\d+\/pay$/) && method === "PUT") {
+    const auth = requireAuth(req, res);
+    if (!auth) return;
+
+    const reservationId = pathname.split("/")[3];
+
+    Reservation.markAsPaid(reservationId, auth.id_user, (err) => {
+      if (err) {
+        console.error("Erreur confirmation de paiement:", err);
+
+        if (err.message === "Réservation non trouvée ou accès refusé") {
+          res.statusCode = 403;
+        } else if (
+          err.message === "Cette réservation n'est plus en attente de paiement"
+        ) {
+          res.statusCode = 409;
+        } else {
+          res.statusCode = 500;
+        }
+
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: err.message || "Erreur lors de la confirmation",
+          }),
+        );
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: true,
+          message: "Paiement enregistré, réservation confirmée",
+        }),
+      );
+    });
+    return;
+  }
+
+  // ----------------------------------------
   // PUT /api/reservations/:id/cancel - Annuler une réservation
   // ----------------------------------------
   if (

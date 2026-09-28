@@ -480,6 +480,65 @@ class Reservation {
       });
     });
   }
+
+  /**
+   * Enregistre le paiement d'une réservation : statut 1 vers statut 2.
+   *
+   * Réservée au client propriétaire. Contrairement à updateStatus(), qui
+   * accepte n'importe quel statut et reste donc réservée à l'administration,
+   * cette méthode ne connaît qu'une seule transition. Un client ne peut pas
+   * déclarer sa réservation « Terminée » ni « Refusée ».
+   *
+   * Deux raisons de refuser :
+   *   1. la réservation n'existe pas ou appartient à quelqu'un d'autre ;
+   *   2. elle n'est plus au statut 1 (déjà payée, annulée, terminée).
+   *
+   * @param {number} reservationId - ID de la réservation
+   * @param {number} userId - ID de l'utilisateur, issu du jeton signé
+   * @param {function} callback - Fonction de rappel (err, result)
+   */
+  static markAsPaid(reservationId, userId, callback) {
+    // Étape 1 : vérifier la propriété et le statut actuel
+    const checkQuery = `
+      SELECT id_reservation, id_statut
+      FROM RESERVATION
+      WHERE id_reservation = ? AND id_user = ?
+    `;
+
+    db.query(checkQuery, [reservationId, userId], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+
+      if (!results || results.length === 0) {
+        return callback(
+          new Error("Réservation non trouvée ou accès refusé"),
+          null,
+        );
+      }
+
+      if (results[0].id_statut !== 1) {
+        return callback(
+          new Error("Cette réservation n'est plus en attente de paiement"),
+          null,
+        );
+      }
+
+      // Étape 2 : passer au statut 2 (Confirmée)
+      const updateQuery = `
+        UPDATE RESERVATION
+        SET id_statut = 2
+        WHERE id_reservation = ?
+      `;
+
+      db.query(updateQuery, [reservationId], (errUpdate, result) => {
+        if (errUpdate) {
+          return callback(errUpdate, null);
+        }
+        callback(null, result);
+      });
+    });
+  }
   // ==========================================================================
   // MÉTHODE DE MODIFICATION (UPDATE)
   // ==========================================================================

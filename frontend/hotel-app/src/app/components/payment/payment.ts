@@ -489,21 +489,29 @@ export class Payment implements OnInit {
   }
 
   /**
-   * Met à jour le statut d'une réservation existante à "Confirmée" (id_statut = 2)
-   * Utilisé pour le flux de paiement différé
+   * Confirme une réservation existante après paiement (statut 1 vers 2).
+   *
+   * Passe par payReservation(), et non par updateReservationStatus() qui est
+   * réservée aux administrateurs : un client authentifié n'a pas le droit de
+   * choisir un statut arbitraire. Le serveur vérifie qu'il est bien le
+   * propriétaire de la réservation et qu'elle est encore en attente.
    */
   updateExistingReservation() {
-    this.reservationService.updateReservationStatus(this.reservationId!, 2).subscribe({
+    this.reservationService.payReservation(this.reservationId!).subscribe({
       next: () => {
-        console.log('✅ Réservation confirmée');
+        console.log('Réservation confirmée');
         this.paymentSuccess = true;
         this.submitting = false;
         this.cdr.markForCheck();
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('❌ Erreur:', err);
-        this.paymentError = 'Erreur lors de la confirmation. Veuillez réessayer.';
+        console.error('Erreur confirmation:', err);
+        // Le serveur renvoie un message explicite : 403 si la réservation
+        // n'appartient pas au compte connecté, 409 si elle n'est plus en
+        // attente de paiement.
+        this.paymentError =
+          err?.error?.message || 'Erreur lors de la confirmation. Veuillez réessayer.';
         this.submitting = false;
         this.cdr.markForCheck();
       },

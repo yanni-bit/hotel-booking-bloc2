@@ -153,4 +153,18 @@ export class ReservationService {
   updateReservationStatus(reservationId: number, newStatusId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/reservations/${reservationId}/status`, { newStatusId });
   }
+
+  /**
+   * Confirme le paiement d'une réservation en attente (CLIENT propriétaire).
+   *
+   * Route distincte de updateReservationStatus(), qui est réservée aux
+   * administrateurs : ici le statut visé est fixé côté serveur (1 vers 2),
+   * il n'est pas transmis. Le serveur vérifie la propriété à partir du jeton.
+   *
+   * @param reservationId - Identifiant de la réservation à confirmer
+   * @returns {Observable<any>} Observable contenant la réponse du serveur
+   */
+  payReservation(reservationId: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/reservations/${reservationId}/pay`, {});
+  }
 }
