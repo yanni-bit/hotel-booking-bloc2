@@ -1,4 +1,4 @@
-﻿﻿# Book Your Travel - Application de réservation d'hôtel
+﻿# Book Your Travel - Application de réservation d'hôtel
 
 Application web de réservation de chambres d'hôtel, développée dans le cadre du
 Bloc 2 de la certification Développeur Web (RNCP).
@@ -134,6 +134,12 @@ hotel-booking-bloc2/
 │   ├── routes/              Points d'entrée de l'API REST
 │   └── tests/               Tests unitaires et tests d'intégration
 │
+├── docs/
+│   ├── documentation-technique.md
+│   ├── schema-physique.md
+│   └── diagrammes/          MCD, schéma physique, séquence de réservation,
+│                            cas d'utilisation, enchaînement des vues
+│
 └── frontend/hotel-app/
     └── src/app/
         ├── components/      Composants Angular
@@ -156,6 +162,20 @@ hotel-booking-bloc2/
 | `/api/contact/*`     | Messages de contact             |
 | `/api/avis/*`        | Avis clients                    |
 | `/api/health`        | État du serveur                 |
+
+---
+
+## Documentation
+
+| Document | Contenu |
+| --- | --- |
+| `docs/documentation-technique.md` | Choix technologiques, architecture, modèle de données, authentification, parcours de réservation, sécurité et protection des données, tests, limites connues |
+| `docs/schema-physique.md` | Les 21 tables colonne par colonne, les 27 clés étrangères et leur comportement à la suppression, les index |
+| `docs/diagrammes/mcd-bloc2.png` | Modèle conceptuel, entités et cardinalités |
+| `docs/diagrammes/schema-physique.png` | Modèle physique, types et contraintes |
+| `docs/diagrammes/sequence-reservation.png` | Création et paiement d'une réservation, du clic à la base |
+| `docs/diagrammes/cas-usage.png` | Acteurs, cas d'utilisation et contrôles inclus |
+| `docs/diagrammes/enchainement-des-vues.png` | Navigation entre les écrans et rôle des guards |
 
 ---
 
