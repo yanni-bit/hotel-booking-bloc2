@@ -51,6 +51,13 @@ export class ForgotPassword {
   /** Message d'erreur en cas de problème */
   errorMessage: string = '';
 
+  /**
+   * Lien de réinitialisation renvoyé par l'API.
+   * L'envoi d'email étant simulé, le lien est affiché à l'écran pour que la
+   * fonctionnalité reste testable, y compris sur l'application déployée.
+   */
+  resetLink: string = '';
+
   // ==========================================================================
   // CONSTRUCTEUR
   // ==========================================================================
@@ -114,6 +121,7 @@ export class ForgotPassword {
         console.log('✅ Demande envoyée:', response);
         this.loading = false;
         this.successMessage = response.message;
+        this.resetLink = response.resetLink || '';
         this.email = ''; // Vider le champ
         this.cdr.markForCheck();
       },

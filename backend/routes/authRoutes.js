@@ -362,11 +362,17 @@ function authRoutes(req, res) {
 
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");
+            // Le lien est renvoyé au client parce que l'envoi d'email est
+            // simulé dans ce projet : sans lui, la fonctionnalité ne serait pas
+            // testable une fois l'application déployée. Avec un envoi réel, le
+            // lien sortirait de cette réponse et seule la boîte du destinataire
+            // le recevrait.
             res.end(
               JSON.stringify({
                 success: true,
                 message:
                   "Si cet email existe, un lien de réinitialisation a été envoyé",
+                resetLink: resetLink,
               }),
             );
           });
@@ -1221,6 +1227,67 @@ function authRoutes(req, res) {
     return;
   }
 
+  // ----------------------------------------
+  // DELETE /api/auth/account - Supprimer son propre compte (RGPD, Cr 3.d.3)
+  // ----------------------------------------
+  // L'identité est prise dans le jeton, jamais dans le corps ni dans l'URL :
+  // un utilisateur ne peut donc supprimer que son propre compte, même en
+  // fabriquant la requête à la main.
+  if (pathname === "/api/auth/account" && method === "DELETE") {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token manquant",
+        }),
+      );
+      return;
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = User.verifyToken(token);
+
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide",
+        }),
+      );
+      return;
+    }
+
+    User.anonymiser(decoded.id_user, (err) => {
+      if (err) {
+        console.error("Erreur suppression du compte:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: "Erreur lors de la suppression du compte",
+          }),
+        );
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: true,
+          message: "Compte supprimé",
+        }),
+      );
+    });
+    return;
+  }
   // ==========================================================================
   // ROUTE NON TROUVÉE
   // ==========================================================================

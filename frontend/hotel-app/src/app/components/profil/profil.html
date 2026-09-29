@@ -229,5 +229,87 @@
       </div>
     </div>
 
+    <!-- ================================================================
+           SUPPRESSION DU COMPTE (RGPD, critère Cr 3.d.3)
+           ================================================================ -->
+    <div class="row justify-content-center mt-4">
+      <div class="col-lg-8">
+        <div class="card border-danger">
+          <div class="card-body">
+            <h5 class="card-title text-danger">
+              <i class="bi bi-exclamation-triangle me-2"></i>Supprimer mon compte
+            </h5>
+            <p class="mb-2">
+              La suppression efface vos nom, prénom, adresse électronique, téléphone,
+              adresse postale et favoris. Vos avis publiés sont conservés mais ne sont
+              plus rattachés à votre identité.
+            </p>
+            <p class="small text-muted mb-3">
+              Vos réservations et vos paiements sont conservés sans lien avec votre
+              identité, pendant la durée de l'obligation comptable. Le détail figure
+              dans la <a routerLink="/privacy" target="_blank">politique de
+                confidentialité</a>. Cette opération est définitive.
+            </p>
+            <button type="button" class="btn btn-outline-danger" (click)="openDeleteModal()">
+              <i class="bi bi-trash me-2"></i>Supprimer définitivement mon compte
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>
+
+<!-- ==========================================================================
+     FENÊTRE DE CONFIRMATION DE SUPPRESSION DU COMPTE
+     Double confirmation : le mot SUPPRIMER doit être saisi pour activer le
+     bouton, parce que l'opération est irréversible.
+     ========================================================================== -->
+@if (showDeleteModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>Supprimer mon compte
+        </h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()" [disabled]="submitting"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          Cette action est définitive. Votre compte ne pourra plus servir à vous
+          connecter, et vos informations personnelles seront effacées.
+        </p>
+        <p class="mb-2">
+          Pour confirmer, saisissez <strong>SUPPRIMER</strong> ci-dessous.
+        </p>
+        <input type="text" class="form-control" [(ngModel)]="deleteConfirmation" name="deleteConfirmation"
+          placeholder="SUPPRIMER" autocomplete="off">
+        @if (deleteError) {
+        <div class="alert alert-danger mt-3 mb-0 py-2">{{ deleteError }}</div>
+        }
+      </div>
+
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()" [disabled]="submitting">
+          <i class="bi bi-x-circle me-2"></i>Annuler
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmerSuppression()"
+          [disabled]="submitting || deleteConfirmation !== 'SUPPRIMER'">
+          <span *ngIf="!submitting">
+            <i class="bi bi-trash me-2"></i>Supprimer mon compte
+          </span>
+          <span *ngIf="submitting">
+            <span class="spinner-border spinner-border-sm me-2"></span>Suppression...
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+}

@@ -32,7 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profil',
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './profil.html',
   styleUrl: './profil.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,6 +71,17 @@ export class Profil {
 
   /** Toggle visibilité de la confirmation mot de passe */
   showConfirmPassword: boolean = false;
+
+  // === Suppression du compte (RGPD, Cr 3.d.3) ===
+
+  /** Affichage de la fenêtre de confirmation de suppression */
+  showDeleteModal: boolean = false;
+
+  /** Saisie de confirmation : le mot SUPPRIMER est exigé */
+  deleteConfirmation: string = '';
+
+  /** Message d'erreur propre à la suppression */
+  deleteError: string = '';
 
   constructor(
     public authService: AuthService,
@@ -216,5 +227,56 @@ export class Profil {
   toggleConfirmPassword() {
     this.showConfirmPassword = !this.showConfirmPassword;
     this.cdr.markForCheck();
+  }
+  // ==========================================================================
+  // SUPPRESSION DU COMPTE (RGPD, critère Cr 3.d.3)
+  // ==========================================================================
+
+  /** Ouvre la fenêtre de confirmation, sans rien supprimer */
+  openDeleteModal() {
+    this.showDeleteModal = true;
+    this.deleteConfirmation = '';
+    this.deleteError = '';
+    this.cdr.markForCheck();
+  }
+
+  /** Ferme la fenêtre et remet la saisie à zéro */
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.deleteConfirmation = '';
+    this.deleteError = '';
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Envoie la demande de suppression du compte.
+   * Le mot SUPPRIMER est exigé parce que l'opération est irréversible : un
+   * bouton seul se clique par erreur, une saisie explicite ne se fait pas par
+   * inadvertance. La redirection est prise en charge par le service, qui vide
+   * la session après la réponse du serveur.
+   */
+  confirmerSuppression() {
+    if (this.deleteConfirmation !== 'SUPPRIMER') {
+      this.deleteError = 'Saisissez SUPPRIMER pour confirmer';
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.submitting = true;
+    this.deleteError = '';
+    this.cdr.markForCheck();
+
+    this.authService.supprimerCompte().subscribe({
+      next: () => {
+        this.submitting = false;
+        this.showDeleteModal = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.deleteError = err?.error?.message || 'Erreur lors de la suppression du compte';
+        this.submitting = false;
+        this.cdr.markForCheck();
+      },
+    });
   }
 }

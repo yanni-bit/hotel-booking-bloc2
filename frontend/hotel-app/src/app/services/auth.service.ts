@@ -377,4 +377,25 @@ export class AuthService {
   getUserReservations(userId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/users/${userId}/reservations`);
   }
+  // ============================================================================
+  // DROIT À L'EFFACEMENT (RGPD, critère Cr 3.d.3)
+  // ============================================================================
+
+  /**
+   * Supprime le compte de l'utilisateur connecté.
+   * Le serveur anonymise le compte : les réservations et les paiements sont
+   * conservés au titre de l'obligation comptable, mais ne sont plus rattachés
+   * à une identité. En cas de succès, la session locale est vidée et
+   * l'utilisateur est renvoyé vers l'accueil par logout().
+   * @returns {Observable<any>} Observable contenant la réponse de suppression
+   */
+  supprimerCompte(): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/account`).pipe(
+      tap((response: any) => {
+        if (response.success) {
+          this.logout();
+        }
+      }),
+    );
+  }
 }

@@ -613,6 +613,109 @@ class User {
       callback(null, result);
     });
   }
+  // ==========================================================================
+  // DROIT À L'EFFACEMENT (RGPD, critère Cr 3.d.3)
+  // ==========================================================================
+
+  /**
+   * Anonymise un compte utilisateur à la demande de son titulaire.
+   *
+   * La suppression pure et simple de la ligne est impossible : les contraintes
+   * de clé étrangère de RESERVATION et de PAIEMENT sont en ON DELETE RESTRICT,
+   * parce que ces écritures portent une obligation de conservation comptable.
+   * La base refuserait donc le DELETE dès que le compte a réservé une fois.
+   *
+   * On applique la réponse prévue par le RGPD dans ce cas de figure : les
+   * données qui identifient la personne sont effacées, les écritures
+   * comptables sont conservées mais ne désignent plus personne. Le compte
+   * devient une coquille désactivée, dont le mot de passe ne peut plus
+   * correspondre à aucune saisie.
+   *
+   * Opérations, dans cet ordre :
+   *   1. lecture de l'adresse rattachée, pour pouvoir la supprimer ensuite
+   *   2. anonymisation de la ligne UTILISATEUR
+   *   3. détachement des avis publiés : id_user passe à NULL, le texte reste
+   *   4. suppression des demandes de réinitialisation de mot de passe
+   *   5. suppression des favoris
+   *   6. suppression de l'adresse postale
+   *
+   * @param {number} userId - ID du compte à anonymiser
+   * @param {function} callback - Fonction de rappel (err, result)
+   */
+  static anonymiser(userId, callback) {
+    // Étape 1 : récupérer l'adresse rattachée avant de couper le lien
+    db.query(
+      "SELECT id_adress_user FROM UTILISATEUR WHERE id_user = ?",
+      [userId],
+      (err, results) => {
+        if (err) {
+          return callback(err, null);
+        }
+        if (!results || results.length === 0) {
+          return callback(new Error("Utilisateur non trouvé"), null);
+        }
+
+        const idAdresse = results[0].id_adress_user;
+
+        // Étape 2 : anonymiser la ligne utilisateur.
+        // Le mot de passe reçoit une valeur qui n'est pas un condensat bcrypt
+        // valide : bcrypt.compare renverra toujours false, la connexion est
+        // donc définitivement impossible.
+        const anonymisation = `
+          UPDATE UTILISATEUR
+          SET nom_user = 'Compte supprimé',
+              prenom_user = '',
+              email_user = ?,
+              tel_user = NULL,
+              mot_de_passe = 'COMPTE_SUPPRIME',
+              id_adress_user = NULL,
+              actif = 0,
+              email_verifie = 0
+          WHERE id_user = ?
+        `;
+
+        const emailAnonyme = `supprime_${userId}@anonyme.local`;
+
+        db.query(anonymisation, [emailAnonyme, userId], (err2) => {
+          if (err2) {
+            return callback(err2, null);
+          }
+
+          // Étapes 3 à 6 : effacer les données rattachées au compte.
+          const nettoyages = [
+            ["UPDATE AVIS SET id_user = NULL WHERE id_user = ?", [userId]],
+            ["DELETE FROM PASSWORD_RESET WHERE id_user = ?", [userId]],
+            ["DELETE FROM FAVORI WHERE id_user = ?", [userId]],
+          ];
+
+          if (idAdresse) {
+            nettoyages.push([
+              "DELETE FROM ADRESSE_USER WHERE id_adress_user = ?",
+              [idAdresse],
+            ]);
+          }
+
+          // Enchaînement séquentiel : chaque requête attend la précédente,
+          // et la première erreur interrompt la série.
+          let index = 0;
+          const suivant = () => {
+            if (index >= nettoyages.length) {
+              return callback(null, { id_user: userId, anonymise: true });
+            }
+            const [requete, valeurs] = nettoyages[index++];
+            db.query(requete, valeurs, (err3) => {
+              if (err3) {
+                return callback(err3, null);
+              }
+              suivant();
+            });
+          };
+
+          suivant();
+        });
+      },
+    );
+  }
 }
 
 module.exports = User;
