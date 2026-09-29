@@ -423,6 +423,7 @@
               <tr>
                 <th>Nom</th>
                 <th>Code</th>
+                <th class="text-center">Ordre</th>
                 <th class="text-center">Services</th>
                 <th class="text-center">Statut</th>
                 <th class="text-end">Actions</th>
@@ -444,6 +445,15 @@
                 <td><code class="text-muted small">{{ categorie.code_categorie }}</code></td>
 
                 <td class="text-center">
+                  @if (categorieEnEdition && categorieEnEdition.id_categorie === categorie.id_categorie) {
+                  <input type="number" class="form-control form-control-sm text-center mx-auto" style="width: 80px;"
+                    [(ngModel)]="categorieEnEdition.ordre_affichage" (keyup.enter)="enregistrerCategorie()">
+                  } @else {
+                  <span class="text-muted small">{{ categorie.ordre_affichage }}</span>
+                  }
+                </td>
+
+                <td class="text-center">
                   @if (categorie.nb_services > 0) {
                   <span class="badge bg-info">{{ categorie.nb_services }}</span>
                   } @else {
@@ -452,7 +462,13 @@
                 </td>
 
                 <td class="text-center">
-                  @if (categorie.actif) {
+                  @if (categorieEnEdition && categorieEnEdition.id_categorie === categorie.id_categorie) {
+                  <select class="form-select form-select-sm mx-auto" style="width: 110px;"
+                    [(ngModel)]="categorieEnEdition.actif">
+                    <option [ngValue]="1">Active</option>
+                    <option [ngValue]="0">Inactive</option>
+                  </select>
+                  } @else if (categorie.actif) {
                   <span class="badge bg-success">Active</span>
                   } @else {
                   <span class="badge bg-secondary">Inactive</span>

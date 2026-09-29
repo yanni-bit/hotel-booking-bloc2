@@ -8,14 +8,43 @@
 // `services_additionnels.type_service`, qui pilote le calcul des prix et ne
 // doit pas être confondu avec elle.
 //
+// Ce modèle hérite de BaseModel : les requêtes CRUD génériques (lecture par
+// clé, insertion, mise à jour, suppression) sont écrites une seule fois dans
+// la classe mère. Seules les méthodes dont le comportement diffère réellement
+// sont redéfinies ici.
+//
 // La contrainte de clé étrangère est en ON DELETE RESTRICT : la base refuse
 // de supprimer une catégorie encore rattachée à un service. Ce modèle traduit
 // ce refus en message lisible plutôt que de laisser remonter l'erreur MySQL.
 // ============================================================================
 
 const db = require("../config/database");
+const BaseModel = require("./BaseModel");
 
-class CategorieService {
+class CategorieService extends BaseModel {
+  // ==========================================================================
+  // DÉCLARATIONS UTILISÉES PAR BaseModel
+  // ==========================================================================
+  // BaseModel construit ses requêtes à partir de ces trois propriétés. Dans
+  // une méthode statique, `this` désigne la classe appelante : une requête
+  // écrite une seule fois dans la classe mère cible donc bien
+  // CATEGORIE_SERVICE quand l'appel part d'ici.
+
+  /** @returns {string} Nom de la table SQL */
+  static get table() {
+    return "CATEGORIE_SERVICE";
+  }
+
+  /** @returns {string} Colonne clé primaire */
+  static get clePrimaire() {
+    return "id_categorie";
+  }
+
+  /** @returns {string[]} Colonnes que create() et update() peuvent écrire */
+  static get champs() {
+    return ["code_categorie", "nom_categorie", "ordre_affichage", "actif"];
+  }
+
   // ==========================================================================
   // MÉTHODES DE LECTURE (READ)
   // ==========================================================================
@@ -73,24 +102,9 @@ class CategorieService {
     });
   }
 
-  /**
-   * Récupère une catégorie par son identifiant.
-   * @param {number} categorieId - ID de la catégorie
-   * @param {function} callback - Fonction de rappel (err, result)
-   */
-  static getById(categorieId, callback) {
-    const query = `
-      SELECT * FROM CATEGORIE_SERVICE
-      WHERE id_categorie = ?
-    `;
-
-    db.query(query, [categorieId], (err, results) => {
-      if (err) {
-        return callback(err, null);
-      }
-      callback(null, results[0] || null);
-    });
-  }
+  // getById n'est pas redéfinie : la requête générique de BaseModel
+  // (SELECT * FROM CATEGORIE_SERVICE WHERE id_categorie = ?) suffit, et la
+  // classe mère renvoie déjà null quand la catégorie n'existe pas.
 
   // ==========================================================================
   // MÉTHODE DE CRÉATION (CREATE)
@@ -155,20 +169,16 @@ class CategorieService {
    * @param {function} callback - Fonction de rappel (err, result)
    */
   static update(categorieId, data, callback) {
-    const query = `
-      UPDATE CATEGORIE_SERVICE
-      SET nom_categorie = ?, ordre_affichage = ?, actif = ?
-      WHERE id_categorie = ?
-    `;
+    // Le code n'est volontairement pas transmis : la liste blanche l'autorise
+    // à la création, la mise à jour ne le propose pas.
+    const valeurs = {
+      nom_categorie: data.nom_categorie,
+      ordre_affichage:
+        data.ordre_affichage !== undefined ? data.ordre_affichage : 0,
+      actif: data.actif !== undefined ? data.actif : 1,
+    };
 
-    const values = [
-      data.nom_categorie,
-      data.ordre_affichage !== undefined ? data.ordre_affichage : 0,
-      data.actif !== undefined ? data.actif : 1,
-      categorieId,
-    ];
-
-    db.query(query, values, (err, result) => {
+    super.update(categorieId, valeurs, (err, result) => {
       if (err) {
         return callback(err, null);
       }
@@ -194,9 +204,7 @@ class CategorieService {
    * @param {function} callback - Fonction de rappel (err, result)
    */
   static delete(categorieId, callback) {
-    const query = `DELETE FROM CATEGORIE_SERVICE WHERE id_categorie = ?`;
-
-    db.query(query, [categorieId], (err, result) => {
+    super.delete(categorieId, (err, result) => {
       if (err) {
         if (err.code === "ER_ROW_IS_REFERENCED_2") {
           return callback(

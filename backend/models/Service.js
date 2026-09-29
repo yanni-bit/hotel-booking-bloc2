@@ -7,14 +7,49 @@
 //   - HOTEL_SERVICES : liaison service ↔ hôtel avec prix personnalisé
 //   - RESERVATION_SERVICES : services réservés par le client
 // Pattern utilisé : Classe statique (méthodes sans instanciation)
+// Héritage : ce modèle étend BaseModel. Les requêtes CRUD génériques sont
+// écrites dans la classe mère ; les lectures sont redéfinies ici parce
+// qu'elles ont besoin d'une jointure vers la catégorie, ce que la requête
+// générique ne peut pas produire.
 // Sécurité : Requêtes préparées (?) pour prévenir les injections SQL
 // ============================================================================
 
 const db = require("../config/database");
+const BaseModel = require("./BaseModel");
 
-class Service {
+class Service extends BaseModel {
+  // ==========================================================================
+  // DÉCLARATIONS UTILISÉES PAR BaseModel
+  // ==========================================================================
+
+  /** @returns {string} Nom de la table SQL */
+  static get table() {
+    return "SERVICES_ADDITIONNELS";
+  }
+
+  /** @returns {string} Colonne clé primaire */
+  static get clePrimaire() {
+    return "id_service";
+  }
+
+  /** @returns {string[]} Colonnes que update() peut écrire */
+  static get champs() {
+    return [
+      "nom_service",
+      "description_service",
+      "type_service",
+      "id_categorie",
+      "icone_service",
+      "actif",
+    ];
+  }
+
   // ==========================================================================
   // MÉTHODES DE LECTURE (READ)
+  // ==========================================================================
+  // getAll, getAllAdmin et getById sont redéfinies : elles joignent
+  // CATEGORIE_SERVICE pour renvoyer le libellé de la catégorie avec le
+  // service. La requête générique de BaseModel ne lit qu'une seule table.
   // ==========================================================================
 
   /**
@@ -279,34 +314,19 @@ class Service {
    * @param {function} callback - Fonction de rappel (err, result)
    */
   static update(serviceId, serviceData, callback) {
-    const query = `
-      UPDATE SERVICES_ADDITIONNELS
-      SET 
-        nom_service = ?,
-        description_service = ?,
-        type_service = ?,
-        id_categorie = ?,
-        icone_service = ?,
-        actif = ?
-      WHERE id_service = ?
-    `;
+    // Les valeurs par défaut restent appliquées ici : c'est une règle propre
+    // aux services, pas au CRUD générique. L'écriture SQL, elle, est déléguée
+    // à BaseModel, qui n'écrit que les colonnes de la liste blanche.
+    const valeurs = {
+      nom_service: serviceData.nom_service,
+      description_service: serviceData.description_service || null,
+      type_service: serviceData.type_service || "unitaire",
+      id_categorie: serviceData.id_categorie || null,
+      icone_service: serviceData.icone_service || "bi-star",
+      actif: serviceData.actif !== undefined ? serviceData.actif : 1,
+    };
 
-    const values = [
-      serviceData.nom_service,
-      serviceData.description_service || null,
-      serviceData.type_service || "unitaire",
-      serviceData.id_categorie || null,
-      serviceData.icone_service || "bi-star",
-      serviceData.actif !== undefined ? serviceData.actif : 1,
-      serviceId,
-    ];
-
-    db.query(query, values, (err, result) => {
-      if (err) {
-        return callback(err, null);
-      }
-      callback(null, result);
-    });
+    super.update(serviceId, valeurs, callback);
   }
 
   /**
@@ -316,18 +336,7 @@ class Service {
    * @param {function} callback - Fonction de rappel (err, result)
    */
   static toggleStatus(serviceId, actif, callback) {
-    const query = `
-      UPDATE SERVICES_ADDITIONNELS
-      SET actif = ?
-      WHERE id_service = ?
-    `;
-
-    db.query(query, [actif, serviceId], (err, result) => {
-      if (err) {
-        return callback(err, null);
-      }
-      callback(null, result);
-    });
+    super.update(serviceId, { actif }, callback);
   }
 
   // ==========================================================================
@@ -351,17 +360,9 @@ class Service {
         console.error("Erreur suppression service des hôtels:", err);
       }
 
-      // Étape 2 : Supprimer le service lui-même
-      const deleteServiceQuery = `
-        DELETE FROM SERVICES_ADDITIONNELS WHERE id_service = ?
-      `;
-
-      db.query(deleteServiceQuery, [serviceId], (err2, result) => {
-        if (err2) {
-          return callback(err2, null);
-        }
-        callback(null, result);
-      });
+      // Étape 2 : Supprimer le service lui-même, par la suppression
+      // générique héritée de BaseModel.
+      super.delete(serviceId, callback);
     });
   }
 }
