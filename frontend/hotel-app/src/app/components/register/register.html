@@ -95,6 +95,16 @@
                   [placeholder]="'auth.retypePassword' | translate" required autocomplete="new-password">
               </div>
 
+              <!-- Information sur le traitement des données (RGPD, Cr 3.d.2) -->
+              <p class="small text-muted mb-3">
+                En créant votre compte, vous acceptez que vos données soient utilisées
+                pour gérer votre compte et vos réservations. Elles ne sont ni vendues ni
+                transmises à des fins commerciales. Vous pouvez les consulter, les
+                modifier ou supprimer votre compte à tout moment depuis votre profil.
+                Le détail figure dans notre
+                <a routerLink="/privacy" target="_blank">politique de confidentialité</a>.
+              </p>
+
               <!-- Bouton inscription avec spinner pendant le chargement -->
               <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" [disabled]="loading">
                 <span *ngIf="!loading">

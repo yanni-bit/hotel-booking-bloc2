@@ -232,6 +232,15 @@
                  Bouton de soumission
                  Désactivé pendant l'envoi avec spinner
                  -------------------------------------------------------- -->
+            <!-- --------------------------------------------------------
+                 Information sur le traitement des données (RGPD, Cr 3.d.2)
+                 -------------------------------------------------------- -->
+            <p class="small text-muted mb-3">
+              Les informations saisies servent uniquement à traiter votre demande et
+              sont conservées un an après son traitement. Voir notre
+              <a routerLink="/privacy" target="_blank">politique de confidentialité</a>.
+            </p>
+
             <button type="submit" class="btn btn-primary w-100" [disabled]="isSubmitting">
               <!-- État normal -->
               <span *ngIf="!isSubmitting">

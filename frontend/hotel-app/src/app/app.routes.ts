@@ -38,6 +38,7 @@ import { Prestataire } from './components/prestataire/prestataire';
 import { Contact } from './components/contact/contact';
 import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { ResetPassword } from './components/reset-password/reset-password';
+import { Confidentialite } from './components/confidentialite/confidentialite';
 
 // --- Composants protégés (utilisateur connecté) ---
 import { Profil } from './components/profil/profil';
@@ -116,6 +117,9 @@ export const routes: Routes = [
 
   { path: 'search', component: SearchResults },
   { path: 'contact', component: Contact },
+
+  /** Politique de confidentialité (RGPD, critère Cr 3.d.2) */
+  { path: 'privacy', component: Confidentialite },
 
   // ============================================================================
   // ROUTES PROTÉGÉES (nécessitent une connexion - authGuard)

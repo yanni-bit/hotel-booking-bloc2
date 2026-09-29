@@ -1,0 +1,161 @@
+<!-- ==========================================================================
+     PAGE POLITIQUE DE CONFIDENTIALITÉ
+     Critère Cr 3.d.2 : information sur le stockage, l'utilisation et le
+     cadre de partage des données personnelles.
+     ========================================================================== -->
+
+<main class="container py-5">
+  <div class="page-confidentialite mx-auto">
+
+    <h1 class="mb-2">Politique de confidentialité</h1>
+    <p class="text-muted">Dernière mise à jour : {{ dateMiseAJour }}</p>
+
+    <p class="lead mt-4">
+      Cette page décrit les données personnelles que Book Your Travel collecte,
+      pourquoi elles sont collectées, combien de temps elles sont conservées et
+      comment exercer vos droits.
+    </p>
+
+    <h2>1. Responsable du traitement</h2>
+    <p>
+      Les données sont traitées par Book Your Travel, éditeur de ce site, joignable
+      à l'adresse <a href="mailto:contact@bookyourtravel.com">contact&#64;bookyourtravel.com</a>
+      ou via le <a routerLink="/contact">formulaire de contact</a>.
+    </p>
+
+    <h2>2. Données collectées et finalités</h2>
+    <p>
+      Aucune donnée n'est collectée à votre insu. Chaque information ci-dessous est
+      saisie par vous dans un formulaire, ou générée par votre usage du site.
+    </p>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-donnees">
+        <thead class="table-light">
+          <tr>
+            <th>Données</th>
+            <th>Finalité</th>
+            <th>Base légale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nom, prénom, adresse électronique, mot de passe</td>
+            <td>Création et gestion de votre compte, authentification</td>
+            <td>Exécution du contrat</td>
+          </tr>
+          <tr>
+            <td>Numéro de téléphone</td>
+            <td>Vous joindre au sujet d'une réservation. Champ facultatif</td>
+            <td>Exécution du contrat</td>
+          </tr>
+          <tr>
+            <td>Adresse postale</td>
+            <td>Facturation. Champ facultatif</td>
+            <td>Exécution du contrat</td>
+          </tr>
+          <tr>
+            <td>Réservations : établissement, chambre, dates, nombre de voyageurs, services choisis, montant</td>
+            <td>Traitement et suivi de vos réservations</td>
+            <td>Exécution du contrat</td>
+          </tr>
+          <tr>
+            <td>Paiements : montant, devise, moyen de paiement, référence de transaction, derniers chiffres de la carte
+            </td>
+            <td>Justificatif de paiement et comptabilité</td>
+            <td>Obligation légale</td>
+          </tr>
+          <tr>
+            <td>Avis : note, titre, commentaire</td>
+            <td>Publication de votre avis sur la fiche de l'établissement</td>
+            <td>Consentement, par la publication volontaire</td>
+          </tr>
+          <tr>
+            <td>Messages envoyés via le formulaire de contact</td>
+            <td>Traitement de votre demande</td>
+            <td>Intérêt légitime</td>
+          </tr>
+          <tr>
+            <td>Dates d'inscription et de dernière connexion</td>
+            <td>Sécurité du compte et détection des comptes inactifs</td>
+            <td>Intérêt légitime</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      <strong>Aucune donnée bancaire complète n'est enregistrée.</strong> Le numéro de
+      carte, sa date d'expiration et son code de sécurité ne transitent pas par nos
+      bases. Seuls la référence de la transaction et les derniers chiffres de la carte
+      sont conservés, pour vous permettre d'identifier le paiement.
+    </p>
+
+    <h2>3. Durées de conservation</h2>
+    <ul>
+      <li><strong>Compte utilisateur</strong> : pendant toute la durée de vie du compte, puis trois ans après votre
+        dernière connexion.</li>
+      <li><strong>Réservations et paiements</strong> : dix ans, au titre de l'obligation de conservation des pièces
+        comptables.</li>
+      <li><strong>Messages de contact</strong> : un an après le traitement de la demande.</li>
+      <li><strong>Avis</strong> : tant qu'ils sont publiés, jusqu'à leur retrait par vous ou par la modération.</li>
+    </ul>
+
+    <h2>4. Destinataires</h2>
+    <p>
+      Vos données ne sont ni vendues ni transmises à des fins commerciales. Elles sont
+      accessibles :
+    </p>
+    <ul>
+      <li>à vous, depuis votre <a routerLink="/profil">espace personnel</a> ;</li>
+      <li>aux administrateurs du site, pour la gestion du service ;</li>
+      <li>à l'établissement concerné par une réservation, pour les seules informations nécessaires à votre séjour ;</li>
+      <li>à l'hébergeur du site, qui stocke techniquement les données.</li>
+    </ul>
+    <p>Aucun transfert n'est effectué en dehors de l'Union européenne.</p>
+
+    <h2>5. Sécurité</h2>
+    <ul>
+      <li>Les mots de passe sont stockés sous forme de condensats bcrypt. Ils ne sont jamais conservés en clair et ne
+        peuvent pas être relus, y compris par un administrateur.</li>
+      <li>L'accès aux pages et aux données de votre compte est contrôlé par un jeton d'authentification signé, vérifié à
+        chaque appel à l'API.</li>
+      <li>Toutes les requêtes vers la base de données sont préparées, ce qui prévient les injections SQL.</li>
+      <li>Les échanges entre votre navigateur et le serveur sont chiffrés par HTTPS.</li>
+    </ul>
+
+    <h2>6. Vos droits</h2>
+    <p>
+      Vous disposez d'un droit d'accès, de rectification et de suppression de vos
+      données, que vous exercez directement depuis le site :
+    </p>
+    <ul>
+      <li><strong>Consulter</strong> vos données : <a routerLink="/profil">votre profil</a> et <a
+          routerLink="/reservations">vos réservations</a>.</li>
+      <li><strong>Rectifier</strong> vos données : formulaire de modification de votre profil.</li>
+      <li><strong>Supprimer</strong> votre compte : bouton en bas de votre profil.</li>
+    </ul>
+    <p>
+      La suppression de votre compte efface vos nom, prénom, adresse électronique,
+      téléphone et adresse postale. Vos réservations déjà payées sont conservées sans
+      lien avec votre identité, pour la seule durée de l'obligation comptable. Cette
+      opération est définitive.
+    </p>
+    <p>
+      Pour toute autre demande, écrivez-nous via le
+      <a routerLink="/contact">formulaire de contact</a>. Vous pouvez également
+      introduire une réclamation auprès de la CNIL.
+    </p>
+
+    <h2>7. Cookies et stockage local</h2>
+    <p>
+      Ce site n'utilise aucun cookie publicitaire ni traceur d'audience. Votre jeton
+      d'authentification et votre choix de langue sont conservés dans le stockage local
+      de votre navigateur, uniquement pour vous maintenir connecté et respecter vos
+      préférences d'affichage. Ce stockage est strictement nécessaire au fonctionnement
+      du site et ne requiert pas de consentement. Vous pouvez l'effacer à tout moment
+      en vous déconnectant ou en vidant les données du site dans votre navigateur.
+    </p>
+
+  </div>
+</main>
