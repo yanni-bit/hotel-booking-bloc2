@@ -96,8 +96,38 @@ function requireAdmin(req, res) {
   return utilisateur;
 }
 
+/**
+ * Exige un utilisateur authentifie possedant le role prestataire.
+ *
+ * L'administrateur est accepte volontairement : il doit pouvoir consulter
+ * l'espace d'un prestataire sans avoir a changer de compte. La reciproque est
+ * fausse, un prestataire n'entre pas dans l'espace d'administration.
+ *
+ * Attention : cette fonction ne verifie que le role. Le rattachement d'une
+ * reservation a un hotel du prestataire se controle en base, dans le modele,
+ * parce qu'il depend d'une donnee que le jeton ne porte pas.
+ *
+ * @param {http.IncomingMessage} req - Requete HTTP
+ * @param {http.ServerResponse} res - Reponse HTTP
+ * @returns {Object|null} Payload decode, ou null si la requete est refusee
+ */
+function requireProvider(req, res) {
+  const utilisateur = getAuthUser(req);
+
+  if (!utilisateur) {
+    return refuser(res, 401, "Authentification requise");
+  }
+
+  if (utilisateur.role !== "provider" && utilisateur.role !== "admin") {
+    return refuser(res, 403, "Acces reserve aux prestataires");
+  }
+
+  return utilisateur;
+}
+
 module.exports = {
   getAuthUser,
   requireAuth,
   requireAdmin,
+  requireProvider,
 };

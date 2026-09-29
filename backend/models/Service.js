@@ -21,15 +21,27 @@ class Service {
    * Récupère tous les services actifs (catalogue global)
    * @param {function} callback - Fonction de rappel (err, results)
    */
-  static getAll(callback) {
+  static getAll(idCategorie, callback) {
+    // Signature souple : getAll(cb) reste valide, getAll(idCategorie, cb) filtre.
+    if (typeof idCategorie === "function") {
+      callback = idCategorie;
+      idCategorie = null;
+    }
+
+    const filtre = idCategorie ? "AND s.id_categorie = ?" : "";
     const query = `
-      SELECT * 
-      FROM SERVICES_ADDITIONNELS
-      WHERE actif = 1
-      ORDER BY id_service
+      SELECT
+        s.*,
+        c.code_categorie,
+        c.nom_categorie
+      FROM SERVICES_ADDITIONNELS s
+      LEFT JOIN CATEGORIE_SERVICE c ON c.id_categorie = s.id_categorie
+      WHERE s.actif = 1
+      ${filtre}
+      ORDER BY c.ordre_affichage, s.id_service
     `;
 
-    db.query(query, (err, results) => {
+    db.query(query, idCategorie ? [idCategorie] : [], (err, results) => {
       if (err) {
         return callback(err, null);
       }
@@ -41,14 +53,25 @@ class Service {
    * Récupère tous les services incluant les inactifs (administration)
    * @param {function} callback - Fonction de rappel (err, results)
    */
-  static getAllAdmin(callback) {
+  static getAllAdmin(idCategorie, callback) {
+    if (typeof idCategorie === "function") {
+      callback = idCategorie;
+      idCategorie = null;
+    }
+
+    const filtre = idCategorie ? "WHERE s.id_categorie = ?" : "";
     const query = `
-      SELECT * 
-      FROM SERVICES_ADDITIONNELS
-      ORDER BY id_service
+      SELECT
+        s.*,
+        c.code_categorie,
+        c.nom_categorie
+      FROM SERVICES_ADDITIONNELS s
+      LEFT JOIN CATEGORIE_SERVICE c ON c.id_categorie = s.id_categorie
+      ${filtre}
+      ORDER BY c.ordre_affichage, s.id_service
     `;
 
-    db.query(query, (err, results) => {
+    db.query(query, idCategorie ? [idCategorie] : [], (err, results) => {
       if (err) {
         return callback(err, null);
       }
@@ -63,8 +86,13 @@ class Service {
    */
   static getById(serviceId, callback) {
     const query = `
-      SELECT * FROM SERVICES_ADDITIONNELS
-      WHERE id_service = ?
+      SELECT
+        s.*,
+        c.code_categorie,
+        c.nom_categorie
+      FROM SERVICES_ADDITIONNELS s
+      LEFT JOIN CATEGORIE_SERVICE c ON c.id_categorie = s.id_categorie
+      WHERE s.id_service = ?
     `;
 
     db.query(query, [serviceId], (err, results) => {
@@ -164,14 +192,15 @@ class Service {
   static create(serviceData, callback) {
     const query = `
       INSERT INTO SERVICES_ADDITIONNELS 
-      (nom_service, description_service, type_service, icone_service, actif)
-      VALUES (?, ?, ?, ?, ?)
+      (nom_service, description_service, type_service, id_categorie, icone_service, actif)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
       serviceData.nom_service,
       serviceData.description_service || null,
       serviceData.type_service || "unitaire",
+      serviceData.id_categorie || null,
       serviceData.icone_service || "bi-star",
       serviceData.actif !== undefined ? serviceData.actif : 1,
     ];
@@ -256,6 +285,7 @@ class Service {
         nom_service = ?,
         description_service = ?,
         type_service = ?,
+        id_categorie = ?,
         icone_service = ?,
         actif = ?
       WHERE id_service = ?
@@ -265,6 +295,7 @@ class Service {
       serviceData.nom_service,
       serviceData.description_service || null,
       serviceData.type_service || "unitaire",
+      serviceData.id_categorie || null,
       serviceData.icone_service || "bi-star",
       serviceData.actif !== undefined ? serviceData.actif : 1,
       serviceId,

@@ -47,8 +47,20 @@ export class ServiceService {
    * Récupère tous les services (ADMIN - inclut les services inactifs).
    * @returns {Observable<any>} Observable contenant la liste complète des services
    */
-  getAllServices(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/admin`);
+  getAllServices(idCategorie?: number | null): Observable<any> {
+    // Le paramètre est facultatif : sans lui, l'API renvoie tous les services.
+    const params = idCategorie ? `?categorie=${idCategorie}` : '';
+    return this.http.get(`${this.apiUrl}/admin${params}`);
+  }
+
+  /**
+   * Récupère le catalogue public filtré par catégorie.
+   * @param idCategorie - Identifiant de catégorie, facultatif
+   * @returns {Observable<any>} Services actifs, filtrés si une catégorie est fournie
+   */
+  getPublicServices(idCategorie?: number | null): Observable<any> {
+    const params = idCategorie ? `?categorie=${idCategorie}` : '';
+    return this.http.get(`${this.apiUrl}${params}`);
   }
 
   /**
@@ -100,5 +112,58 @@ export class ServiceService {
    */
   toggleServiceStatus(serviceId: number, actif: number): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${serviceId}/toggle`, { actif });
+  }
+
+  // ==========================================================================
+  // CATÉGORIES DE SERVICES
+  //
+  // Une catégorie regroupe des services par nature (Restauration, Transport...).
+  // À ne pas confondre avec type_service, qui est le mode de tarification et
+  // pilote le calcul des prix.
+  // ==========================================================================
+
+  /**
+   * Récupère les catégories actives, pour les listes déroulantes et les filtres.
+   * @returns {Observable<any>} Catégories triées par ordre d'affichage
+   */
+  getCategories(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/categories`);
+  }
+
+  /**
+   * Récupère toutes les catégories avec le nombre de services rattachés (ADMIN).
+   * @returns {Observable<any>} Catégories, actives ou non
+   */
+  getCategoriesAdmin(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/categories/admin`);
+  }
+
+  /**
+   * Crée une catégorie (ADMIN).
+   * @param data - Libellé, ordre d'affichage et activité
+   * @returns {Observable<any>} Réponse contenant l'identifiant créé
+   */
+  createCategorie(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/categories`, data);
+  }
+
+  /**
+   * Modifie une catégorie (ADMIN). Le code technique n'est pas modifiable.
+   * @param idCategorie - Identifiant de la catégorie
+   * @param data - Nouvelles valeurs
+   * @returns {Observable<any>} Réponse de l'API
+   */
+  updateCategorie(idCategorie: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/categories/${idCategorie}`, data);
+  }
+
+  /**
+   * Supprime une catégorie (ADMIN).
+   * L'API répond 409 si des services y sont rattachés.
+   * @param idCategorie - Identifiant de la catégorie
+   * @returns {Observable<any>} Réponse de l'API
+   */
+  deleteCategorie(idCategorie: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/categories/${idCategorie}`);
   }
 }

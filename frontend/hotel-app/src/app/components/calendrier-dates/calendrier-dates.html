@@ -1,0 +1,123 @@
+<!-- ==========================================================================
+     CALENDRIER DE SÉLECTION DES DATES
+     Deux mois affichés côte à côte. Les nuits déjà réservées sont grisées et
+     non cliquables ; la plage sélectionnée ne peut pas en contenir.
+     ========================================================================== -->
+
+<div class="calendrier">
+
+  <!-- ------------------------------------------------------------------
+       Résumé de la sélection
+       ------------------------------------------------------------------ -->
+  <div class="calendrier-resume">
+    <div class="resume-bloc">
+      <span class="resume-libelle">Arrivée</span>
+      <strong>{{ checkIn ? formatLisible(checkIn) : 'à choisir' }}</strong>
+    </div>
+    <i class="bi bi-arrow-right text-muted"></i>
+    <div class="resume-bloc">
+      <span class="resume-libelle">Départ</span>
+      <strong>{{ checkOut ? formatLisible(checkOut) : 'à choisir' }}</strong>
+    </div>
+    @if (checkIn || checkOut) {
+    <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" (click)="effacer()">
+      <i class="bi bi-arrow-counterclockwise me-1"></i>Recommencer
+    </button>
+    }
+  </div>
+
+  <!-- ------------------------------------------------------------------
+       Message d'impossibilité
+       ------------------------------------------------------------------ -->
+  @if (message) {
+  <div class="alert alert-warning py-2 mb-3">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ message }}
+  </div>
+  }
+
+  <!-- ------------------------------------------------------------------
+       Navigation entre les mois
+       ------------------------------------------------------------------ -->
+  <div class="calendrier-navigation">
+    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="moisPrecedent()"
+      aria-label="Mois précédent">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+    <span class="calendrier-mois-titre">{{ libelleMois(0) }}</span>
+    <span class="calendrier-mois-titre d-none d-md-inline">{{ libelleMois(1) }}</span>
+    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="moisSuivant()" aria-label="Mois suivant">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- ------------------------------------------------------------------
+       Les deux mois. Le second est masqué sur petit écran.
+       ------------------------------------------------------------------ -->
+  <div class="calendrier-mois-groupe">
+
+    @for (decalage of [0, 1]; track decalage) {
+    <div class="calendrier-mois" [class.d-none]="decalage === 1" [class.d-md-block]="decalage === 1">
+
+      <div class="calendrier-entete">
+        @for (jour of joursSemaine; track $index) {
+        <span class="calendrier-entete-jour">{{ jour }}</span>
+        }
+      </div>
+
+      <div class="calendrier-grille">
+        @for (jour of grille(decalage); track $index) {
+
+        @if (jour.vide) {
+        <span class="calendrier-case calendrier-case-vide"></span>
+        } @else {
+        <button type="button" class="calendrier-case" [class.est-passe]="jour.passe" [class.est-occupe]="jour.occupe"
+          [class.est-arrivee]="estArrivee(jour)" [class.est-depart]="estDepart(jour)"
+          [class.est-dans-plage]="estDansLaPlage(jour)" [disabled]="jour.passe || jour.occupe"
+          (click)="selectionner(jour)"
+          [attr.aria-label]="formatLisible(jour.iso) + (jour.occupe ? ', indisponible' : '')"
+          [title]="jour.occupe ? 'Nuit déjà réservée' : formatLisible(jour.iso)">
+          {{ jour.numero }}
+        </button>
+        }
+
+        }
+      </div>
+
+    </div>
+    }
+
+  </div>
+
+  <!-- ------------------------------------------------------------------
+       Légende et rappel des périodes indisponibles
+       ------------------------------------------------------------------ -->
+  <div class="calendrier-legende">
+    <span><i class="pastille pastille-libre"></i>Disponible</span>
+    <span><i class="pastille pastille-occupe"></i>Déjà réservé</span>
+    <span><i class="pastille pastille-choisi"></i>Votre séjour</span>
+  </div>
+
+  @if (periodes.length > 0) {
+  <details class="calendrier-periodes">
+    <summary>
+      {{ periodes.length }} période{{ periodes.length > 1 ? 's' : '' }} déjà réservée{{ periodes.length > 1 ? 's' : ''
+      }}
+    </summary>
+    <ul class="mb-0 mt-2">
+      @for (p of periodes; track $index) {
+      <li>
+        Du {{ formatLisible(p.check_in) }} au {{ formatLisible(p.check_out) }}
+        <span class="text-muted small">({{ p.nom_statut }})</span>
+      </li>
+      }
+    </ul>
+  </details>
+  }
+
+  @if (chargement) {
+  <p class="text-muted small mb-0 mt-2">
+    <span class="spinner-border spinner-border-sm me-2"></span>Chargement des disponibilités...
+  </p>
+  }
+
+</div>

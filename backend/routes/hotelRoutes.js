@@ -33,6 +33,7 @@ const AvisController = require("../controllers/avisController");
 const Hotel = require("../models/Hotel");
 const db = require("../config/database");
 const { requireAdmin } = require("../utils/auth");
+const Prestataire = require("../models/Prestataire");
 
 // ============================================================================
 // FONCTION PRINCIPALE - ROUTEUR HÔTELS
@@ -278,8 +279,217 @@ function hotelRoutes(req, res) {
   }
 
   // ==========================================================================
+  // RATTACHEMENT DES PRESTATAIRES AUX ETABLISSEMENTS
+  //
+  // Reserve aux administrateurs : c'est l'administration qui confie un
+  // etablissement a un compte, pas le compte qui se sert lui-meme.
+  //
+  // Ces routes sont declarees avant /api/hotels/:id, dont la regex n'accepte
+  // que des chiffres : aucune collision avec « prestataire ».
+  // ==========================================================================
+
+  // ----------------------------------------
+  // GET /api/hotels/prestataire/:idUser - Etablissements d'un compte
+  // Renvoie aussi ceux qui restent disponibles, pour la liste d'ajout.
+  // ----------------------------------------
+  if (pathname.match(/^\/api\/hotels\/prestataire\/\d+$/) && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
+    const userId = pathname.split("/")[4];
+
+    Prestataire.getHotelsDuCompte(userId, (err, rattaches) => {
+      if (err) {
+        console.error("Erreur lecture des rattachements:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ success: false, message: "Erreur serveur" }));
+        return;
+      }
+
+      Prestataire.getHotelsDisponibles(userId, (err2, disponibles) => {
+        if (err2) {
+          console.error("Erreur lecture des etablissements libres:", err2);
+          res.statusCode = 500;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({ success: false, message: "Erreur serveur" }),
+          );
+          return;
+        }
+
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: true,
+            data: { rattaches, disponibles },
+          }),
+        );
+      });
+    });
+    return;
+  }
+
+  // ----------------------------------------
+  // POST /api/hotels/prestataire/:idUser - Rattacher un etablissement
+  // ----------------------------------------
+  if (
+    pathname.match(/^\/api\/hotels\/prestataire\/\d+$/) &&
+    method === "POST"
+  ) {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
+    const userId = pathname.split("/")[4];
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on("end", () => {
+      try {
+        const { id_hotel } = JSON.parse(body);
+
+        if (!id_hotel) {
+          res.statusCode = 400;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: false,
+              message: "Établissement requis",
+            }),
+          );
+          return;
+        }
+
+        Prestataire.lier(userId, id_hotel, (err) => {
+          if (err) {
+            console.error("Erreur rattachement:", err);
+
+            if (
+              err.message === "Cet établissement est déjà rattaché à ce compte"
+            ) {
+              res.statusCode = 409;
+            } else if (err.message === "Compte ou établissement introuvable") {
+              res.statusCode = 404;
+            } else {
+              res.statusCode = 500;
+            }
+
+            res.setHeader("Content-Type", "application/json");
+            res.end(
+              JSON.stringify({
+                success: false,
+                message: err.message || "Erreur serveur",
+              }),
+            );
+            return;
+          }
+
+          res.statusCode = 201;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: true,
+              message: "Établissement rattaché",
+            }),
+          );
+        });
+      } catch (error) {
+        res.statusCode = 400;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({ success: false, message: "Données invalides" }),
+        );
+      }
+    });
+    return;
+  }
+
+  // ----------------------------------------
+  // DELETE /api/hotels/prestataire/:idUser/:idHotel - Retirer le rattachement
+  //
+  // Les reservations ne sont pas touchees : elles appartiennent a l'hotel,
+  // pas au prestataire. On ne fait que fermer un acces.
+  // ----------------------------------------
+  if (
+    pathname.match(/^\/api\/hotels\/prestataire\/\d+\/\d+$/) &&
+    method === "DELETE"
+  ) {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
+    const morceaux = pathname.split("/");
+    const userId = morceaux[4];
+    const hotelId = morceaux[5];
+
+    Prestataire.delier(userId, hotelId, (err) => {
+      if (err) {
+        console.error("Erreur retrait du rattachement:", err);
+        res.statusCode = err.message === "Rattachement introuvable" ? 404 : 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: err.message || "Erreur serveur",
+          }),
+        );
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({ success: true, message: "Rattachement retiré" }),
+      );
+    });
+    return;
+  }
+
+  // ==========================================================================
   // ROUTES PUBLIQUES - CHAMBRES
   // ==========================================================================
+
+  // ----------------------------------------
+  // GET /api/chambres/:id/disponibilites - Périodes déjà réservées
+  //
+  // Route publique : elle n'expose que des dates et le statut qui bloque,
+  // aucune donnée personnelle. Elle permet d'afficher les dates indisponibles
+  // avant que le client ne tente une réservation, là où le contrôle de
+  // chevauchement de POST /api/reservations ne répond qu'après coup.
+  // ----------------------------------------
+  if (
+    pathname.match(/^\/api\/chambres\/\d+\/disponibilites$/) &&
+    method === "GET"
+  ) {
+    const chambreId = pathname.split("/")[3];
+    const Reservation = require("../models/Reservation");
+
+    Reservation.getPeriodesOccupees(chambreId, (err, periodes) => {
+      if (err) {
+        console.error("Erreur récupération des disponibilités:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ success: false, message: "Erreur serveur" }));
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: true,
+          data: {
+            id_chambre: Number(chambreId),
+            periodes_occupees: periodes,
+          },
+        }),
+      );
+    });
+    return;
+  }
 
   // ----------------------------------------
   // GET /api/chambres/:id - Détails d'une chambre avec offres

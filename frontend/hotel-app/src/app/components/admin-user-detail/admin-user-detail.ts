@@ -22,6 +22,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ReservationService } from '../../services/reservation';
+import { HotelAdminService } from '../../services/admin-hotels';
 
 @Component({
   selector: 'app-admin-user-detail',
@@ -43,6 +44,29 @@ export class AdminUserDetail implements OnInit {
 
   /** Liste des réservations de l'utilisateur */
   reservations: any[] = [];
+
+  // ==========================================================================
+  // PROPRIÉTÉS - ÉTABLISSEMENTS DU PRESTATAIRE
+  //
+  // Ne servent que si le compte porte le rôle `provider`. Un compte client ou
+  // administrateur n'a pas d'établissement rattaché, et la section reste
+  // masquée.
+  // ==========================================================================
+
+  /** Établissements confiés à ce compte */
+  etablissements: any[] = [];
+
+  /** Établissements encore disponibles pour un rattachement */
+  etablissementsDisponibles: any[] = [];
+
+  /** Établissement choisi dans la liste déroulante d'ajout */
+  etablissementAAjouter: number | null = null;
+
+  /** Message d'erreur propre à la section */
+  erreurEtablissement: string = '';
+
+  /** Message de succès propre à la section */
+  succesEtablissement: string = '';
 
   /** Liste des rôles disponibles */
   roles: any[] = [];
@@ -115,6 +139,7 @@ export class AdminUserDetail implements OnInit {
     private router: Router,
     private authService: AuthService,
     private reservationService: ReservationService,
+    private hotelAdminService: HotelAdminService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -132,6 +157,7 @@ export class AdminUserDetail implements OnInit {
       this.loadRoles();
       this.loadUser();
       this.loadReservations();
+      this.chargerEtablissements();
     });
   }
 
@@ -193,6 +219,94 @@ export class AdminUserDetail implements OnInit {
       },
       error: (err) => {
         console.error('Erreur chargement réservations:', err);
+      },
+    });
+  }
+
+  // ==========================================================================
+  // MÉTHODES - ÉTABLISSEMENTS DU PRESTATAIRE
+  // ==========================================================================
+
+  /**
+   * Indique si la section des établissements doit être affichée.
+   * @returns {boolean} true si le compte porte le rôle prestataire
+   */
+  estPrestataire(): boolean {
+    return this.user?.code_role === 'provider';
+  }
+
+  /**
+   * Charge les établissements rattachés et ceux encore disponibles.
+   *
+   * L'appel est fait quel que soit le rôle : au moment de l'initialisation,
+   * l'utilisateur n'est pas encore chargé, donc on ne sait pas encore s'il est
+   * prestataire. Un compte sans rattachement renvoie simplement deux listes,
+   * dont la première est vide, et la section reste masquée.
+   */
+  chargerEtablissements() {
+    this.hotelAdminService.getEtablissementsPrestataire(this.userId).subscribe({
+      next: (reponse: any) => {
+        if (reponse.success) {
+          this.etablissements = reponse.data.rattaches;
+          this.etablissementsDisponibles = reponse.data.disponibles;
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Erreur chargement des établissements:', err);
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /**
+   * Rattache l'établissement sélectionné au compte.
+   */
+  ajouterEtablissement() {
+    this.erreurEtablissement = '';
+    this.succesEtablissement = '';
+
+    if (!this.etablissementAAjouter) {
+      this.erreurEtablissement = 'Choisissez un établissement';
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.hotelAdminService.lierEtablissement(this.userId, this.etablissementAAjouter).subscribe({
+      next: () => {
+        this.succesEtablissement = 'Établissement rattaché';
+        this.etablissementAAjouter = null;
+        this.chargerEtablissements();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.erreurEtablissement = err?.error?.message || 'Erreur lors du rattachement';
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /**
+   * Retire un établissement du périmètre du compte.
+   *
+   * Les réservations de cet établissement ne sont pas touchées : elles lui
+   * appartiennent, pas au prestataire. Seul l'accès est fermé.
+   *
+   * @param etablissement - Établissement à retirer
+   */
+  retirerEtablissement(etablissement: any) {
+    this.erreurEtablissement = '';
+    this.succesEtablissement = '';
+
+    this.hotelAdminService.delierEtablissement(this.userId, etablissement.id_hotel).subscribe({
+      next: () => {
+        this.succesEtablissement = 'Rattachement retiré';
+        this.chargerEtablissements();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.erreurEtablissement = err?.error?.message || 'Erreur lors du retrait';
+        this.cdr.markForCheck();
       },
     });
   }

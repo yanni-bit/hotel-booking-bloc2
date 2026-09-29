@@ -244,6 +244,82 @@
           </div>
         </div>
 
+
+        <!-- ----------------------------------------
+               Établissements confiés au prestataire
+
+               Visible uniquement pour un compte portant le rôle `provider`.
+               C'est ce rattachement qui délimite ce qu'il voit : sans lui, un
+               prestataire n'a accès à aucune réservation.
+               ---------------------------------------- -->
+        @if (estPrestataire()) {
+        <div class="card border-0 shadow-sm mt-4">
+          <div class="card-body p-4">
+
+            <h6 class="mb-3">
+              <i class="bi bi-building me-2"></i>Établissements confiés
+            </h6>
+
+            @if (erreurEtablissement) {
+            <div class="alert alert-danger py-2 small">
+              <i class="bi bi-exclamation-triangle me-2"></i>{{ erreurEtablissement }}
+            </div>
+            }
+            @if (succesEtablissement) {
+            <div class="alert alert-success py-2 small">
+              <i class="bi bi-check-circle me-2"></i>{{ succesEtablissement }}
+            </div>
+            }
+
+            <!-- Liste des rattachements -->
+            @if (etablissements.length === 0) {
+            <p class="text-muted small mb-3">
+              Aucun établissement rattaché. Ce compte n'a accès à aucune
+              réservation tant qu'un établissement ne lui est pas confié.
+            </p>
+            } @else {
+            <ul class="list-group list-group-flush mb-3">
+              @for (etab of etablissements; track etab.id_hotel) {
+              <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                <span>
+                  <strong>{{ etab.nom_hotel }}</strong><br>
+                  <small class="text-muted">
+                    {{ etab.ville_hotel }}, {{ etab.pays_hotel }}
+                    &middot; {{ etab.nb_reservations }} réservation(s)
+                  </small>
+                </span>
+                <button class="btn btn-sm btn-outline-danger" (click)="retirerEtablissement(etab)"
+                  title="Retirer ce rattachement">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </li>
+              }
+            </ul>
+            }
+
+            <!-- Ajout d'un établissement -->
+            <label class="form-label small text-muted">Confier un établissement</label>
+            <div class="input-group input-group-sm">
+              <select class="form-select" [(ngModel)]="etablissementAAjouter">
+                <option [ngValue]="null">Choisir un établissement...</option>
+                @for (h of etablissementsDisponibles; track h.id_hotel) {
+                <option [ngValue]="h.id_hotel">{{ h.nom_hotel }} ({{ h.ville_hotel }})</option>
+                }
+              </select>
+              <button class="btn btn-primary" (click)="ajouterEtablissement()">
+                <i class="bi bi-plus-lg"></i>
+              </button>
+            </div>
+
+            <small class="text-muted d-block mt-2">
+              Retirer un rattachement ferme l'accès, sans toucher aux
+              réservations de l'établissement.
+            </small>
+
+          </div>
+        </div>
+        }
+
       </div>
 
       <!-- ============================================================

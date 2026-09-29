@@ -17,9 +17,21 @@
 //   - PATCH  /api/services/:id/toggle        → Activer/Désactiver un service
 //   - GET    /api/hotels/:id/services/admin  → Services d'un hôtel (tous)
 //   - PUT    /api/hotels/:id/services        → Mettre à jour les prix des services
+//
+// CATÉGORIES DE SERVICES :
+//   - GET    /api/services/categories        → Catégories actives (public)
+//   - GET    /api/services/categories/admin  → Toutes les catégories (admin)
+//   - POST   /api/services/categories        → Créer une catégorie (admin)
+//   - PUT    /api/services/categories/:id    → Modifier une catégorie (admin)
+//   - DELETE /api/services/categories/:id    → Supprimer une catégorie (admin)
+//
+// FILTRAGE :
+//   GET /api/services?categorie=3 et GET /api/services/admin?categorie=3
+//   restreignent la liste à une catégorie.
 // ============================================================================
 
 const Service = require("../models/Service");
+const CategorieService = require("../models/CategorieService");
 const { requireAdmin } = require("../utils/auth");
 
 // ============================================================================
@@ -39,6 +51,232 @@ function serviceRoutes(req, res) {
   const method = req.method;
 
   // ==========================================================================
+  // CATÉGORIES DE SERVICES
+  //
+  // Déclarées avant les routes /api/services/:id : celles-ci ne filtrent que
+  // sur \\d+, il n'y a donc pas de collision possible avec « categories ».
+  // ==========================================================================
+
+  // ----------------------------------------
+  // GET /api/services/categories - Catégories actives (public)
+  // ----------------------------------------
+  if (pathname === "/api/services/categories" && method === "GET") {
+    CategorieService.getAll((err, categories) => {
+      if (err) {
+        console.error("Erreur récupération catégories:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ success: false, message: "Erreur serveur" }));
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ success: true, data: categories }));
+    });
+    return;
+  }
+
+  // ----------------------------------------
+  // GET /api/services/categories/admin - Toutes les catégories (admin)
+  // ----------------------------------------
+  if (pathname === "/api/services/categories/admin" && method === "GET") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
+    CategorieService.getAllAdmin((err, categories) => {
+      if (err) {
+        console.error("Erreur récupération catégories admin:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ success: false, message: "Erreur serveur" }));
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ success: true, data: categories }));
+    });
+    return;
+  }
+
+  // ----------------------------------------
+  // POST /api/services/categories - Créer une catégorie (admin)
+  // ----------------------------------------
+  if (pathname === "/api/services/categories" && method === "POST") {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on("end", () => {
+      try {
+        const data = JSON.parse(body);
+
+        if (!data.nom_categorie || !String(data.nom_categorie).trim()) {
+          res.statusCode = 400;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: false,
+              message: "Le nom de la catégorie est obligatoire",
+            }),
+          );
+          return;
+        }
+
+        CategorieService.create(data, (err, result) => {
+          if (err) {
+            console.error("Erreur création catégorie:", err);
+            res.statusCode =
+              err.message === "Une catégorie porte déjà ce code" ? 409 : 500;
+            res.setHeader("Content-Type", "application/json");
+            res.end(
+              JSON.stringify({
+                success: false,
+                message: err.message || "Erreur serveur",
+              }),
+            );
+            return;
+          }
+
+          res.statusCode = 201;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: true,
+              message: "Catégorie créée",
+              data: result,
+            }),
+          );
+        });
+      } catch (error) {
+        res.statusCode = 400;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({ success: false, message: "Données invalides" }),
+        );
+      }
+    });
+    return;
+  }
+
+  // ----------------------------------------
+  // PUT /api/services/categories/:id - Modifier une catégorie (admin)
+  // ----------------------------------------
+  if (
+    pathname.match(/^\/api\/services\/categories\/\d+$/) &&
+    method === "PUT"
+  ) {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
+    const categorieId = pathname.split("/")[4];
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on("end", () => {
+      try {
+        const data = JSON.parse(body);
+
+        if (!data.nom_categorie || !String(data.nom_categorie).trim()) {
+          res.statusCode = 400;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({
+              success: false,
+              message: "Le nom de la catégorie est obligatoire",
+            }),
+          );
+          return;
+        }
+
+        CategorieService.update(categorieId, data, (err) => {
+          if (err) {
+            console.error("Erreur modification catégorie:", err);
+            res.statusCode =
+              err.message === "Catégorie non trouvée" ? 404 : 500;
+            res.setHeader("Content-Type", "application/json");
+            res.end(
+              JSON.stringify({
+                success: false,
+                message: err.message || "Erreur serveur",
+              }),
+            );
+            return;
+          }
+
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.end(
+            JSON.stringify({ success: true, message: "Catégorie modifiée" }),
+          );
+        });
+      } catch (error) {
+        res.statusCode = 400;
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({ success: false, message: "Données invalides" }),
+        );
+      }
+    });
+    return;
+  }
+
+  // ----------------------------------------
+  // DELETE /api/services/categories/:id - Supprimer une catégorie (admin)
+  //
+  // Refusée par la base si des services y sont rattachés : la contrainte
+  // est en ON DELETE RESTRICT. On répond alors 409, pas 500 : ce n'est pas
+  // une panne mais une règle métier.
+  // ----------------------------------------
+  if (
+    pathname.match(/^\/api\/services\/categories\/\d+$/) &&
+    method === "DELETE"
+  ) {
+    const auth = requireAdmin(req, res);
+    if (!auth) return;
+
+    const categorieId = pathname.split("/")[4];
+
+    CategorieService.delete(categorieId, (err) => {
+      if (err) {
+        console.error("Erreur suppression catégorie:", err);
+
+        if (err.message === "Catégorie non trouvée") {
+          res.statusCode = 404;
+        } else if (err.message.startsWith("Cette catégorie est utilisée")) {
+          res.statusCode = 409;
+        } else {
+          res.statusCode = 500;
+        }
+
+        res.setHeader("Content-Type", "application/json");
+        res.end(
+          JSON.stringify({
+            success: false,
+            message: err.message || "Erreur serveur",
+          }),
+        );
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({ success: true, message: "Catégorie supprimée" }),
+      );
+    });
+    return;
+  }
+
+  // ==========================================================================
   // ROUTES PUBLIQUES - CATALOGUE DES SERVICES
   // ==========================================================================
 
@@ -46,7 +284,11 @@ function serviceRoutes(req, res) {
   // GET /api/services - Tous les services (catalogue)
   // ----------------------------------------
   if (pathname === "/api/services" && method === "GET") {
-    Service.getAll((err, services) => {
+    // Filtre facultatif par catégorie : ?categorie=3
+    const idCategorie =
+      req.query && req.query.categorie ? req.query.categorie : null;
+
+    Service.getAll(idCategorie, (err, services) => {
       if (err) {
         console.error("Erreur lors de la récupération des services:", err);
         res.statusCode = 500;
@@ -125,7 +367,11 @@ function serviceRoutes(req, res) {
   if (pathname === "/api/services/admin" && method === "GET") {
     const auth = requireAdmin(req, res);
     if (!auth) return;
-    Service.getAllAdmin((err, services) => {
+
+    const idCategorie =
+      req.query && req.query.categorie ? req.query.categorie : null;
+
+    Service.getAllAdmin(idCategorie, (err, services) => {
       if (err) {
         console.error("Erreur récupération services admin:", err);
         res.statusCode = 500;

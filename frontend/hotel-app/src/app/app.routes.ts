@@ -34,6 +34,7 @@ import { Payment } from './components/payment/payment';
 import { Login } from './components/login/login';
 import { Register } from './components/register/register';
 import { SearchResults } from './components/search-results/search-results';
+import { Prestataire } from './components/prestataire/prestataire';
 import { Contact } from './components/contact/contact';
 import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { ResetPassword } from './components/reset-password/reset-password';
@@ -57,6 +58,7 @@ import { AdminServices } from './components/admin-services/admin-services';
 // --- Guards de protection ---
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
+import { providerGuard } from './guards/provider.guard';
 
 /** Configuration complète des routes de l'application */
 export const routes: Routes = [
@@ -103,6 +105,15 @@ export const routes: Routes = [
   { path: 'reset-password', component: ResetPassword },
 
   /** Recherche et contact */
+  // --------------------------------------------------------------------------
+  // Espace prestataire : réservations de ses seuls établissements
+  // --------------------------------------------------------------------------
+  {
+    path: 'prestataire',
+    component: Prestataire,
+    canActivate: [providerGuard],
+  },
+
   { path: 'search', component: SearchResults },
   { path: 'contact', component: Contact },
 

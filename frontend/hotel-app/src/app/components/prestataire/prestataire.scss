@@ -1,0 +1,30 @@
+// ============================================================================
+// FICHIER : prestataire.scss
+// DESCRIPTION : Styles de l'espace prestataire
+// ============================================================================
+
+$turquoise: #4ecdc4;
+
+.text-turquoise {
+  color: $turquoise;
+}
+
+.spinner-border.text-turquoise {
+  color: $turquoise;
+}
+
+.card {
+  border-radius: 0.5rem;
+}
+
+// Les compteurs d'en-tête restent lisibles sur petit écran : deux par ligne
+// plutôt que quatre, sans quoi les chiffres se tassent.
+@media (max-width: 575.98px) {
+  .h4 {
+    font-size: 1.15rem;
+  }
+}
+
+table code {
+  color: #6c757d;
+}

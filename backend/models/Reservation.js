@@ -9,6 +9,15 @@
 
 const db = require("../config/database");
 
+/**
+ * Statuts qui immobilisent une chambre sur une période.
+ *   1 En attente  : reservee, paiement non encore effectue
+ *   2 Confirmee   : payee
+ *   6 En cours    : client sur place
+ * Les statuts 3 Annulee, 4 Refusee et 5 Terminee ne bloquent rien.
+ */
+const STATUTS_BLOQUANTS = [1, 2, 6];
+
 class Reservation {
   // ==========================================================================
   // MÉTHODES UTILITAIRES
@@ -497,6 +506,162 @@ class Reservation {
    * @param {number} userId - ID de l'utilisateur, issu du jeton signé
    * @param {function} callback - Fonction de rappel (err, result)
    */
+  /**
+   * Renvoie les periodes pendant lesquelles une chambre est immobilisee.
+   *
+   * Complement du controle de chevauchement fait a la creation : celui-ci
+   * refuse une reservation en conflit, celle-ci permet de montrer a l'avance
+   * ce qui est pris, sans avoir a essayer.
+   *
+   * Seules les periodes qui ne sont pas entierement passees sont renvoyees :
+   * un sejour termine hier n'empeche aucune reservation.
+   *
+   * Aucune donnee personnelle n'est exposee, ni client, ni montant, ni numero
+   * de reservation : uniquement des dates et le statut qui bloque.
+   *
+   * Les dates sont formatees en chaine par DATE_FORMAT plutot que renvoyees
+   * telles quelles. Une colonne DATE est convertie par mysql2 en objet Date
+   * JavaScript interprete dans le fuseau local ; serialise en JSON, il devient
+   * un instant UTC, soit 23h la veille en heure d'hiver. Un client qui ferait
+   * toISOString() afficherait alors le mauvais jour. Une date sans heure ne
+   * doit pas transiter comme un instant.
+   *
+   * @param {number} chambreId - ID de la chambre
+   * @param {function} callback - Fonction de rappel (err, periodes)
+   */
+  static getPeriodesOccupees(chambreId, callback) {
+    const query = `
+      SELECT
+        DATE_FORMAT(r.check_in, '%Y-%m-%d')  AS check_in,
+        DATE_FORMAT(r.check_out, '%Y-%m-%d') AS check_out,
+        r.id_statut,
+        s.nom_statut
+      FROM RESERVATION r
+      LEFT JOIN STATUT s ON s.id_statut = r.id_statut
+      WHERE r.id_chambre = ?
+        AND r.id_statut IN (?)
+        AND r.check_out >= CURDATE()
+      ORDER BY r.check_in
+    `;
+
+    db.query(query, [chambreId, STATUTS_BLOQUANTS], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  }
+
+  // ==========================================================================
+  // METHODES PRESTATAIRE
+  //
+  // Un prestataire est rattache a un ou plusieurs hotels par la table
+  // HOTEL_PRESTATAIRE. Son perimetre n'est donc pas lisible dans le jeton :
+  // il se controle en base, a chaque appel.
+  // ==========================================================================
+
+  /**
+   * Renvoie les reservations des hotels exploites par un prestataire.
+   *
+   * La jointure sur HOTEL_PRESTATAIRE fait tout le travail de filtrage : une
+   * reservation d'un hotel qui ne lui est pas rattache ne peut pas ressortir,
+   * quel que soit ce qui est demande.
+   *
+   * @param {number} userId - ID du compte prestataire, issu du jeton
+   * @param {function} callback - Fonction de rappel (err, results)
+   */
+  static getByPrestataire(userId, callback) {
+    const query = `
+      SELECT
+        r.id_reservation,
+        r.num_confirmation,
+        DATE_FORMAT(r.check_in, '%Y-%m-%d')  AS check_in,
+        DATE_FORMAT(r.check_out, '%Y-%m-%d') AS check_out,
+        r.nbre_nuits,
+        r.nbre_adults,
+        r.nbre_children,
+        r.total_price,
+        r.devise,
+        r.id_statut,
+        s.nom_statut,
+        s.couleur,
+        h.id_hotel,
+        h.nom_hotel,
+        h.ville_hotel,
+        c.type_room,
+        o.nom_offre,
+        u.nom_user,
+        u.prenom_user,
+        u.email_user
+      FROM RESERVATION r
+      JOIN HOTEL_PRESTATAIRE hp ON hp.id_hotel = r.id_hotel AND hp.id_user = ?
+      JOIN HOTEL h              ON h.id_hotel = r.id_hotel
+      JOIN UTILISATEUR u        ON u.id_user = r.id_user
+      LEFT JOIN CHAMBRE c       ON c.id_chambre = r.id_chambre
+      LEFT JOIN OFFRE o         ON o.id_offre = r.id_offre
+      LEFT JOIN STATUT s        ON s.id_statut = r.id_statut
+      ORDER BY r.check_in DESC
+    `;
+
+    db.query(query, [userId], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  }
+
+  /**
+   * Renvoie les hotels exploites par un prestataire.
+   * Sert a l'en-tete de son espace, et a savoir s'il en a au moins un.
+   *
+   * @param {number} userId - ID du compte prestataire
+   * @param {function} callback - Fonction de rappel (err, results)
+   */
+  static getHotelsDuPrestataire(userId, callback) {
+    const query = `
+      SELECT h.id_hotel, h.nom_hotel, h.ville_hotel
+      FROM HOTEL_PRESTATAIRE hp
+      JOIN HOTEL h ON h.id_hotel = hp.id_hotel
+      WHERE hp.id_user = ?
+      ORDER BY h.nom_hotel
+    `;
+
+    db.query(query, [userId], (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  }
+
+  /**
+   * Verifie qu'une reservation releve bien d'un hotel du prestataire.
+   *
+   * Appelee avant tout changement de statut : le role seul ne suffit pas,
+   * il faut que la reservation soit dans son perimetre.
+   *
+   * @param {number} reservationId - ID de la reservation
+   * @param {number} userId - ID du compte prestataire
+   * @param {function} callback - Fonction de rappel (err, boolean)
+   */
+  static estDansLePerimetre(reservationId, userId, callback) {
+    const query = `
+      SELECT 1
+      FROM RESERVATION r
+      JOIN HOTEL_PRESTATAIRE hp ON hp.id_hotel = r.id_hotel AND hp.id_user = ?
+      WHERE r.id_reservation = ?
+      LIMIT 1
+    `;
+
+    db.query(query, [userId, reservationId], (err, results) => {
+      if (err) {
+        return callback(err, false);
+      }
+      callback(null, results.length > 0);
+    });
+  }
+
   static markAsPaid(reservationId, userId, callback) {
     // Étape 1 : vérifier la propriété et le statut actuel
     const checkQuery = `

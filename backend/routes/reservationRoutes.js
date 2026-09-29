@@ -25,7 +25,7 @@
 // ============================================================================
 
 const Reservation = require("../models/Reservation");
-const { requireAuth, requireAdmin } = require("../utils/auth");
+const { requireAuth, requireAdmin, requireProvider } = require("../utils/auth");
 
 // ============================================================================
 // FONCTION PRINCIPALE - ROUTEUR RÉSERVATIONS
@@ -496,6 +496,60 @@ function reservationRoutes(req, res) {
   // ROUTES ADMIN - GESTION DES RÉSERVATIONS
   // ==========================================================================
 
+  // ==========================================================================
+  // ESPACE PRESTATAIRE
+  //
+  // Un prestataire ne voit que les reservations des hotels qui lui sont
+  // rattaches dans HOTEL_PRESTATAIRE. Le filtrage se fait par jointure, pas
+  // par un parametre : il n'y a rien a falsifier dans la requete.
+  // ==========================================================================
+
+  // ----------------------------------------
+  // GET /api/reservations/prestataire - Reservations de ses etablissements
+  // ----------------------------------------
+  if (pathname === "/api/reservations/prestataire" && method === "GET") {
+    const auth = requireProvider(req, res);
+    if (!auth) return;
+
+    Reservation.getByPrestataire(auth.id_user, (err, reservations) => {
+      if (err) {
+        console.error("Erreur reservations prestataire:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ success: false, message: "Erreur serveur" }));
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ success: true, data: reservations }));
+    });
+    return;
+  }
+
+  // ----------------------------------------
+  // GET /api/reservations/prestataire/hotels - Ses etablissements
+  // ----------------------------------------
+  if (pathname === "/api/reservations/prestataire/hotels" && method === "GET") {
+    const auth = requireProvider(req, res);
+    if (!auth) return;
+
+    Reservation.getHotelsDuPrestataire(auth.id_user, (err, hotels) => {
+      if (err) {
+        console.error("Erreur hotels du prestataire:", err);
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ success: false, message: "Erreur serveur" }));
+        return;
+      }
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ success: true, data: hotels }));
+    });
+    return;
+  }
+
   // ----------------------------------------
   // GET /api/reservations/all - Toutes les réservations (admin)
   // ----------------------------------------
@@ -530,13 +584,21 @@ function reservationRoutes(req, res) {
   }
 
   // ----------------------------------------
-  // PUT /api/reservations/:id/status - Changer le statut (admin)
+  // PUT /api/reservations/:id/status - Changer le statut
+  //
+  // Ouverte a l'administrateur sans restriction, et au prestataire pour les
+  // seules reservations de ses etablissements. Le role est verifie ici, le
+  // perimetre l'est en base : le jeton ne dit pas quels hotels sont exploites
+  // par le compte.
+  //
+  // Un client n'y accede pas : sa confirmation de paiement passe par
+  // PUT /:id/pay, qui n'autorise que la transition 1 vers 2.
   // ----------------------------------------
   if (
     pathname.match(/^\/api\/reservations\/\d+\/status$/) &&
     method === "PUT"
   ) {
-    const auth = requireAdmin(req, res);
+    const auth = requireProvider(req, res);
     if (!auth) return;
 
     const reservationId = pathname.split("/")[3];
@@ -562,29 +624,79 @@ function reservationRoutes(req, res) {
           return;
         }
 
-        Reservation.updateStatus(reservationId, newStatusId, (err, result) => {
-          if (err) {
-            console.error("Erreur mise à jour statut:", err);
-            res.statusCode = 500;
-            res.setHeader("Content-Type", "application/json");
-            res.end(
-              JSON.stringify({
-                success: false,
-                message: "Erreur lors de la mise à jour du statut",
-              }),
-            );
-            return;
-          }
+        /**
+         * Applique le changement de statut.
+         * Extraite pour ne pas dupliquer le bloc entre le cas administrateur,
+         * qui passe directement, et le cas prestataire, qui doit d'abord
+         * prouver que la reservation releve de ses etablissements.
+         */
+        const appliquer = () => {
+          Reservation.updateStatus(
+            reservationId,
+            newStatusId,
+            (err, result) => {
+              if (err) {
+                console.error("Erreur mise à jour statut:", err);
+                res.statusCode = 500;
+                res.setHeader("Content-Type", "application/json");
+                res.end(
+                  JSON.stringify({
+                    success: false,
+                    message: "Erreur lors de la mise à jour du statut",
+                  }),
+                );
+                return;
+              }
 
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.end(
-            JSON.stringify({
-              success: true,
-              message: "Statut mis à jour avec succès",
-            }),
+              res.statusCode = 200;
+              res.setHeader("Content-Type", "application/json");
+              res.end(
+                JSON.stringify({
+                  success: true,
+                  message: "Statut mis à jour avec succès",
+                }),
+              );
+            },
           );
-        });
+        };
+
+        // Un administrateur agit sans restriction de perimetre.
+        if (auth.role === "admin") {
+          appliquer();
+          return;
+        }
+
+        // Un prestataire doit exploiter l'hotel de cette reservation.
+        Reservation.estDansLePerimetre(
+          reservationId,
+          auth.id_user,
+          (errPerimetre, autorise) => {
+            if (errPerimetre) {
+              console.error("Erreur controle de perimetre:", errPerimetre);
+              res.statusCode = 500;
+              res.setHeader("Content-Type", "application/json");
+              res.end(
+                JSON.stringify({ success: false, message: "Erreur serveur" }),
+              );
+              return;
+            }
+
+            if (!autorise) {
+              res.statusCode = 403;
+              res.setHeader("Content-Type", "application/json");
+              res.end(
+                JSON.stringify({
+                  success: false,
+                  message:
+                    "Cette reservation ne releve pas de vos etablissements",
+                }),
+              );
+              return;
+            }
+
+            appliquer();
+          },
+        );
       } catch (error) {
         res.statusCode = 400;
         res.setHeader("Content-Type", "application/json");

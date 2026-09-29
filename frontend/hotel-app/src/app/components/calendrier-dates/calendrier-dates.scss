@@ -1,0 +1,191 @@
+// ============================================================================
+// FICHIER : calendrier-dates.scss
+// DESCRIPTION : Styles du calendrier de sélection des dates
+// ============================================================================
+
+$turquoise: #4ecdc4;
+$turquoise-sombre: #3aa89f;
+$gris-bordure: #dee2e6;
+$gris-occupe: #e9ecef;
+
+.calendrier {
+  border: 1px solid $gris-bordure;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: #fff;
+}
+
+// ---------------------------------------------------------------- résumé
+.calendrier-resume {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid $gris-bordure;
+
+  .resume-bloc {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .resume-libelle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6c757d;
+  }
+}
+
+// ------------------------------------------------------------ navigation
+.calendrier-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.calendrier-mois-titre {
+  font-weight: 600;
+  text-transform: capitalize;
+  min-width: 9rem;
+  text-align: center;
+}
+
+// ----------------------------------------------------------------- mois
+.calendrier-mois-groupe {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.calendrier-mois {
+  flex: 1;
+  max-width: 20rem;
+}
+
+.calendrier-entete,
+.calendrier-grille {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calendrier-entete-jour {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6c757d;
+  padding-bottom: 0.25rem;
+}
+
+// ----------------------------------------------------------------- cases
+.calendrier-case {
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: 0.3rem;
+  background: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba($turquoise, 0.18);
+  }
+
+  // Focus visible au clavier : la sélection doit rester utilisable
+  // sans souris.
+  &:focus-visible {
+    outline: 2px solid $turquoise-sombre;
+    outline-offset: 1px;
+  }
+}
+
+.calendrier-case-vide {
+  aspect-ratio: 1;
+}
+
+.est-passe {
+  color: #ced4da;
+  cursor: not-allowed;
+}
+
+// Nuit déjà réservée : grisée, barrée, non cliquable.
+.est-occupe {
+  background: $gris-occupe;
+  color: #adb5bd;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.est-dans-plage {
+  background: rgba($turquoise, 0.22);
+}
+
+.est-arrivee,
+.est-depart {
+  background: $turquoise;
+  color: #fff;
+  font-weight: 700;
+}
+
+// --------------------------------------------------------------- légende
+.calendrier-legende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid $gris-bordure;
+  font-size: 0.8rem;
+  color: #6c757d;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+}
+
+.pastille {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 0.2rem;
+  display: inline-block;
+}
+
+.pastille-libre {
+  background: #fff;
+  border: 1px solid $gris-bordure;
+}
+
+.pastille-occupe {
+  background: $gris-occupe;
+}
+
+.pastille-choisi {
+  background: $turquoise;
+}
+
+// -------------------------------------------------------------- périodes
+.calendrier-periodes {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+
+  summary {
+    cursor: pointer;
+    color: #6c757d;
+  }
+}
+
+// ------------------------------------------------------------- téléphone
+@media (max-width: 767.98px) {
+  .calendrier-mois {
+    max-width: none;
+  }
+
+  .calendrier-navigation {
+    gap: 1rem;
+  }
+}

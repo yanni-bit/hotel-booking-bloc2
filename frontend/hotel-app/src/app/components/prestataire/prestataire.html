@@ -1,0 +1,229 @@
+<!-- ==========================================================================
+     ESPACE PRESTATAIRE
+     Réservations des seuls établissements rattachés au compte connecté.
+     ========================================================================== -->
+
+<div class="container py-4">
+
+  <!-- ------------------------------------------------------------------
+       En-tête
+       ------------------------------------------------------------------ -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+      <h1 class="h3 mb-1">
+        <i class="bi bi-building me-2 text-turquoise"></i>Mes établissements
+      </h1>
+      <p class="text-muted mb-0">
+        @if (hotels.length === 1) {
+        {{ hotels[0].nom_hotel }}, {{ hotels[0].ville_hotel }}
+        } @else if (hotels.length > 1) {
+        {{ hotels.length }} établissements
+        } @else {
+        Aucun établissement rattaché à votre compte
+        }
+      </p>
+    </div>
+    <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/']">
+      <i class="bi bi-arrow-left me-1"></i>Retour au site
+    </a>
+  </div>
+
+  <!-- ------------------------------------------------------------------
+       Messages
+       ------------------------------------------------------------------ -->
+  @if (error) {
+  <div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+  </div>
+  }
+  @if (successMessage) {
+  <div class="alert alert-success">
+    <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+  </div>
+  }
+
+  <!-- ------------------------------------------------------------------
+       Compteurs par statut
+       ------------------------------------------------------------------ -->
+  @if (!loading && reservations.length > 0) {
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body py-3">
+          <div class="text-muted small">En attente</div>
+          <div class="h4 mb-0">{{ compte(1) }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body py-3">
+          <div class="text-muted small">Confirmées</div>
+          <div class="h4 mb-0">{{ compte(2) }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body py-3">
+          <div class="text-muted small">En cours</div>
+          <div class="h4 mb-0">{{ compte(6) }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body py-3">
+          <div class="text-muted small">Terminées</div>
+          <div class="h4 mb-0">{{ compte(5) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- ------------------------------------------------------------------
+       Chargement
+       ------------------------------------------------------------------ -->
+  @if (loading) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-turquoise" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+    <p class="mt-3 text-muted">Chargement des réservations...</p>
+  </div>
+  }
+
+  <!-- ------------------------------------------------------------------
+       Liste des réservations
+       ------------------------------------------------------------------ -->
+  @if (!loading) {
+  <div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-white py-3">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <h2 class="h6 mb-0">
+          <i class="bi bi-calendar-check me-2"></i>
+          Réservations ({{ reservationsFiltrees().length }})
+        </h2>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          @if (hotels.length > 1) {
+          <select class="form-select form-select-sm" style="width: auto;"
+            (change)="onFiltreHotel($any($event.target).value)">
+            <option value="">Tous les établissements</option>
+            @for (hotel of hotels; track hotel.id_hotel) {
+            <option [value]="hotel.id_hotel">{{ hotel.nom_hotel }}</option>
+            }
+          </select>
+          }
+
+          <select class="form-select form-select-sm" style="width: auto;"
+            (change)="onFiltreStatut($any($event.target).value)">
+            <option value="">Tous les statuts</option>
+            <option value="1">En attente</option>
+            <option value="2">Confirmée</option>
+            <option value="6">En cours</option>
+            <option value="5">Terminée</option>
+            <option value="3">Annulée</option>
+            <option value="4">Refusée</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+
+      @if (reservationsFiltrees().length === 0) {
+      <div class="text-center py-5">
+        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-3 mb-0">Aucune réservation à afficher</p>
+      </div>
+      } @else {
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Confirmation</th>
+              <th>Client</th>
+              @if (hotels.length > 1) {
+              <th>Établissement</th>
+              }
+              <th>Chambre</th>
+              <th>Séjour</th>
+              <th class="text-end">Total</th>
+              <th class="text-center">Statut</th>
+              <th style="width: 170px;">Changer le statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of reservationsFiltrees(); track r.id_reservation) {
+            <tr>
+
+              <td>
+                <code class="small">{{ r.num_confirmation }}</code>
+              </td>
+
+              <td>
+                <strong>{{ r.prenom_user }} {{ r.nom_user }}</strong><br>
+                <small class="text-muted">{{ r.email_user }}</small>
+              </td>
+
+              @if (hotels.length > 1) {
+              <td><small>{{ r.nom_hotel }}</small></td>
+              }
+
+              <td>
+                <small>{{ r.type_room || '-' }}</small><br>
+                <small class="text-muted">{{ r.nom_offre }}</small>
+              </td>
+
+              <td>
+                <small>{{ r.check_in }} au {{ r.check_out }}</small><br>
+                <small class="text-muted">
+                  {{ r.nbre_nuits }} nuit(s), {{ r.nbre_adults }} adulte(s)
+                </small>
+              </td>
+
+              <td class="text-end">
+                <strong>{{ r.total_price }} {{ r.devise }}</strong>
+              </td>
+
+              <td class="text-center">
+                <span class="badge" [ngClass]="classeStatut(r.id_statut)">
+                  {{ r.nom_statut }}
+                </span>
+              </td>
+
+              <td>
+                <select class="form-select form-select-sm" (change)="changerStatut(r, $any($event.target).value)">
+                  <option value="">Choisir...</option>
+                  @for (statut of statutsDisponibles; track statut.id) {
+                  <option [value]="statut.id" [disabled]="statut.id === r.id_statut">
+                    {{ statut.libelle }}
+                  </option>
+                  }
+                </select>
+              </td>
+
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-3 border-top">
+        <small class="text-muted">
+          <i class="bi bi-info-circle me-1"></i>
+          L'annulation reste à la main du client. Les statuts Confirmée et
+          En cours immobilisent la chambre sur la période.
+        </small>
+      </div>
+
+      }
+    </div>
+  </div>
+  }
+
+</div>

@@ -70,6 +70,41 @@ export class AdminServices implements OnInit {
   serviceToDelete: any = null;
 
   // ==========================================================================
+  // PROPRIÉTÉS - CATÉGORIES
+  //
+  // La catégorie regroupe les services par nature. Elle est distincte du type
+  // de tarification, qui pilote le calcul des prix et ne doit pas bouger.
+  // ==========================================================================
+
+  /** Catégories actives, alimentant le filtre et la liste déroulante */
+  categories: any[] = [];
+
+  /** Catégorie sélectionnée dans le filtre, null = toutes */
+  filtreCategorie: number | null = null;
+
+  // ==========================================================================
+  // PROPRIÉTÉS - MODAL DE GESTION DES CATÉGORIES
+  // ==========================================================================
+
+  /** Affichage du modal de gestion des catégories */
+  showCategoriesModal: boolean = false;
+
+  /** Catégories avec leur nombre de services rattachés (vue administration) */
+  categoriesAdmin: any[] = [];
+
+  /** Libellé saisi pour la création d'une catégorie */
+  nouveauNomCategorie: string = '';
+
+  /** Catégorie en cours de renommage, null si aucune */
+  categorieEnEdition: any = null;
+
+  /** Message d'erreur propre au modal des catégories */
+  categorieError: string = '';
+
+  /** Message de succès propre au modal des catégories */
+  categorieSuccess: string = '';
+
+  // ==========================================================================
   // PROPRIÉTÉS - CONFIGURATION
   // ==========================================================================
 
@@ -128,6 +163,7 @@ export class AdminServices implements OnInit {
    * Déclenche le chargement des services
    */
   ngOnInit() {
+    this.loadCategories();
     this.loadServices();
   }
 
@@ -141,7 +177,10 @@ export class AdminServices implements OnInit {
   loadServices() {
     this.loading = true;
 
-    this.serviceService.getAllServices().subscribe({
+    // Le filtre est appliqué côté serveur, pas en mémoire : la liste peut
+    // grandir sans que l'écran ait à tout télécharger pour n'en montrer qu'une
+    // partie.
+    this.serviceService.getAllServices(this.filtreCategorie).subscribe({
       next: (response: any) => {
         if (response.success) {
           this.services = response.data;
@@ -153,6 +192,221 @@ export class AdminServices implements OnInit {
         console.error('Erreur chargement services:', err);
         this.error = 'Erreur lors du chargement des services';
         this.loading = false;
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /**
+   * Charge les catégories actives.
+   * Alimente à la fois le menu de filtrage et la liste déroulante du modal.
+   */
+  loadCategories() {
+    this.serviceService.getCategories().subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          this.categories = response.data;
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Erreur chargement catégories:', err);
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /**
+   * Applique le filtre par catégorie et recharge la liste.
+   * @param valeur - Identifiant de catégorie, ou chaîne vide pour tout afficher
+   */
+  onFiltreCategorie(valeur: string) {
+    this.filtreCategorie = valeur ? Number(valeur) : null;
+    this.loadServices();
+  }
+
+  /**
+   * Retire le filtre et recharge la liste complète.
+   */
+  reinitialiserFiltre() {
+    this.filtreCategorie = null;
+    this.loadServices();
+  }
+
+  /**
+   * Retourne le libellé de la catégorie sélectionnée dans le filtre.
+   * @returns {string} Libellé, ou chaîne vide si aucun filtre
+   */
+  libelleFiltre(): string {
+    const c = this.categories.find((x) => x.id_categorie === this.filtreCategorie);
+    return c ? c.nom_categorie : '';
+  }
+
+  // ==========================================================================
+  // MÉTHODES - GESTION DES CATÉGORIES
+  //
+  // Le modal manipule `categoriesAdmin`, qui contient aussi les catégories
+  // inactives et le nombre de services rattachés. La liste `categories`, elle,
+  // ne sert qu'au filtre et au formulaire : elle est rechargée après chaque
+  // modification pour rester cohérente.
+  // ==========================================================================
+
+  /**
+   * Ouvre le modal de gestion et charge la vue administration des catégories.
+   */
+  openCategoriesModal() {
+    this.showCategoriesModal = true;
+    this.categorieError = '';
+    this.categorieSuccess = '';
+    this.nouveauNomCategorie = '';
+    this.categorieEnEdition = null;
+    this.loadCategoriesAdmin();
+  }
+
+  /**
+   * Ferme le modal et rafraîchit la liste des services, dont les libellés de
+   * catégorie ont pu changer.
+   */
+  closeCategoriesModal() {
+    this.showCategoriesModal = false;
+    this.categorieEnEdition = null;
+    this.loadCategories();
+    this.loadServices();
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Charge les catégories avec leur nombre de services.
+   */
+  loadCategoriesAdmin() {
+    this.serviceService.getCategoriesAdmin().subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          this.categoriesAdmin = response.data;
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Erreur chargement catégories admin:', err);
+        this.categorieError = 'Erreur lors du chargement des catégories';
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /**
+   * Crée une catégorie à partir du libellé saisi.
+   * Le code technique est déduit du libellé côté serveur.
+   */
+  creerCategorie() {
+    const nom = this.nouveauNomCategorie.trim();
+    this.categorieError = '';
+    this.categorieSuccess = '';
+
+    if (!nom) {
+      this.categorieError = 'Le nom de la catégorie est obligatoire';
+      this.cdr.markForCheck();
+      return;
+    }
+
+    const ordre = this.categoriesAdmin.length + 1;
+
+    this.serviceService
+      .createCategorie({ nom_categorie: nom, ordre_affichage: ordre, actif: 1 })
+      .subscribe({
+        next: () => {
+          this.categorieSuccess = 'Catégorie créée';
+          this.nouveauNomCategorie = '';
+          this.loadCategoriesAdmin();
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          // 409 quand le code déduit existe déjà.
+          this.categorieError = err?.error?.message || 'Erreur lors de la création';
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  /**
+   * Passe une catégorie en mode renommage.
+   * @param categorie - Catégorie à modifier
+   */
+  editerCategorie(categorie: any) {
+    this.categorieEnEdition = { ...categorie };
+    this.categorieError = '';
+    this.categorieSuccess = '';
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Abandonne le renommage en cours.
+   */
+  annulerEdition() {
+    this.categorieEnEdition = null;
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Enregistre le renommage ou le changement d'activité.
+   * Le code technique n'est pas transmis : il n'est pas modifiable.
+   */
+  enregistrerCategorie() {
+    if (!this.categorieEnEdition) return;
+
+    const nom = String(this.categorieEnEdition.nom_categorie || '').trim();
+    if (!nom) {
+      this.categorieError = 'Le nom de la catégorie est obligatoire';
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.serviceService
+      .updateCategorie(this.categorieEnEdition.id_categorie, {
+        nom_categorie: nom,
+        ordre_affichage: this.categorieEnEdition.ordre_affichage,
+        actif: this.categorieEnEdition.actif,
+      })
+      .subscribe({
+        next: () => {
+          this.categorieSuccess = 'Catégorie modifiée';
+          this.categorieError = '';
+          this.categorieEnEdition = null;
+          this.loadCategoriesAdmin();
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          this.categorieError = err?.error?.message || 'Erreur lors de la modification';
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  /**
+   * Supprime une catégorie.
+   *
+   * Le serveur répond 409 si elle est rattachée à au moins un service, au
+   * titre de la contrainte ON DELETE RESTRICT. Le message renvoyé est affiché
+   * tel quel : c'est une règle métier, pas une panne.
+   *
+   * @param categorie - Catégorie à supprimer
+   */
+  supprimerCategorie(categorie: any) {
+    this.categorieError = '';
+    this.categorieSuccess = '';
+
+    this.serviceService.deleteCategorie(categorie.id_categorie).subscribe({
+      next: () => {
+        this.categorieSuccess = 'Catégorie supprimée';
+        // Si le filtre portait sur elle, il n'a plus d'objet.
+        if (this.filtreCategorie === categorie.id_categorie) {
+          this.filtreCategorie = null;
+        }
+        this.loadCategoriesAdmin();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.categorieError = err?.error?.message || 'Erreur lors de la suppression';
         this.cdr.markForCheck();
       },
     });
@@ -172,6 +426,7 @@ export class AdminServices implements OnInit {
       nom_service: '',
       description_service: '',
       type_service: 'unitaire',
+      id_categorie: this.filtreCategorie,
       icone_service: 'bi-star',
       actif: 1,
     };

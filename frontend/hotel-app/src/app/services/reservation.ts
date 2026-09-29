@@ -167,4 +167,28 @@ export class ReservationService {
   payReservation(reservationId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/reservations/${reservationId}/pay`, {});
   }
+
+  // ==========================================================================
+  // ESPACE PRESTATAIRE
+  //
+  // Aucun identifiant d'hôtel n'est transmis : le serveur déduit le périmètre
+  // du jeton, par jointure sur la table de rattachement. Il n'y a donc rien à
+  // falsifier côté client.
+  // ==========================================================================
+
+  /**
+   * Récupère les réservations des établissements du prestataire connecté.
+   * @returns {Observable<any>} Réservations de ses hôtels uniquement
+   */
+  getReservationsPrestataire(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservations/prestataire`);
+  }
+
+  /**
+   * Récupère les établissements rattachés au prestataire connecté.
+   * @returns {Observable<any>} Ses hôtels
+   */
+  getHotelsPrestataire(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reservations/prestataire/hotels`);
+  }
 }

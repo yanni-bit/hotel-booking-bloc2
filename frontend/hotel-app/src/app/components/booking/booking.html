@@ -116,21 +116,14 @@
               <i class="bi bi-calendar3 me-2"></i>{{ 'booking.datesAndGuests' | translate }}
             </h2>
 
-            <!-- Dates check-in / check-out -->
-            <div class="row mb-3">
-              <!-- Date d'arrivée -->
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">{{ 'booking.checkInDate' | translate }} *</label>
-                <input type="date" class="form-control form-control-lg" [(ngModel)]="checkIn" [min]="minCheckIn"
-                  (change)="onCheckInChange()" required>
-              </div>
-
-              <!-- Date de départ -->
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">{{ 'booking.checkOutDate' | translate }} *</label>
-                <input type="date" class="form-control form-control-lg" [(ngModel)]="checkOut" [min]="minCheckOut"
-                  (change)="onCheckOutChange()" required>
-              </div>
+            <!-- Dates check-in / check-out
+                 Le champ natif <input type="date"> a été remplacé par un
+                 calendrier : il accepte un minimum et un maximum, mais ne sait
+                 pas désactiver des dates isolées au milieu d'une période. -->
+            <div class="mb-3">
+              <app-calendrier-dates [idChambre]="offre?.id_chambre" [checkIn]="checkIn" [checkOut]="checkOut"
+                (datesChange)="onDatesChange($event)">
+              </app-calendrier-dates>
             </div>
 
             <!-- Affichage du nombre de nuits -->

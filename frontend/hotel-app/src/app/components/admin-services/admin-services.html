@@ -69,10 +69,38 @@
     @if (!loading) {
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-white py-3">
-        <h5 class="mb-0">
-          <i class="bi bi-list-ul me-2"></i>
-          Services additionnels ({{ services.length }})
-        </h5>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <h5 class="mb-0">
+            <i class="bi bi-list-ul me-2"></i>
+            Services additionnels ({{ services.length }})
+            @if (filtreCategorie) {
+            <span class="badge bg-secondary ms-2">{{ libelleFiltre() }}</span>
+            }
+          </h5>
+
+          <!-- Filtre par catégorie : la requête est refaite côté serveur -->
+          <div class="d-flex align-items-center gap-2">
+            <label class="form-label mb-0 text-muted small" for="filtreCategorie">
+              Catégorie
+            </label>
+            <select id="filtreCategorie" class="form-select form-select-sm" style="width: auto;"
+              [value]="filtreCategorie ?? ''" (change)="onFiltreCategorie($any($event.target).value)">
+              <option value="">Toutes</option>
+              @for (categorie of categories; track categorie.id_categorie) {
+              <option [value]="categorie.id_categorie">{{ categorie.nom_categorie }}</option>
+              }
+            </select>
+            @if (filtreCategorie) {
+            <button class="btn btn-sm btn-outline-secondary" (click)="reinitialiserFiltre()" title="Retirer le filtre">
+              <i class="bi bi-x-lg"></i>
+            </button>
+            }
+
+            <button class="btn btn-sm btn-outline-primary ms-2" (click)="openCategoriesModal()">
+              <i class="bi bi-tags me-1"></i>Gérer les catégories
+            </button>
+          </div>
+        </div>
       </div>
       <div class="card-body p-0">
 
@@ -104,6 +132,7 @@
                 <th style="width: 60px;">Icône</th>
                 <th>Nom</th>
                 <th>Description</th>
+                <th>Catégorie</th>
                 <th>Type</th>
                 <th class="text-center">Statut</th>
                 <th class="text-end">Actions</th>
@@ -133,6 +162,15 @@
                 <!-- Colonne : Description -->
                 <td class="align-middle">
                   <small class="text-muted">{{ service.description_service || '-' }}</small>
+                </td>
+
+                <!-- Colonne : Catégorie -->
+                <td class="align-middle">
+                  @if (service.nom_categorie) {
+                  <span class="badge bg-secondary">{{ service.nom_categorie }}</span>
+                  } @else {
+                  <small class="text-muted">-</small>
+                  }
                 </td>
 
                 <!-- Colonne : Type de tarification -->
@@ -221,6 +259,20 @@
           <label class="form-label">Description</label>
           <textarea class="form-control" rows="2" [(ngModel)]="currentService.description_service"
             placeholder="Description du service..."></textarea>
+        </div>
+
+        <!-- Champ : Catégorie du service -->
+        <div class="mb-3">
+          <label class="form-label">Catégorie</label>
+          <select class="form-select" [(ngModel)]="currentService.id_categorie">
+            <option [ngValue]="null">Aucune</option>
+            @for (categorie of categories; track categorie.id_categorie) {
+            <option [ngValue]="categorie.id_categorie">{{ categorie.nom_categorie }}</option>
+            }
+          </select>
+          <small class="text-muted">
+            Regroupe les services par nature. Sans effet sur le calcul du prix.
+          </small>
         </div>
 
         <div class="row">
@@ -312,6 +364,138 @@
         </button>
         <button type="button" class="btn btn-danger" (click)="confirmDelete()">
           <i class="bi bi-trash me-2"></i>Supprimer
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+}\n
+
+<!-- ====================================================================
+     MODAL - GESTION DES CATÉGORIES
+     Création, renommage, activation et suppression.
+     La suppression est refusée par la base si la catégorie est utilisée :
+     le message renvoyé par l'API est affiché tel quel.
+     ==================================================================== -->
+@if (showCategoriesModal) {
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-tags me-2 text-turquoise"></i>Catégories de services
+        </h5>
+        <button type="button" class="btn-close" (click)="closeCategoriesModal()"></button>
+      </div>
+
+      <div class="modal-body">
+
+        @if (categorieError) {
+        <div class="alert alert-danger py-2">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ categorieError }}
+        </div>
+        }
+        @if (categorieSuccess) {
+        <div class="alert alert-success py-2">
+          <i class="bi bi-check-circle me-2"></i>{{ categorieSuccess }}
+        </div>
+        }
+
+        <!-- Création -->
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Nom de la nouvelle catégorie"
+            [(ngModel)]="nouveauNomCategorie" (keyup.enter)="creerCategorie()">
+          <button class="btn btn-primary" (click)="creerCategorie()">
+            <i class="bi bi-plus-circle me-1"></i>Ajouter
+          </button>
+        </div>
+
+        <!-- Liste -->
+        @if (categoriesAdmin.length === 0) {
+        <p class="text-muted text-center my-4">Aucune catégorie</p>
+        } @else {
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Nom</th>
+                <th>Code</th>
+                <th class="text-center">Services</th>
+                <th class="text-center">Statut</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (categorie of categoriesAdmin; track categorie.id_categorie) {
+              <tr>
+
+                <td>
+                  @if (categorieEnEdition && categorieEnEdition.id_categorie === categorie.id_categorie) {
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="categorieEnEdition.nom_categorie"
+                    (keyup.enter)="enregistrerCategorie()">
+                  } @else {
+                  <strong>{{ categorie.nom_categorie }}</strong>
+                  }
+                </td>
+
+                <td><code class="text-muted small">{{ categorie.code_categorie }}</code></td>
+
+                <td class="text-center">
+                  @if (categorie.nb_services > 0) {
+                  <span class="badge bg-info">{{ categorie.nb_services }}</span>
+                  } @else {
+                  <span class="text-muted small">0</span>
+                  }
+                </td>
+
+                <td class="text-center">
+                  @if (categorie.actif) {
+                  <span class="badge bg-success">Active</span>
+                  } @else {
+                  <span class="badge bg-secondary">Inactive</span>
+                  }
+                </td>
+
+                <td class="text-end">
+                  @if (categorieEnEdition && categorieEnEdition.id_categorie === categorie.id_categorie) {
+                  <button class="btn btn-sm btn-success me-1" (click)="enregistrerCategorie()" title="Enregistrer">
+                    <i class="bi bi-check-lg"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-secondary" (click)="annulerEdition()" title="Annuler">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                  } @else {
+                  <button class="btn btn-sm btn-outline-primary me-1" (click)="editerCategorie(categorie)"
+                    title="Renommer">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="supprimerCategorie(categorie)"
+                    [disabled]="categorie.nb_services > 0"
+                    [title]="categorie.nb_services > 0 ? 'Catégorie utilisée par des services' : 'Supprimer'">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                  }
+                </td>
+
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <small class="text-muted d-block mt-2">
+          Une catégorie rattachée à au moins un service ne peut pas être supprimée.
+          Retirez-la d'abord des services concernés, ou désactivez-la.
+        </small>
+        }
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeCategoriesModal()">
+          <i class="bi bi-x-circle me-2"></i>Fermer
         </button>
       </div>
 

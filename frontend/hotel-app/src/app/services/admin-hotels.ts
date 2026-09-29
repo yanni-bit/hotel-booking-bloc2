@@ -102,6 +102,48 @@ export class HotelAdminService {
     return this.http.get(`${this.apiUrl}/${hotelId}/services/admin`);
   }
 
+  // ==========================================================================
+  // RATTACHEMENT DES PRESTATAIRES
+  //
+  // C'est l'administration qui confie un établissement à un compte. Un
+  // prestataire ne se rattache pas lui-même : les trois routes sont sous
+  // requireAdmin.
+  // ==========================================================================
+
+  /**
+   * Récupère les établissements rattachés à un compte, et ceux qui restent
+   * disponibles pour un nouveau rattachement.
+   * @param userId - Identifiant du compte prestataire
+   * @returns {Observable<any>} { rattaches, disponibles }
+   */
+  getEtablissementsPrestataire(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/prestataire/${userId}`);
+  }
+
+  /**
+   * Rattache un établissement à un compte.
+   * Répond 409 si le rattachement existe déjà.
+   * @param userId - Identifiant du compte
+   * @param hotelId - Identifiant de l'établissement
+   * @returns {Observable<any>} Réponse de l'API
+   */
+  lierEtablissement(userId: number, hotelId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/prestataire/${userId}`, {
+      id_hotel: hotelId,
+    });
+  }
+
+  /**
+   * Retire le rattachement entre un compte et un établissement.
+   * Les réservations ne sont pas touchées, seul l'accès est fermé.
+   * @param userId - Identifiant du compte
+   * @param hotelId - Identifiant de l'établissement
+   * @returns {Observable<any>} Réponse de l'API
+   */
+  delierEtablissement(userId: number, hotelId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/prestataire/${userId}/${hotelId}`);
+  }
+
   /**
    * Met à jour les prix des services associés à un hôtel.
    * @param hotelId - Identifiant unique de l'hôtel

@@ -26,10 +26,11 @@ import { ReservationService } from '../../services/reservation';
 import { AuthService } from '../../services/auth.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { CurrencyPipe } from '../../pipes/currency.pipe';
+import { CalendrierDates } from '../calendrier-dates/calendrier-dates';
 
 @Component({
   selector: 'app-booking',
-  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, CurrencyPipe],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, CurrencyPipe, CalendrierDates],
   templateUrl: './booking.html',
   styleUrl: './booking.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -356,6 +357,23 @@ export class Booking implements OnInit {
    */
   onCheckOutChange() {
     this.calculateNights();
+  }
+
+  /**
+   * Reçoit les dates choisies dans le calendrier.
+   *
+   * Le composant enfant ne fait que proposer : il grise ce qu'il sait être
+   * indisponible, mais la règle reste celle du serveur, qui répond 409 si la
+   * chambre a été prise entre-temps. Un contrôle côté navigateur est un
+   * confort d'usage, jamais une garantie.
+   *
+   * @param dates - Dates d'arrivée et de départ au format 'AAAA-MM-JJ'
+   */
+  onDatesChange(dates: { checkIn: string; checkOut: string }) {
+    this.checkIn = dates.checkIn;
+    this.checkOut = dates.checkOut;
+    this.calculateNights();
+    this.cdr.markForCheck();
   }
 
   // ==========================================================================
