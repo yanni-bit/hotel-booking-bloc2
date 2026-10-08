@@ -21,7 +21,9 @@
 //   l'en-tete Authorization. L'identite de l'appelant est lue dans le jeton,
 //   jamais dans le corps ou la chaine de requete : un client ne peut donc
 //   pas agir au nom d'un autre utilisateur en modifiant sa requete.
-//   Les deux routes d'administration exigent en plus le role "admin".
+//   GET /all exige le role "admin". PUT /:id/status exige le role
+//   "provider" ou "admin", et le perimetre du prestataire est verifie
+//   en base, pas dans le jeton.
 // ============================================================================
 
 const Reservation = require("../models/Reservation");
@@ -290,10 +292,10 @@ function reservationRoutes(req, res) {
   // ----------------------------------------
   // PUT /api/reservations/:id/pay - Confirmer le paiement (client)
   //
-  // Route distincte de PUT /:id/status, qui reste reservee aux
-  // administrateurs. Ici le statut vise est fixe : 1 vers 2. La reservation
-  // est designee par l'URL, le payeur par le jeton, et le corps de la
-  // requete n'est pas lu.
+  // Route distincte de PUT /:id/status, qui est ouverte a l'administrateur
+  // sans restriction et au prestataire pour ses seuls etablissements.
+  // Ici le statut vise est fixe : 1 vers 2. La reservation est designee par
+  // l'URL, le payeur par le jeton, et le corps de la requete n'est pas lu.
   // ----------------------------------------
   if (pathname.match(/^\/api\/reservations\/\d+\/pay$/) && method === "PUT") {
     const auth = requireAuth(req, res);

@@ -11,6 +11,8 @@
 //   - getAuthUser  : lit et verifie le jeton, sans repondre au client
 //   - requireAuth  : exige un utilisateur connecte, repond 401 sinon
 //   - requireAdmin : exige le role administrateur, repond 401 ou 403 sinon
+//   - requireProvider : exige le role prestataire ou administrateur,
+//                       repond 401 ou 403 sinon
 // UTILISATION DANS UN GESTIONNAIRE DE ROUTE :
 //   const auth = requireAuth(req, res);
 //   if (!auth) return;          // la reponse d'erreur a deja ete envoyee

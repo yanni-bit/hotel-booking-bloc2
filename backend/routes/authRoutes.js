@@ -203,19 +203,6 @@ function authRoutes(req, res) {
             return;
           }
 
-          // Vérifier si le compte est actif
-          if (!user.actif) {
-            res.statusCode = 403;
-            res.setHeader("Content-Type", "application/json");
-            res.end(
-              JSON.stringify({
-                success: false,
-                message: "Compte désactivé",
-              }),
-            );
-            return;
-          }
-
           // Vérifier le mot de passe
           const isPasswordValid = await User.verifyPassword(
             password,
@@ -229,6 +216,21 @@ function authRoutes(req, res) {
               JSON.stringify({
                 success: false,
                 message: "Email ou mot de passe incorrect",
+              }),
+            );
+            return;
+          }
+
+          // Le compte désactivé n'est signalé qu'après la vérification du mot
+          // de passe : sinon un visiteur apprendrait qu'une adresse correspond
+          // à un compte existant sans avoir eu à le prouver.
+          if (!user.actif) {
+            res.statusCode = 403;
+            res.setHeader("Content-Type", "application/json");
+            res.end(
+              JSON.stringify({
+                success: false,
+                message: "Compte désactivé",
               }),
             );
             return;
@@ -750,7 +752,19 @@ function authRoutes(req, res) {
     const token = authHeader.split(" ")[1];
     const decoded = User.verifyToken(token);
 
-    if (!decoded || decoded.role !== "admin") {
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide ou expiré",
+        }),
+      );
+      return;
+    }
+
+    if (decoded.role !== "admin") {
       res.statusCode = 403;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -791,7 +805,19 @@ function authRoutes(req, res) {
     const token = authHeader.split(" ")[1];
     const decoded = User.verifyToken(token);
 
-    if (!decoded || decoded.role !== "admin") {
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide ou expiré",
+        }),
+      );
+      return;
+    }
+
+    if (decoded.role !== "admin") {
       res.statusCode = 403;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -832,7 +858,19 @@ function authRoutes(req, res) {
     const token = authHeader.split(" ")[1];
     const decoded = User.verifyToken(token);
 
-    if (!decoded || decoded.role !== "admin") {
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide ou expiré",
+        }),
+      );
+      return;
+    }
+
+    if (decoded.role !== "admin") {
       res.statusCode = 403;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -873,7 +911,19 @@ function authRoutes(req, res) {
     const token = authHeader.split(" ")[1];
     const decoded = User.verifyToken(token);
 
-    if (!decoded || decoded.role !== "admin") {
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide ou expiré",
+        }),
+      );
+      return;
+    }
+
+    if (decoded.role !== "admin") {
       res.statusCode = 403;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -946,7 +996,19 @@ function authRoutes(req, res) {
     const token = authHeader.split(" ")[1];
     const decoded = User.verifyToken(token);
 
-    if (!decoded || decoded.role !== "admin") {
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide ou expiré",
+        }),
+      );
+      return;
+    }
+
+    if (decoded.role !== "admin") {
       res.statusCode = 403;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -1028,7 +1090,19 @@ function authRoutes(req, res) {
     const token = authHeader.split(" ")[1];
     const decoded = User.verifyToken(token);
 
-    if (!decoded || decoded.role !== "admin") {
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide ou expiré",
+        }),
+      );
+      return;
+    }
+
+    if (decoded.role !== "admin") {
       res.statusCode = 403;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -1071,7 +1145,19 @@ function authRoutes(req, res) {
     const token = authHeader.split(" ")[1];
     const decoded = User.verifyToken(token);
 
-    if (!decoded || decoded.role !== "admin") {
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide ou expiré",
+        }),
+      );
+      return;
+    }
+
+    if (decoded.role !== "admin") {
       res.statusCode = 403;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -1119,7 +1205,19 @@ function authRoutes(req, res) {
     const token = authHeader.split(" ")[1];
     const decoded = User.verifyToken(token);
 
-    if (!decoded || decoded.role !== "admin") {
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide ou expiré",
+        }),
+      );
+      return;
+    }
+
+    if (decoded.role !== "admin") {
       res.statusCode = 403;
       res.setHeader("Content-Type", "application/json");
       res.end(
@@ -1185,7 +1283,19 @@ function authRoutes(req, res) {
     const token = authHeader.split(" ")[1];
     const decoded = User.verifyToken(token);
 
-    if (!decoded || decoded.role !== "admin") {
+    if (!decoded) {
+      res.statusCode = 401;
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          success: false,
+          message: "Token invalide ou expiré",
+        }),
+      );
+      return;
+    }
+
+    if (decoded.role !== "admin") {
       res.statusCode = 403;
       res.setHeader("Content-Type", "application/json");
       res.end(
