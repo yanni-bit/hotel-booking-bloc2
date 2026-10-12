@@ -53,11 +53,11 @@ Le front-end n'est pas soumis à cette contrainte et utilise Angular.
 | --- | --- |
 | Tables MySQL | 21, plus 2 vues |
 | Contraintes de clé étrangère | 27 |
-| Points d'entrée de l'API | 80 |
-| dont routes publiques | 26 |
-| dont routes à jeton simple | 14 |
+| Points d'entrée de l'API | 76 |
+| dont routes publiques | 22 |
+| dont routes à jeton simple | 13 |
 | dont routes réservées aux prestataires | 3 |
-| dont routes réservées aux administrateurs | 37 |
+| dont routes réservées aux administrateurs | 38 |
 | Fichiers de routes | 7 |
 | Modèles | 11, dont une classe mère |
 | Composants Angular | 41 |
@@ -420,11 +420,11 @@ hotel-booking-bloc2/
 
 | Fichier | Préfixe servi | Routes |
 | --- | --- | --- |
-| `hotelRoutes.js` | `/api/hotels`, `/api/chambres`, `/api/search`, `/api/destinations`, `/api/cities` | 19 |
-| `authRoutes.js` | `/api/auth` | 18 |
+| `hotelRoutes.js` | `/api/hotels`, `/api/chambres`, `/api/search`, `/api/destinations`, `/api/cities` | 18 |
+| `authRoutes.js` | `/api/auth` | 17 |
 | `serviceRoutes.js` | `/api/services` | 15 |
-| `reservationRoutes.js` | `/api/reservations` | 12 |
-| `contactRoutes.js` | `/api/contact` | 9 |
+| `reservationRoutes.js` | `/api/reservations` | 11 |
+| `contactRoutes.js` | `/api/contact` | 8 |
 | `avisRoutes.js` | `/api/avis` | 6 |
 | `offreRoutes.js` | `/api/offres` | 1 |
 
@@ -540,14 +540,14 @@ Le fichier `authRoutes.js` fait exception : ses treize routes protégées
 appellent `User.verifyToken()` directement, sans passer par ce module. C'est
 de l'antériorité, ce fichier existait avant.
 
-### 6.5 Répartition des 80 routes
+### 6.5 Répartition des 76 routes
 
 | Régime | Routes | Exemples |
 | --- | --- | --- |
-| Public | 26 | Catalogue, recherche, avis d'un hôtel, dates occupées d'une chambre, formulaire de contact, inscription, connexion, mot de passe oublié |
-| Jeton valide | 14 | Réserver, payer, consulter ses réservations, modifier ses dates, annuler, rédiger un avis, gérer son profil, supprimer son compte |
+| Public | 22 | Catalogue, recherche, avis d'un hôtel, dates occupées d'une chambre, formulaire de contact, inscription, connexion, mot de passe oublié |
+| Jeton valide | 13 | Réserver, payer, consulter ses réservations, modifier ses dates, annuler, rédiger un avis, gérer son profil, supprimer son compte |
 | Rôle prestataire | 3 | Consulter les réservations de ses établissements, la liste de ses établissements, changer le statut d'une réservation de son périmètre |
-| Rôle administrateur | 37 | Gérer les hôtels, les services, les catégories, les utilisateurs, les rôles, rattacher un prestataire, modérer les avis, traiter les messages, suivre toutes les réservations |
+| Rôle administrateur | 38 | Gérer les hôtels, les services, les catégories, les utilisateurs, les rôles, rattacher un prestataire, modérer les avis, traiter les messages, suivre toutes les réservations |
 
 ---
 
@@ -663,8 +663,8 @@ de l'appelant en vérifiant la signature du jeton, jamais en lisant une valeur
 transmise par le client. Un `id_user` présent dans le corps d'une requête de
 réservation est écrasé par celui du jeton.
 
-**Permissions séparées par rôle.** 37 routes exigent le rôle `admin`, 3 le rôle `provider`, 14 un
-jeton valide, 26 restent publiques. Le rôle provient de la table `ROLE` et est
+**Permissions séparées par rôle.** 38 routes exigent le rôle `admin`, 3 le rôle `provider`, 13 un
+jeton valide, 22 restent publiques. Le rôle provient de la table `ROLE` et est
 recopié dans le jeton à la connexion.
 
 **Contrôle de propriété.** Un client ne consulte, ne modifie et n'annule que
