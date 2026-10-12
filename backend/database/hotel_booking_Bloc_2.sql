@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : Lun. 28 Sep. 2026 à 11:51
+-- Généré le : Lun. 12 Oct. 2026 à 11:49
 -- Version du serveur : 9.5.0
 -- Version de PHP : 8.4.15
 
@@ -541,7 +541,35 @@ INSERT INTO `avis` (`id_avis`, `id_hotel`, `id_user`, `pseudo_user`, `note`, `ti
 (469, 102, NULL, 'Lucas M.', 8.1, 'Séjour exceptionnel !', 'Hôtel magnifique situé au cœur de Tokyo. Personnel aux petits soins et chambres impeccables.', '2025-08-13', 'NL', 'famille', 'fr', '2025-12-15 13:23:03'),
 (470, 102, NULL, 'Chloé K.', 7.9, 'Très bien situé', 'Un hôtel de qualité avec un emplacement idéal pour visiter Tokyo. Le petit-déjeuner était délicieux.', '2025-08-24', 'NL', 'famille', 'fr', '2025-12-15 13:23:03'),
 (471, 102, NULL, 'Thomas K.', 8.5, 'Parfait pour un week-end', 'Très satisfait de notre séjour. Chambres spacieuses, propres et bien équipées. Je reviendrai !', '2025-09-15', 'IT', 'couple', 'fr', '2025-12-15 13:23:03'),
-(472, 31, 3, 'Admin S.', 9.5, 'Très bon hôtel', 'Hôtel luxueux et adapter pour travailler !', '2026-01-09', 'NL', 'business', 'fr', '2026-01-09 17:49:45');
+(472, 31, 3, 'Admin S.', 9.5, 'Très bon hôtel', 'Hôtel luxueux et adapter pour travailler !', '2026-01-09', 'NL', 'business', 'fr', '2026-01-09 17:49:45'),
+(473, 23, 4, 'Jean D.', 10.0, 'Séjour exceptionnel', 'Je recommande cet hôtel', '2026-09-28', 'FR', 'couple', 'fr', '2026-09-28 10:40:03');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `categorie_service`
+--
+
+DROP TABLE IF EXISTS `categorie_service`;
+CREATE TABLE `categorie_service` (
+  `id_categorie` int NOT NULL,
+  `code_categorie` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Identifiant technique, sans accent ni espace',
+  `nom_categorie` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Libellé affiché',
+  `ordre_affichage` int NOT NULL DEFAULT '0' COMMENT 'Ordre de présentation dans les listes',
+  `actif` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `categorie_service`
+--
+
+INSERT INTO `categorie_service` (`id_categorie`, `code_categorie`, `nom_categorie`, `ordre_affichage`, `actif`, `created_at`) VALUES
+(1, 'restauration', 'Restauration', 1, 1, '2026-09-29 07:48:36'),
+(2, 'bien_etre', 'Bien-être', 2, 1, '2026-09-29 07:48:36'),
+(3, 'transport', 'Transport', 3, 1, '2026-09-29 07:48:36'),
+(4, 'stationnement', 'Stationnement', 4, 1, '2026-09-29 07:48:36'),
+(5, 'confort', 'Confort du séjour', 5, 1, '2026-09-29 07:48:36');
 
 -- --------------------------------------------------------
 
@@ -1264,6 +1292,28 @@ INSERT INTO `hotel_amenities` (`id_room_amenities`, `id_hotel`, `parking`, `rest
 (100, 100, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0),
 (101, 101, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0),
 (102, 102, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `hotel_prestataire`
+--
+
+DROP TABLE IF EXISTS `hotel_prestataire`;
+CREATE TABLE `hotel_prestataire` (
+  `id_hotel_prestataire` int NOT NULL,
+  `id_user` int NOT NULL,
+  `id_hotel` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `hotel_prestataire`
+--
+
+INSERT INTO `hotel_prestataire` (`id_hotel_prestataire`, `id_user`, `id_hotel`, `created_at`) VALUES
+(1, 6, 18, '2026-09-29 08:23:51'),
+(2, 6, 41, '2026-09-29 08:45:41');
 
 -- --------------------------------------------------------
 
@@ -3580,7 +3630,7 @@ CREATE TABLE `messages_contact` (
 --
 
 INSERT INTO `messages_contact` (`id_message`, `nom`, `email`, `telephone`, `sujet`, `message`, `date_envoi`, `lu`, `traite`) VALUES
-(1, 'YANNICK FRANCHAISSE', 'admin@bookhotel.com', '0650148605', 'reservation', 'test contact', '2026-01-09 11:26:01', 1, 1);
+(1, 'YANNICK FRANCHAISSE', 'yannick.franchaisse@gmail.com', '0650148605', 'reservation', 'test contact', '2026-01-09 11:26:01', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -5035,18 +5085,21 @@ INSERT INTO `reservation` (`id_reservation`, `booking_id_api`, `id_offre`, `id_u
 (6, NULL, 625, 4, 49, 194, NULL, '2026-01-08', '2026-01-09', 1, 2, 0, NULL, 158.00, 287.00, 'EUR', 'Lit bébé', 'BYT-mk5c52jq-SJNGU', NULL, NULL, 2, NULL, NULL, '2026-01-08 10:59:39', '2026-01-08 10:59:39'),
 (7, NULL, 1104, 4, 86, 341, NULL, '2026-01-08', '2026-01-09', 1, 2, 0, NULL, 90.00, 213.00, 'EUR', 'test', 'BYT-mk5cbd1j-9XHPA', NULL, NULL, 2, NULL, NULL, '2026-01-08 11:04:33', '2026-01-08 11:15:06'),
 (8, NULL, 226, 4, 18, 69, NULL, '2026-01-08', '2026-01-09', 1, 2, 0, NULL, 131.00, 131.00, 'EUR', NULL, 'BYT-mk5cg434-ATFEV', NULL, NULL, 1, NULL, NULL, '2026-01-08 11:08:14', '2026-01-08 11:08:14'),
-(9, NULL, 200, 4, 16, 61, NULL, '2026-01-08', '2026-01-09', 1, 2, 0, NULL, 94.00, 161.00, 'EUR', 'test', 'BYT-mk5chskn-MG1BE', NULL, NULL, 1, NULL, NULL, '2026-01-08 11:09:33', '2026-01-08 11:09:33'),
+(9, NULL, 200, 4, 16, 61, NULL, '2026-10-28', '2026-10-30', 2, 2, 0, NULL, 94.00, 188.00, 'EUR', 'test', 'BYT-mk5chskn-MG1BE', NULL, NULL, 2, NULL, NULL, '2026-01-08 11:09:33', '2026-09-28 13:59:24'),
 (10, NULL, 249, 4, 20, 77, NULL, '2026-01-08', '2026-01-09', 1, 2, 0, NULL, 142.00, 298.00, 'EUR', 'test', 'BYT-mk5cna4x-D4L7F', NULL, NULL, 2, NULL, NULL, '2026-01-08 11:13:49', '2026-01-08 11:14:25'),
 (11, NULL, 288, 3, 23, 89, NULL, '2026-01-08', '2026-01-11', 3, 2, 0, NULL, 72.00, 249.00, 'EUR', NULL, 'BYT-mk5it2a0-ANDA8', NULL, NULL, 2, NULL, NULL, '2026-01-08 14:06:16', '2026-01-08 14:06:50'),
 (12, NULL, 443, 3, 35, 138, NULL, '2026-01-08', '2026-01-09', 1, 2, 0, NULL, 183.00, 183.00, 'EUR', NULL, 'BYT-mk5jw5g1-1J82Q', NULL, NULL, 2, NULL, NULL, '2026-01-08 14:36:40', '2026-01-08 14:37:09'),
-(13, NULL, 661, 3, 52, 205, NULL, '2026-11-13', '2026-11-14', 1, 2, 0, NULL, 103.00, 103.00, 'EUR', NULL, 'BYT-mk70bnay-W4VMD', NULL, NULL, 1, NULL, NULL, '2026-01-09 15:04:23', '2026-09-28 09:32:00'),
+(13, NULL, 661, 3, 52, 205, NULL, '2026-11-13', '2026-11-14', 1, 2, 0, NULL, 103.00, 103.00, 'EUR', NULL, 'BYT-mk70bnay-W4VMD', NULL, NULL, 2, NULL, NULL, '2026-01-09 15:04:23', '2026-09-28 10:35:02'),
 (14, NULL, 227, 3, 18, 69, NULL, '2026-01-09', '2026-01-10', 1, 2, 0, NULL, 105.00, 105.00, 'EUR', NULL, 'BYT-mk70dnwo-C7U6R', NULL, NULL, 2, NULL, NULL, '2026-01-09 15:05:57', '2026-01-09 15:06:22'),
 (15, NULL, 624, 3, 49, 193, NULL, '2026-01-09', '2026-01-10', 1, 2, 0, NULL, 133.00, 176.00, 'EUR', NULL, 'BYT-mk725b0w-4DJOV', NULL, NULL, 2, NULL, NULL, '2026-01-09 15:55:26', '2026-01-09 15:55:53'),
 (16, NULL, 1, 3, 1, 1, NULL, '2026-01-10', '2026-01-11', 1, 2, 0, NULL, 150.00, 320.00, 'EUR', NULL, 'BYT-mk8pcxt4-P9XVY', NULL, NULL, 1, NULL, NULL, '2026-01-10 19:32:59', '2026-01-10 19:32:59'),
 (17, NULL, 231, 3, 18, 71, NULL, '2026-01-12', '2026-01-13', 1, 2, 0, NULL, 250.00, 571.00, 'EUR', 'test', 'BYT-mkb05ffv-L1OTV', NULL, NULL, 2, NULL, NULL, '2026-01-12 10:10:38', '2026-01-12 10:11:00'),
 (18, NULL, 1263, 3, 98, 391, NULL, '2026-01-12', '2026-01-13', 1, 2, 0, NULL, 354.00, 629.00, 'EUR', 'test 2', 'BYT-mkb14mro-SJDSY', NULL, NULL, 2, NULL, NULL, '2026-01-12 10:38:00', '2026-01-12 10:38:23'),
 (19, NULL, 474, 3, 37, 147, NULL, '2026-01-12', '2026-01-13', 1, 2, 0, NULL, 455.00, 716.00, 'EUR', 'test3', 'BYT-mkb1a0em-FM407', NULL, NULL, 2, NULL, NULL, '2026-01-12 10:42:11', '2026-01-12 10:42:32'),
-(20, NULL, 660, 3, 52, 205, NULL, '2026-11-08', '2026-11-10', 2, 2, 0, NULL, 129.00, 354.00, 'EUR', NULL, 'BYT-mmafdt52-IOQII', NULL, NULL, 1, NULL, NULL, '2026-03-03 09:48:41', '2026-09-28 09:41:17');
+(20, NULL, 660, 3, 52, 205, NULL, '2026-11-08', '2026-11-10', 2, 2, 0, NULL, 129.00, 354.00, 'EUR', NULL, 'BYT-mmafdt52-IOQII', NULL, NULL, 1, NULL, NULL, '2026-03-03 09:48:41', '2026-09-28 09:41:17'),
+(21, NULL, 1079, 3, 84, 333, NULL, '2026-09-28', '2026-09-29', 1, 2, 0, NULL, 92.00, 92.00, 'EUR', NULL, 'BYT-mul9imzu-V2A8N', NULL, NULL, 2, NULL, NULL, '2026-09-28 13:07:36', '2026-09-28 13:08:15'),
+(22, NULL, 660, 3, 52, 205, NULL, '2026-11-24', '2026-11-26', 2, 2, 0, NULL, 129.00, 354.00, 'EUR', NULL, 'BYT-mumep00s-XOE9G', NULL, NULL, 3, NULL, NULL, '2026-09-29 08:20:17', '2026-09-29 08:21:28'),
+(23, NULL, 1, 5, 1, 1, NULL, '2026-10-09', '2026-10-10', 1, 2, 0, NULL, 150.00, 150.00, 'EUR', NULL, 'BYT-mumllt1v-4BGML', NULL, NULL, 2, NULL, NULL, '2026-09-29 11:33:45', '2026-09-29 11:34:15');
 
 -- --------------------------------------------------------
 
@@ -5076,7 +5129,8 @@ INSERT INTO `reservation_services` (`id_reservation_service`, `id_reservation`, 
 (4, 19, 184, 1, 110.00, 110.00, '2026-01-12 10:42:11'),
 (5, 19, 182, 1, 46.00, 46.00, '2026-01-12 10:42:11'),
 (6, 19, 183, 1, 92.00, 92.00, '2026-01-12 10:42:11'),
-(7, 20, 260, 4, 24.00, 96.00, '2026-03-03 09:48:41');
+(7, 20, 260, 4, 24.00, 96.00, '2026-03-03 09:48:41'),
+(8, 22, 260, 4, 24.00, 96.00, '2026-09-29 08:20:17');
 
 -- --------------------------------------------------------
 
@@ -5113,6 +5167,7 @@ CREATE TABLE `services_additionnels` (
   `nom_service` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description_service` text COLLATE utf8mb4_unicode_ci,
   `type_service` enum('journalier','sejour','unitaire','par_personne') COLLATE utf8mb4_unicode_ci DEFAULT 'sejour',
+  `id_categorie` int DEFAULT NULL COMMENT 'Catégorie du service',
   `icone_service` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `actif` tinyint(1) DEFAULT '1',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
@@ -5122,12 +5177,12 @@ CREATE TABLE `services_additionnels` (
 -- Déchargement des données de la table `services_additionnels`
 --
 
-INSERT INTO `services_additionnels` (`id_service`, `nom_service`, `description_service`, `type_service`, `icone_service`, `actif`, `created_at`) VALUES
-(1, 'Parking privé', 'Place de parking sécurisée', 'journalier', 'bi-p-circle', 1, '2025-12-19 13:31:30'),
-(2, 'Petit-déjeuner', 'Buffet continental par personne', 'par_personne', 'bi-cup-hot', 1, '2025-12-19 13:31:30'),
-(3, 'Accès spa', 'Accès illimité au spa et jacuzzi', 'sejour', 'bi-droplet', 1, '2025-12-19 13:31:30'),
-(4, 'Transfert aéroport', 'Aller simple depuis/vers l\'aéroport', 'unitaire', 'bi-taxi-front', 1, '2025-12-19 13:31:30'),
-(5, 'Départ tardif', 'Check-out jusqu\'à 18h au lieu de 11h', 'unitaire', 'bi-clock-history', 1, '2025-12-19 13:31:30');
+INSERT INTO `services_additionnels` (`id_service`, `nom_service`, `description_service`, `type_service`, `id_categorie`, `icone_service`, `actif`, `created_at`) VALUES
+(1, 'Parking privé', 'Place de parking sécurisée', 'journalier', 4, 'bi-p-circle', 1, '2025-12-19 13:31:30'),
+(2, 'Petit-déjeuner', 'Buffet continental par personne', 'par_personne', 1, 'bi-cup-hot', 1, '2025-12-19 13:31:30'),
+(3, 'Accès spa', 'Accès illimité au spa et jacuzzi', 'sejour', 2, 'bi-droplet', 1, '2025-12-19 13:31:30'),
+(4, 'Transfert aéroport', 'Aller simple depuis/vers l\'aéroport', 'unitaire', 3, 'bi-taxi-front', 1, '2025-12-19 13:31:30'),
+(5, 'Départ tardif', 'Check-out jusqu\'à 18h au lieu de 11h', 'unitaire', 5, 'bi-clock-history', 1, '2025-12-19 13:31:30');
 
 -- --------------------------------------------------------
 
@@ -5186,9 +5241,10 @@ CREATE TABLE `utilisateur` (
 INSERT INTO `utilisateur` (`id_user`, `nom_user`, `prenom_user`, `email_user`, `mot_de_passe`, `tel_user`, `date_inscription`, `updated_at`, `id_role`, `actif`, `email_verifie`, `derniere_connexion`, `id_adress_user`) VALUES
 (1, 'Admin', 'Système', 'admin@hotel.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', NULL, '2025-12-15 11:51:28', '2025-12-20 09:33:51', 1, 1, 0, NULL, NULL),
 (2, 'Dupont', 'Jean', 'jean.dupont@email.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '0612345678', '2025-12-15 11:51:28', '2026-01-12 10:02:48', 3, 1, 0, NULL, NULL),
-(3, 'Système', 'Admin', 'admin@bookhotel.com', '$2b$10$scRutB/Ayiq8OtqFGYU2WOmULTUD.1x0UdqkPsSNtaUl9xIv4.onG', '0123456789', '2025-12-20 09:38:20', '2026-01-12 09:55:08', 1, 1, 1, '2026-01-12 09:55:08', NULL),
-(4, 'Dupont', 'Jean', 'client@test.com', '$2b$10$MILeL.NsMs/3bw5Mk3xUp.Juc6P0AcrHTWxSyv2IJaG68MiViEgTS', NULL, '2025-12-20 09:38:20', '2026-01-12 09:53:13', 3, 1, 1, '2026-01-12 09:53:13', NULL),
-(5, 'User', 'Test', 'test@example.com', '$2b$10$AmVThboh.qkc2O9g9n/YY.14FyfAJkJwBA4kwAnfQR2bKHUmWcKv.', '0612345678', '2025-12-20 13:45:28', '2025-12-20 15:41:57', 3, 1, 0, '2025-12-20 15:41:57', NULL);
+(3, 'Système', 'Admin', 'admin@bookhotel.com', '$2b$10$scRutB/Ayiq8OtqFGYU2WOmULTUD.1x0UdqkPsSNtaUl9xIv4.onG', '0123456789', '2025-12-20 09:38:20', '2026-09-29 11:34:42', 1, 1, 1, '2026-09-29 11:34:42', NULL),
+(4, 'Dupont', 'Jean', 'client@test.com', '$2b$10$MILeL.NsMs/3bw5Mk3xUp.Juc6P0AcrHTWxSyv2IJaG68MiViEgTS', NULL, '2025-12-20 09:38:20', '2026-09-29 11:10:14', 3, 1, 1, '2026-09-29 11:10:14', NULL),
+(5, 'Compte supprimé', '', 'supprime_5@anonyme.local', 'COMPTE_SUPPRIME', NULL, '2025-12-20 13:45:28', '2026-09-29 11:34:36', 3, 0, 0, '2026-09-29 11:32:31', NULL),
+(6, 'Hôtelier', 'Démo', 'prestataire@bookhotel.com', '$2b$10$idP8MYiOwGzTk0J77CfS2OeBIG6FKyvnBa3J.EP3Q3bzPTadRZOcO', '0600000000', '2026-09-29 08:23:51', '2026-09-29 08:45:54', 2, 1, 1, '2026-09-29 08:45:54', NULL);
 
 -- --------------------------------------------------------
 
@@ -5259,6 +5315,13 @@ ALTER TABLE `avis`
   ADD KEY `avis_ibfk_2` (`id_user`);
 
 --
+-- Index pour la table `categorie_service`
+--
+ALTER TABLE `categorie_service`
+  ADD PRIMARY KEY (`id_categorie`),
+  ADD UNIQUE KEY `uk_code_categorie` (`code_categorie`);
+
+--
 -- Index pour la table `chambre`
 --
 ALTER TABLE `chambre`
@@ -5297,6 +5360,14 @@ ALTER TABLE `hotel` ADD FULLTEXT KEY `idx_search` (`nom_hotel`,`ville_hotel`,`pa
 ALTER TABLE `hotel_amenities`
   ADD PRIMARY KEY (`id_room_amenities`),
   ADD KEY `idx_hotel` (`id_hotel`);
+
+--
+-- Index pour la table `hotel_prestataire`
+--
+ALTER TABLE `hotel_prestataire`
+  ADD PRIMARY KEY (`id_hotel_prestataire`),
+  ADD UNIQUE KEY `uk_prestataire_hotel` (`id_user`,`id_hotel`),
+  ADD KEY `idx_prestataire_hotel` (`id_hotel`);
 
 --
 -- Index pour la table `hotel_services`
@@ -5391,7 +5462,8 @@ ALTER TABLE `role`
 -- Index pour la table `services_additionnels`
 --
 ALTER TABLE `services_additionnels`
-  ADD PRIMARY KEY (`id_service`);
+  ADD PRIMARY KEY (`id_service`),
+  ADD KEY `idx_categorie` (`id_categorie`);
 
 --
 -- Index pour la table `statut`
@@ -5427,6 +5499,12 @@ ALTER TABLE `avis`
   MODIFY `id_avis` int NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `categorie_service`
+--
+ALTER TABLE `categorie_service`
+  MODIFY `id_categorie` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT pour la table `chambre`
 --
 ALTER TABLE `chambre`
@@ -5451,10 +5529,16 @@ ALTER TABLE `hotel_amenities`
   MODIFY `id_room_amenities` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
+-- AUTO_INCREMENT pour la table `hotel_prestataire`
+--
+ALTER TABLE `hotel_prestataire`
+  MODIFY `id_hotel_prestataire` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT pour la table `hotel_services`
 --
 ALTER TABLE `hotel_services`
-  MODIFY `id_hotel_service` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=863;
+  MODIFY `id_hotel_service` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=965;
 
 --
 -- AUTO_INCREMENT pour la table `img_chambre`
@@ -5472,7 +5556,7 @@ ALTER TABLE `img_hotel`
 -- AUTO_INCREMENT pour la table `messages_contact`
 --
 ALTER TABLE `messages_contact`
-  MODIFY `id_message` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_message` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `offre`
@@ -5490,7 +5574,7 @@ ALTER TABLE `paiement`
 -- AUTO_INCREMENT pour la table `password_reset`
 --
 ALTER TABLE `password_reset`
-  MODIFY `id_reset` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_reset` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `reservation`
@@ -5502,7 +5586,7 @@ ALTER TABLE `reservation`
 -- AUTO_INCREMENT pour la table `reservation_services`
 --
 ALTER TABLE `reservation_services`
-  MODIFY `id_reservation_service` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_reservation_service` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `role`
@@ -5514,7 +5598,7 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT pour la table `services_additionnels`
 --
 ALTER TABLE `services_additionnels`
-  MODIFY `id_service` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_service` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT pour la table `statut`
@@ -5526,7 +5610,7 @@ ALTER TABLE `statut`
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 -- --------------------------------------------------------
 
@@ -5536,7 +5620,7 @@ ALTER TABLE `utilisateur`
 DROP TABLE IF EXISTS `v_chambres_offres`;
 
 DROP VIEW IF EXISTS `v_chambres_offres`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `v_chambres_offres`  AS SELECT `h`.`id_hotel` AS `id_hotel`, `h`.`nom_hotel` AS `nom_hotel`, `h`.`ville_hotel` AS `ville_hotel`, `h`.`note_moy_hotel` AS `note_moy_hotel`, `c`.`id_chambre` AS `id_chambre`, `c`.`type_room` AS `type_room`, `c`.`nbre_adults_max` AS `nbre_adults_max`, `o`.`id_offre` AS `id_offre`, `o`.`nom_offre` AS `nom_offre`, `o`.`prix_nuit` AS `prix_nuit`, `o`.`petit_dejeuner_inclus` AS `petit_dejeuner_inclus`, `o`.`remboursable` AS `remboursable` FROM ((`hotel` `h` join `chambre` `c` on((`h`.`id_hotel` = `c`.`id_hotel`))) join `offre` `o` on((`c`.`id_chambre` = `o`.`id_chambre`))) ORDER BY `h`.`nom_hotel` ASC, `c`.`type_room` ASC, `o`.`prix_nuit` ASC ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_chambres_offres`  AS SELECT `h`.`id_hotel` AS `id_hotel`, `h`.`nom_hotel` AS `nom_hotel`, `h`.`ville_hotel` AS `ville_hotel`, `h`.`note_moy_hotel` AS `note_moy_hotel`, `c`.`id_chambre` AS `id_chambre`, `c`.`type_room` AS `type_room`, `c`.`nbre_adults_max` AS `nbre_adults_max`, `o`.`id_offre` AS `id_offre`, `o`.`nom_offre` AS `nom_offre`, `o`.`prix_nuit` AS `prix_nuit`, `o`.`petit_dejeuner_inclus` AS `petit_dejeuner_inclus`, `o`.`remboursable` AS `remboursable` FROM ((`hotel` `h` join `chambre` `c` on((`h`.`id_hotel` = `c`.`id_hotel`))) join `offre` `o` on((`c`.`id_chambre` = `o`.`id_chambre`))) ORDER BY `h`.`nom_hotel` ASC, `c`.`type_room` ASC, `o`.`prix_nuit` ASC ;
 
 -- --------------------------------------------------------
 
@@ -5546,7 +5630,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `v_chambres_offres`  AS SEL
 DROP TABLE IF EXISTS `v_reservations_details`;
 
 DROP VIEW IF EXISTS `v_reservations_details`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `v_reservations_details`  AS SELECT `r`.`id_reservation` AS `id_reservation`, `r`.`num_confirmation` AS `num_confirmation`, `u`.`nom_user` AS `nom_user`, `u`.`prenom_user` AS `prenom_user`, `u`.`email_user` AS `email_user`, `h`.`nom_hotel` AS `nom_hotel`, `h`.`ville_hotel` AS `ville_hotel`, `c`.`type_room` AS `type_room`, `o`.`nom_offre` AS `nom_offre`, `r`.`check_in` AS `check_in`, `r`.`check_out` AS `check_out`, `r`.`nbre_nuits` AS `nbre_nuits`, `r`.`nbre_adults` AS `nbre_adults`, `r`.`total_price` AS `total_price`, `r`.`id_statut` AS `id_statut`, `r`.`date_reservation` AS `date_reservation` FROM ((((`reservation` `r` join `utilisateur` `u` on((`r`.`id_user` = `u`.`id_user`))) join `hotel` `h` on((`r`.`id_hotel` = `h`.`id_hotel`))) join `chambre` `c` on((`r`.`id_chambre` = `c`.`id_chambre`))) join `offre` `o` on((`r`.`id_offre` = `o`.`id_offre`))) ORDER BY `r`.`date_reservation` DESC ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_reservations_details`  AS SELECT `r`.`id_reservation` AS `id_reservation`, `r`.`num_confirmation` AS `num_confirmation`, `u`.`nom_user` AS `nom_user`, `u`.`prenom_user` AS `prenom_user`, `u`.`email_user` AS `email_user`, `h`.`nom_hotel` AS `nom_hotel`, `h`.`ville_hotel` AS `ville_hotel`, `c`.`type_room` AS `type_room`, `o`.`nom_offre` AS `nom_offre`, `r`.`check_in` AS `check_in`, `r`.`check_out` AS `check_out`, `r`.`nbre_nuits` AS `nbre_nuits`, `r`.`nbre_adults` AS `nbre_adults`, `r`.`total_price` AS `total_price`, `r`.`id_statut` AS `id_statut`, `r`.`date_reservation` AS `date_reservation` FROM ((((`reservation` `r` join `utilisateur` `u` on((`r`.`id_user` = `u`.`id_user`))) join `hotel` `h` on((`r`.`id_hotel` = `h`.`id_hotel`))) join `chambre` `c` on((`r`.`id_chambre` = `c`.`id_chambre`))) join `offre` `o` on((`r`.`id_offre` = `o`.`id_offre`))) ORDER BY `r`.`date_reservation` DESC ;
 
 --
 -- Contraintes pour les tables déchargées
@@ -5577,6 +5661,13 @@ ALTER TABLE `favori`
 --
 ALTER TABLE `hotel_amenities`
   ADD CONSTRAINT `hotel_amenities_ibfk_1` FOREIGN KEY (`id_hotel`) REFERENCES `hotel` (`id_hotel`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `hotel_prestataire`
+--
+ALTER TABLE `hotel_prestataire`
+  ADD CONSTRAINT `fk_prestataire_hotel` FOREIGN KEY (`id_hotel`) REFERENCES `hotel` (`id_hotel`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_prestataire_user` FOREIGN KEY (`id_user`) REFERENCES `utilisateur` (`id_user`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `hotel_services`
@@ -5633,6 +5724,12 @@ ALTER TABLE `reservation`
 ALTER TABLE `reservation_services`
   ADD CONSTRAINT `reservation_services_ibfk_1` FOREIGN KEY (`id_reservation`) REFERENCES `reservation` (`id_reservation`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservation_services_ibfk_2` FOREIGN KEY (`id_hotel_service`) REFERENCES `hotel_services` (`id_hotel_service`);
+
+--
+-- Contraintes pour la table `services_additionnels`
+--
+ALTER TABLE `services_additionnels`
+  ADD CONSTRAINT `fk_service_categorie` FOREIGN KEY (`id_categorie`) REFERENCES `categorie_service` (`id_categorie`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `utilisateur`
