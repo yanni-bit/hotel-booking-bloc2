@@ -92,7 +92,7 @@ c'est l'objet du bloc : rien n'est masqué.
 
 Angular 21 en composants standalone, TypeScript 5.9, Bootstrap 5.3 et SCSS.
 Le choix d'Angular plutôt que du DOM manipulé à la main tient à la taille de
-l'interface : 41 composants, un espace d'administration complet, du routage,
+l'interface : 46 composants, un espace d'administration complet, du routage,
 de l'internationalisation. Le système d'injection de dépendances et les
 intercepteurs HTTP évitent de répéter la logique d'authentification dans
 chaque appel.
@@ -398,12 +398,13 @@ hotel-booking-bloc2/
 │                                  integration.test.js
 │
 ├── frontend/hotel-app/src/app/
-│   ├── components/                41 composants standalone
+│   ├── components/                45 composants standalone
 │   ├── services/                  10 services HTTP
 │   ├── guards/                    auth.guard.ts, admin.guard.ts,
 │   │                              provider.guard.ts
 │   ├── interceptors/              auth.interceptor.ts
 │   ├── pipes/                     currency.pipe.ts
+│   ├── app.ts                     le composant racine (46e composant)
 │   └── app.routes.ts
 │
 ├── docs/
